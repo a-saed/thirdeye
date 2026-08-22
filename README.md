@@ -7,7 +7,7 @@ Businesses, population and construction trend for any point on the map. Every
 figure names its sources and its date, and where the record runs out the map
 stays grey rather than guessing.
 
-> **Read [`research/VERDICT.md`](research/VERDICT.md) first.** Before any of
+> **Read [`research/output/VERDICT.md`](research/output/VERDICT.md) first.** Before any of
 > this was built, a two-week feasibility study tested whether free geodata is
 > good enough for the job. The verdict was a *qualified yes*, and several
 > intuitive statements about this data turned out to be measurably wrong. Every
@@ -63,9 +63,19 @@ than trusting them.
 
 ## Architecture
 
+```mermaid
+flowchart LR
+  SRC["Public sources<br/>Overture · Foursquare · Kontur<br/>GHSL · Open Buildings"]
+  PIPE["pipeline/<br/>Python, monthly"]
+  PARQ["data/derived<br/>parquet, ~6 MB"]
+  API["api/<br/>Go, all in RAM"]
+  WEB["web/<br/>React + MapLibre"]
+  SRC --> PIPE --> PARQ --> API --> WEB
+  CFG["config/thresholds.json"] -.one source of truth.-> PIPE & API & WEB
 ```
-sources ──> pipeline (Python, monthly) ──> parquet ──> API (Go) ──> web (React)
-```
+
+Full diagrams — data flow, the confidence model, H3 aggregation and the request
+path — are in [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 
 No database. The four parquet tables total ~6 MB compressed; the Go API loads
 them into maps keyed by H3 index at startup and answers every request as a hash
@@ -77,6 +87,17 @@ sizes stay flexible. See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 Live regions come from `config/regions.json` and are rebuilt by the pipeline —
 no place name is hardcoded in the UI. Adding a region is a config change plus a
 pipeline run, not a code change.
+
+## Documentation
+
+| | |
+|---|---|
+| [research/output/VERDICT.md](research/output/VERDICT.md) | The feasibility study's conclusion. Start here. |
+| [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | Data flow, confidence model, H3 aggregation, request path |
+| [docs/LICENSING.md](docs/LICENSING.md) | Why code is MIT and data is not distributed |
+| [docs/DESIGN.md](docs/DESIGN.md) | The design system, and why confidence is encoded as brightness |
+| [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) | Fly.io and nginx, the 404-status fix, the monthly archiver |
+| [docs/BRAND-ASSETS.md](docs/BRAND-ASSETS.md) | Logo files and usage |
 
 ## Licence
 

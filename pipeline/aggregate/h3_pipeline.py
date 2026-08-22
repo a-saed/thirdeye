@@ -101,7 +101,10 @@ BUILT_S_2025 = [
     ROOT / "data/ghsl_cache/GHS_BUILT_S_E2025_GLOBE_R2023A_4326_3ss_V1_0_R6_C22.tif",
     ROOT / "data/ghsl_cache/GHS_BUILT_S_E2025_GLOBE_R2023A_4326_3ss_V1_0_R6_C21.tif",
 ]
-KONTUR = ROOT / "data/kontur/kontur_population_EG_20231101.gpkg"
+# Snapshot-versioned path. A loose copy of the same file also existed at
+# data/kontur/, byte-identical, which broke the raw/ convention: inputs are
+# immutable snapshots so a rebuild can name exactly which vintage it used.
+KONTUR = ROOT / "data/raw/kontur/snapshot=20231101/kontur_population_EG_20231101.gpkg"
 
 
 # ---------------------------------------------------------------- helpers

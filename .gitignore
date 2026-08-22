@@ -1,6 +1,9 @@
 # Secrets
 .env
 
+# Agent runtime state
+.claude/
+
 # Environments and build output
 .venv/
 __pycache__/

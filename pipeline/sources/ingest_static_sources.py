@@ -36,7 +36,7 @@ SOURCES = [
     ("wsf_evolution", "v1_1985_2015", [ROOT/"data/wsf_evolution_cache/WSFevolution_v1_30_30.tif",
                                        ROOT/"data/wsf_evolution_cache/WSFevolution_v1_30_28.tif"],
      "download.geoservice.dlr.de WSF_EVO"),
-    ("kontur", "20231101", [ROOT/"data/kontur/kontur_population_EG_20231101.gpkg"],
+    ("kontur", "20231101", [ROOT/"data/raw/kontur/snapshot=20231101/kontur_population_EG_20231101.gpkg"],
      "HDX kontur-population-egypt"),
 ]
 
