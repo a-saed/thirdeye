@@ -1,0 +1,16 @@
+district,group,osm_now,overture_now,ratio_osm_over_overture
+Sheikh Zayed,cafe,3.0,30,0.1
+Sheikh Zayed,restaurant,1.0,77,0.012987012987012988
+Sheikh Zayed,pharmacy,0.0,2,0.0
+Sheikh Zayed,supermarket_convenience,3.0,4,0.75
+Sheikh Zayed,fast_food,1.0,3,0.3333333333333333
+Maadi,cafe,24.0,50,0.48
+Maadi,restaurant,25.0,97,0.25773195876288657
+Maadi,pharmacy,9.0,20,0.45
+Maadi,supermarket_convenience,7.0,4,1.75
+Maadi,fast_food,12.0,12,1.0
+Imbaba,cafe,0.0,6,0.0
+Imbaba,restaurant,0.0,19,0.0
+Imbaba,pharmacy,0.0,10,0.0
+Imbaba,supermarket_convenience,7.0,4,1.75
+Imbaba,fast_food,1.0,4,0.25

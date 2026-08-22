@@ -1,0 +1,16 @@
+district,group,fsq_n,overture_n,ratio
+Sheikh Zayed,cafe,72,30,2.4
+Sheikh Zayed,restaurant,143,80,1.788
+Sheikh Zayed,pharmacy,2,2,1.0
+Sheikh Zayed,gym,5,6,0.833
+Sheikh Zayed,grocery,8,7,1.143
+Maadi,cafe,92,50,1.84
+Maadi,restaurant,169,109,1.55
+Maadi,pharmacy,11,20,0.55
+Maadi,gym,18,12,1.5
+Maadi,grocery,4,8,0.5
+Imbaba,cafe,6,6,1.0
+Imbaba,restaurant,4,23,0.174
+Imbaba,pharmacy,0,10,0.0
+Imbaba,gym,2,5,0.4
+Imbaba,grocery,1,8,0.125

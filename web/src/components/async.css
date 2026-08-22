@@ -1,0 +1,41 @@
+/* Loading, error and empty. Tokens only. */
+
+/* Skeletons match the block they replace, so nothing shifts when data lands.
+   The shimmer is slow and low-contrast: a fast pulse reads as an alarm. */
+.sk {
+  display: inline-block;
+  background: linear-gradient(90deg,
+    var(--surface-2) 0%, var(--surface-3) 50%, var(--surface-2) 100%);
+  background-size: 200% 100%;
+  border-radius: var(--r-control);
+  animation: sk-shimmer 1.4s ease-in-out infinite;
+}
+@keyframes sk-shimmer {
+  0% { background-position: 200% 0 }
+  100% { background-position: -200% 0 }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sk { animation: none; background: var(--surface-2); }
+}
+
+/* Amber, never red — this system has no error colour (DESIGN.md §3). A failed
+   request is a state to act on, not a catastrophe. */
+.as-err {
+  display: flex; align-items: baseline; gap: var(--s3); flex-wrap: wrap;
+  padding: var(--s3); border-radius: var(--r-control);
+  background: var(--surface-2); color: var(--amber);
+  font-size: var(--t-caption); line-height: 18px;
+}
+.as-err-compact { padding: var(--s2) var(--s3); }
+.as-retry {
+  font-family: inherit; font-size: var(--t-caption); line-height: 18px;
+  padding: 2px var(--s2); border-radius: var(--r-control);
+  background: var(--surface-3); color: var(--text);
+  border: 1px solid var(--border-strong); cursor: pointer;
+}
+.as-retry:hover { background: var(--surface); }
+
+.as-empty {
+  margin: 0; padding: var(--s3);
+  color: var(--text-muted); font-size: var(--t-caption); line-height: 18px;
+}

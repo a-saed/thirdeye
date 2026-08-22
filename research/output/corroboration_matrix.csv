@@ -1,0 +1,16 @@
+district,track,signal,period,first_value,last_value,pct_change,direction
+Sheikh Zayed,built_environment,"Open Buildings (presence area, 2018 baseline)",2018 -> 2023,260124.0,295416.0,13.6,growing
+Sheikh Zayed,built_environment,GHSL built-up surface,2015 -> 2025,461947.0,519479.0,12.5,growing
+Sheikh Zayed,built_environment,WSF Evolution,1985 -> 2015,0.1,63.03,62930.0,growing
+Sheikh Zayed,business_layer,Overture release history (artifact-corrected),2024-02-15-alpha-0 -> 2026-08-19.0,273.0,482.0,76.6,growing
+Sheikh Zayed,business_layer,Foursquare reconstruction (date_created/date_closed),2015 -> 2026,120.0,445.0,270.8,growing
+Maadi,built_environment,"Open Buildings (presence area, 2018 baseline)",2018 -> 2023,514529.0,517906.0,0.7,flat
+Maadi,built_environment,GHSL built-up surface,2015 -> 2025,893185.0,899948.0,0.8,flat
+Maadi,built_environment,WSF Evolution [near-saturation ceiling effect - weak evidence of 'no change'],1985 -> 2015,95.52,99.07,3.7,flat
+Maadi,business_layer,Overture release history (artifact-corrected),2024-02-15-alpha-0 -> 2026-08-19.0,605.0,947.0,56.5,growing
+Maadi,business_layer,Foursquare reconstruction (date_created/date_closed),2015 -> 2026,620.0,954.0,53.9,growing
+Imbaba,built_environment,"Open Buildings (presence area, 2018 baseline)",2018 -> 2023,1287457.0,1279868.0,-0.6,flat
+Imbaba,built_environment,GHSL built-up surface,2015 -> 2025,977943.0,980035.0,0.2,flat
+Imbaba,built_environment,WSF Evolution [near-saturation ceiling effect - weak evidence of 'no change'],1985 -> 2015,99.69,99.83,0.1,flat
+Imbaba,business_layer,Overture release history (artifact-corrected)  [artifact excluded: raw range was +61.0%],2024-09-18-0 -> 2026-08-19.0,329.0,285.0,-13.4,declining
+Imbaba,business_layer,Foursquare reconstruction (date_created/date_closed),2015 -> 2026,52.0,81.0,55.8,growing

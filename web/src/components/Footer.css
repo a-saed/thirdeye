@@ -1,0 +1,50 @@
+/* Footer. Tokens only. */
+/* Pinned to the bottom by the page wrapper below, not by margin: on a short
+   page (an empty compare, a 404) a static footer floated mid-screen with a
+   void beneath it. */
+.ft {
+  margin-top: auto;
+  border-top: 1px solid var(--border);
+  padding: var(--s6) 0 var(--s8);
+  color: var(--text-faint); font-size: var(--t-caption); line-height: 18px;
+}
+.ft-row {
+  display: flex; align-items: flex-start; justify-content: space-between;
+  gap: var(--s6); flex-wrap: wrap; margin-bottom: var(--s6);
+}
+.ft-brand { display: flex; flex-direction: column; align-items: flex-start; gap: var(--s2); }
+/* display: block removes the inline baseline gap under the SVG, and the
+   explicit zeros stop a UA stylesheet indenting it away from the tagline. */
+.ft-brand img { display: block; margin: 0; padding: 0; }
+.ft-tag { margin: 0; color: var(--text-muted); }
+.ft-links { display: flex; gap: var(--s4); }
+.ft a { color: var(--text-muted); text-decoration: none; }
+.ft a:hover { color: var(--text); }
+
+.ft-h {
+  font-size: var(--t-eyebrow); letter-spacing: .04em; text-transform: uppercase;
+  color: var(--text-faint); margin-bottom: var(--s2);
+}
+.ft-sources ul {
+  list-style: none; margin: 0; padding: 0;
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 2px var(--s6);
+}
+.ft-sources li { display: flex; align-items: baseline; gap: var(--s2); }
+.ft-what { color: var(--text-faint); flex: 1; }
+.ft-lic { color: var(--text-disabled); font-size: var(--t-eyebrow); }
+.ft-note {
+  margin: var(--s6) 0 0; max-width: 78ch; color: var(--text-disabled);
+}
+
+@media (max-width: 640px) {
+  .ft { padding: var(--s4) 0 var(--s6); }
+  .ft-row { flex-direction: column; gap: var(--s4); }
+  /* The source list is a two-column grid at 260px minimum, which overflows a
+     360px viewport once padding is counted. */
+  .ft-sources ul { grid-template-columns: minmax(0, 1fr); gap: var(--s1) 0; }
+  .ft-sources li { flex-wrap: wrap; }
+}
+@media (pointer: coarse) {
+  .ft a { display: inline-block; min-height: 32px; }
+}

@@ -1,0 +1,203 @@
+/* Layout for the token preview page only. The tokens themselves live in
+ * src/tokens.css — nothing here may introduce a new colour value. Every
+ * colour below is a var(). If you need a hex here, the system is missing a
+ * token and the fix belongs in tokens.css.
+ */
+
+/* Set by main.jsx for this route only. style.css still dresses the coverage
+   map light; converting it is a separate job. */
+body.route-tokens { background: var(--canvas); color: var(--text); }
+body.route-tokens #root { overflow-y: auto; }
+
+.tk {
+  min-height: 100%;
+  background: var(--canvas);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: var(--t-body);
+  line-height: 22px;
+  font-weight: 400;
+  padding: var(--s8) var(--s6) var(--s8) var(--s6);
+  max-width: 940px;
+  margin: 0 auto;
+}
+
+.tk-head {
+  display: flex; align-items: flex-start; justify-content: space-between; gap: var(--s4);
+  padding-bottom: var(--s6);
+  border-bottom: 1px solid var(--border);
+  margin-bottom: var(--s8);
+}
+.tk h1 { font-size: var(--t-hero); line-height: 32px; font-weight: 500; margin: 0 0 var(--s1); }
+.tk-sub { color: var(--text-faint); font-size: var(--t-caption); line-height: 18px; margin: 0; }
+
+.tk-section { margin-bottom: var(--s8); }
+.tk-section-head { display: flex; align-items: baseline; gap: var(--s3); margin-bottom: var(--s2); }
+.tk-n { color: var(--text-disabled); font-size: var(--t-caption); }
+.tk h2 { font-size: var(--t-head); line-height: 26px; font-weight: 500; margin: 0; }
+
+.tk-note {
+  color: var(--text-faint);
+  font-size: var(--t-caption); line-height: 18px;
+  margin: 0 0 var(--s4); max-width: 68ch;
+}
+.tk-note strong { color: var(--text); font-weight: 500; }
+.tk-faint { color: var(--text-faint); }
+.tk-pass { color: var(--text-muted); }
+/* Under the 4.5 floor. Deliberately NOT red — see DESIGN.md §3. This marks a
+   constraint, not an error, and the system has no error colour. */
+.tk-under { color: var(--amber); }
+
+.tk code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: var(--t-caption);
+  color: var(--text-muted);
+}
+
+/* ---- swatches ---- */
+.tk-swatches { display: flex; flex-wrap: wrap; gap: var(--s3); margin-bottom: var(--s3); }
+.tk-sw { display: flex; align-items: center; gap: var(--s3); min-width: 210px; }
+.tk-sw-chip {
+  width: 48px; height: 48px; border-radius: var(--r-control); flex: none;
+  border: 1px solid var(--border);
+}
+.tk-sw-line { background: transparent; border-width: 2px; }
+.tk-sw-meta { display: flex; flex-direction: column; gap: 2px; font-size: var(--t-caption); line-height: 18px; }
+
+/* ---- ladder ---- */
+.tk-ladder { display: flex; flex-direction: column; gap: var(--s2); margin-bottom: var(--s4); }
+.tk-rung { display: flex; align-items: center; gap: var(--s3); }
+.tk-rung-chip {
+  width: 132px; height: 40px; border-radius: var(--r-control); flex: none;
+  border: 1px solid var(--border);
+}
+
+/* ---- tables ---- */
+.tk-table { width: 100%; border-collapse: collapse; font-size: var(--t-body); }
+.tk-table-narrow { max-width: 420px; }
+.tk-table th {
+  font-weight: 400; font-size: var(--t-caption); line-height: 18px;
+  color: var(--text-faint); text-align: left;
+  padding: 0 var(--s3) var(--s2) 0; border-bottom: 1px solid var(--border);
+}
+.tk-table td { padding: var(--s2) var(--s3) var(--s2) 0; border-bottom: 1px solid var(--border); }
+.tk-table th.num, .tk-table td.num { text-align: right; }
+/* The control case for the tabular demo — this one is allowed to shift. */
+.tk-proportional { font-variant-numeric: proportional-nums; font-feature-settings: "tnum" 0; }
+
+/* ---- type ---- */
+.tk-type { display: flex; flex-direction: column; gap: var(--s3); margin-bottom: var(--s4); }
+.tk-type-row { display: flex; align-items: baseline; gap: var(--s4); }
+.tk-type-meta { width: 120px; flex: none; display: flex; flex-direction: column; }
+
+/* ---- badges ---- */
+.tk-row { display: flex; align-items: center; flex-wrap: wrap; gap: var(--s3); margin-bottom: var(--s3); }
+.tk-badge-wrap { display: inline-flex; align-items: center; gap: var(--s2); }
+.tk-badge {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 2px var(--s2); border-radius: var(--r-pill);
+  font-size: var(--t-caption); line-height: 18px; font-weight: 400;
+  white-space: nowrap;
+}
+/* Colour stripped, glyph and label remaining. If this row is illegible the
+   redundant-encoding rule has been broken. */
+.tk-badge-grey { background: var(--surface-2); color: var(--text-muted); }
+.tk-glyph { font-size: 9px; line-height: 1; }
+.tk-mono-strip { filter: grayscale(1); }
+
+/* ---- controls ---- */
+.tk-btn {
+  font-family: inherit; font-size: var(--t-body); line-height: 22px;
+  padding: 6px var(--s3); border-radius: var(--r-control);
+  border: 1px solid transparent; cursor: pointer;
+  transition: background var(--m-state), color var(--m-state), border-color var(--m-state);
+}
+.tk-btn-primary { background: var(--accent); color: var(--canvas); font-weight: 500; }
+.tk-btn-primary:hover { filter: brightness(1.08); }
+.tk-btn-secondary { background: var(--surface-2); color: var(--text); border-color: var(--border); }
+.tk-btn-secondary:hover { background: var(--surface-3); }
+.tk-btn-ghost { background: transparent; color: var(--text-muted); }
+.tk-btn-ghost:hover { color: var(--text); }
+.tk-btn:disabled { color: var(--text-disabled); cursor: not-allowed; background: var(--surface); }
+.tk-btn:disabled:hover { background: var(--surface); }
+
+.tk-toggle {
+  display: inline-flex; align-items: center; gap: var(--s2);
+  color: var(--text-muted); cursor: pointer; user-select: none;
+}
+.tk-toggle input { accent-color: var(--accent); margin: 0; cursor: pointer; }
+
+/* ---- cards ---- */
+.tk-cards { display: flex; flex-wrap: wrap; gap: var(--s3); margin-bottom: var(--s3); }
+.tk-card {
+  background: var(--surface-2); border-radius: var(--r-card);
+  padding: var(--s3) var(--s4); min-width: 264px; flex: 1;
+}
+.tk-card-label { color: var(--text-faint); font-size: var(--t-caption); line-height: 18px; margin-bottom: var(--s1); }
+/* Confidence sits ON the value's baseline. The number is the subject; the
+   confidence is an adjective. */
+.tk-card-value {
+  display: flex; align-items: baseline; justify-content: space-between; gap: var(--s3);
+  font-size: var(--t-hero); line-height: 32px; font-weight: 500;
+  margin-bottom: var(--s2);
+}
+.tk-card-foot { color: var(--text-faint); font-size: var(--t-caption); line-height: 18px; }
+.tk-dot { color: var(--text-disabled); margin: 0 5px; }
+
+/* ---- map ---- */
+.tk-map {
+  height: 300px; width: 100%;
+  border-radius: var(--r-card);   /* the preview is an object; the real map is the ground */
+  overflow: hidden;
+  border: 1px solid var(--border);
+  margin-bottom: var(--s2);
+}
+.tk-map .maplibregl-ctrl-attrib {
+  background: var(--surface); color: var(--text-faint); font-size: var(--t-eyebrow);
+}
+.tk-map .maplibregl-ctrl-attrib a { color: var(--text-faint); }
+
+/* ---- candidate comparison ---- */
+.tk-controls {
+  display: flex; align-items: center; flex-wrap: wrap; gap: var(--s2);
+  margin-bottom: var(--s3); font-size: var(--t-caption);
+}
+.tk-chip {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 4px var(--s2); border-radius: var(--r-pill);
+  background: var(--surface-2); color: var(--text-muted);
+  cursor: pointer; user-select: none;
+  border: 1px solid transparent;
+  transition: color var(--m-state), border-color var(--m-state);
+}
+.tk-chip.on { color: var(--text); border-color: var(--border-strong); }
+.tk-chip input { display: none; }
+.tk-chip-sw {
+  width: 14px; height: 14px; border-radius: 3px;
+  border: 1px solid var(--border); flex: none;
+}
+
+.tk-grid {
+  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--s4); margin-bottom: var(--s3);
+}
+@media (max-width: 720px) { .tk-grid { grid-template-columns: minmax(0, 1fr); } }
+
+.tk-panel { display: flex; flex-direction: column; gap: 6px; }
+.tk-panel-head {
+  display: flex; align-items: baseline; gap: var(--s2); flex-wrap: wrap;
+  font-size: var(--t-caption); line-height: 18px;
+}
+.tk-panel-head strong { font-weight: 500; }
+.tk-panel-foot {
+  font-size: var(--t-caption); line-height: 18px; color: var(--text-faint);
+  display: flex; flex-wrap: wrap; align-items: baseline;
+}
+.tk-map-sm { height: 230px; margin-bottom: 0; }
+
+/* ---- icons ---- */
+.tk-icons { display: flex; align-items: flex-end; gap: var(--s4); flex-wrap: wrap; }
+.tk-icon { display: flex; flex-direction: column; align-items: center; gap: var(--s2); font-size: var(--t-caption); }
+/* A favicon lands on tab bars we do not control. It has to hold on light too. */
+.tk-icon-light { background: var(--text); padding: var(--s2); border-radius: var(--r-control); }
+.tk-icon-light .tk-faint { color: var(--surface); }

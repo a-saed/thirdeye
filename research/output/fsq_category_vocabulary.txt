@@ -1,0 +1,312 @@
+Arts and Entertainment
+Arts and Entertainment > Amusement Park
+Arts and Entertainment > Arcade
+Arts and Entertainment > Art Gallery
+Arts and Entertainment > Bowling Alley
+Arts and Entertainment > Gaming Cafe
+Arts and Entertainment > Internet Cafe
+Arts and Entertainment > Laser Tag Center
+Arts and Entertainment > Movie Theater
+Arts and Entertainment > Museum
+Arts and Entertainment > Night Club
+Arts and Entertainment > Party Center
+Arts and Entertainment > Performing Arts Venue
+Arts and Entertainment > Performing Arts Venue > Music Venue
+Arts and Entertainment > Performing Arts Venue > Music Venue > Jazz and Blues Venue
+Arts and Entertainment > Performing Arts Venue > Theater
+Arts and Entertainment > Public Art
+Business and Professional Services > Advertising Agency
+Business and Professional Services > Agriculture and Forestry Service
+Business and Professional Services > Architecture Firm
+Business and Professional Services > Auditorium
+Business and Professional Services > Automotive Service > Automotive Repair Shop
+Business and Professional Services > Automotive Service > Car Wash and Detail
+Business and Professional Services > Business Center
+Business and Professional Services > Business Service
+Business and Professional Services > Chemicals and Gasses Manufacturer
+Business and Professional Services > Child Care Service
+Business and Professional Services > Child Care Service > Daycare
+Business and Professional Services > Construction
+Business and Professional Services > Convention Center
+Business and Professional Services > Design Studio
+Business and Professional Services > Distribution Center
+Business and Professional Services > Event Space
+Business and Professional Services > Factory
+Business and Professional Services > Financial Service
+Business and Professional Services > Financial Service > Banking and Finance > ATM
+Business and Professional Services > Financial Service > Banking and Finance > Bank
+Business and Professional Services > Financial Service > Check Cashing Service
+Business and Professional Services > Financial Service > Currency Exchange
+Business and Professional Services > Health and Beauty Service
+Business and Professional Services > Health and Beauty Service > Barbershop
+Business and Professional Services > Health and Beauty Service > Body Piercing Shop
+Business and Professional Services > Health and Beauty Service > Dry Cleaner
+Business and Professional Services > Health and Beauty Service > Hair Salon
+Business and Professional Services > Health and Beauty Service > Massage Clinic
+Business and Professional Services > Health and Beauty Service > Nail Salon
+Business and Professional Services > Health and Beauty Service > Spa
+Business and Professional Services > Home Improvement Service > Heating, Ventilating and Air Conditioning Contractor
+Business and Professional Services > Human Resources Agency
+Business and Professional Services > Insurance Agency
+Business and Professional Services > Laundry Service
+Business and Professional Services > Legal Service
+Business and Professional Services > Legal Service > Law Office
+Business and Professional Services > Metals Supplier
+Business and Professional Services > Office
+Business and Professional Services > Office > Campaign Office
+Business and Professional Services > Office > Coworking Space
+Business and Professional Services > Office > Meeting Room
+Business and Professional Services > Office > Tech Startup
+Business and Professional Services > Outdoor Event Space
+Business and Professional Services > Pet Service
+Business and Professional Services > Photography Service > Photography Lab
+Business and Professional Services > Photography Service > Photography Studio
+Business and Professional Services > Real Estate Service
+Business and Professional Services > Real Estate Service > Real Estate Agency
+Business and Professional Services > Recycling Facility
+Business and Professional Services > Shipping, Freight, and Material Transportation Service
+Business and Professional Services > Tailor
+Business and Professional Services > Technology Business > IT Service
+Business and Professional Services > Translation Service
+Business and Professional Services > Warehouse
+Community and Government
+Community and Government > Assisted Living
+Community and Government > Community Center
+Community and Government > Cultural Center
+Community and Government > Education
+Community and Government > Education > College and University
+Community and Government > Education > College and University > College Academic Building
+Community and Government > Education > College and University > College Administrative Building
+Community and Government > Education > College and University > College Auditorium
+Community and Government > Education > College and University > College Classroom
+Community and Government > Education > College and University > College Football Field
+Community and Government > Education > College and University > College Gym
+Community and Government > Education > College and University > College Science Building
+Community and Government > Education > College and University > Medical School
+Community and Government > Education > College and University > Student Center
+Community and Government > Education > Language School
+Community and Government > Education > Nursery School
+Community and Government > Education > Primary and Secondary School > High School
+Community and Government > Education > Primary and Secondary School > Middle School
+Community and Government > Government Building
+Community and Government > Government Building > Courthouse
+Community and Government > Government Building > Embassy or Consulate
+Community and Government > Government Building > Law Enforcement and Public Safety > Police Station
+Community and Government > Government Building > Post Office
+Community and Government > Housing Development
+Community and Government > Organization > Club House
+Community and Government > Organization > Non-Profit Organization
+Community and Government > Polling Place
+Community and Government > Residential Building > Apartment or Condo
+Community and Government > Social Club
+Community and Government > Spiritual Center
+Community and Government > Spiritual Center > Church
+Community and Government > Spiritual Center > Mosque
+Community and Government > Spiritual Center > Synagogue
+Dining and Drinking > Bakery
+Dining and Drinking > Bar
+Dining and Drinking > Bar > Beer Garden
+Dining and Drinking > Bar > Cocktail Bar
+Dining and Drinking > Bar > Hookah Bar
+Dining and Drinking > Bar > Karaoke Bar
+Dining and Drinking > Bar > Lounge
+Dining and Drinking > Bar > Pub
+Dining and Drinking > Bar > Rooftop Bar
+Dining and Drinking > Bar > Wine Bar
+Dining and Drinking > Breakfast Spot
+Dining and Drinking > Cafe, Coffee, and Tea House
+Dining and Drinking > Cafe, Coffee, and Tea House > Bubble Tea Shop
+Dining and Drinking > Cafe, Coffee, and Tea House > Café
+Dining and Drinking > Cafe, Coffee, and Tea House > Coffee Shop
+Dining and Drinking > Creperie
+Dining and Drinking > Dessert Shop
+Dining and Drinking > Dessert Shop > Cupcake Shop
+Dining and Drinking > Dessert Shop > Frozen Yogurt Shop
+Dining and Drinking > Dessert Shop > Ice Cream Parlor
+Dining and Drinking > Dessert Shop > Pastry Shop
+Dining and Drinking > Dessert Shop > Pie Shop
+Dining and Drinking > Donut Shop
+Dining and Drinking > Food Court
+Dining and Drinking > Food Stand
+Dining and Drinking > Food Truck
+Dining and Drinking > Juice Bar
+Dining and Drinking > Restaurant
+Dining and Drinking > Restaurant > American Restaurant
+Dining and Drinking > Restaurant > Asian Restaurant
+Dining and Drinking > Restaurant > Asian Restaurant > Chinese Restaurant
+Dining and Drinking > Restaurant > Asian Restaurant > Filipino Restaurant
+Dining and Drinking > Restaurant > Asian Restaurant > Japanese Restaurant
+Dining and Drinking > Restaurant > Asian Restaurant > Japanese Restaurant > Sushi Restaurant
+Dining and Drinking > Restaurant > Asian Restaurant > Korean Restaurant
+Dining and Drinking > Restaurant > Asian Restaurant > Thai Restaurant
+Dining and Drinking > Restaurant > Asian Restaurant > Vietnamese Restaurant
+Dining and Drinking > Restaurant > BBQ Joint
+Dining and Drinking > Restaurant > Bistro
+Dining and Drinking > Restaurant > Buffet
+Dining and Drinking > Restaurant > Burger Joint
+Dining and Drinking > Restaurant > Caribbean Restaurant
+Dining and Drinking > Restaurant > Caribbean Restaurant > Cuban Restaurant
+Dining and Drinking > Restaurant > Comfort Food Restaurant
+Dining and Drinking > Restaurant > Deli
+Dining and Drinking > Restaurant > Diner
+Dining and Drinking > Restaurant > Dumpling Restaurant
+Dining and Drinking > Restaurant > Falafel Restaurant
+Dining and Drinking > Restaurant > Fast Food Restaurant
+Dining and Drinking > Restaurant > French Restaurant
+Dining and Drinking > Restaurant > Fried Chicken Joint
+Dining and Drinking > Restaurant > German Restaurant
+Dining and Drinking > Restaurant > Halal Restaurant
+Dining and Drinking > Restaurant > Hawaiian Restaurant > Poke Restaurant
+Dining and Drinking > Restaurant > Hot Dog Joint
+Dining and Drinking > Restaurant > Indian Chinese Restaurant
+Dining and Drinking > Restaurant > Indian Restaurant
+Dining and Drinking > Restaurant > Italian Restaurant
+Dining and Drinking > Restaurant > Kebab Restaurant
+Dining and Drinking > Restaurant > Latin American Restaurant
+Dining and Drinking > Restaurant > Latin American Restaurant > Arepa Restaurant
+Dining and Drinking > Restaurant > Latin American Restaurant > South American Restaurant > Brazilian Restaurant > Acai House
+Dining and Drinking > Restaurant > Mediterranean Restaurant
+Dining and Drinking > Restaurant > Mexican Restaurant
+Dining and Drinking > Restaurant > Mexican Restaurant > Burrito Restaurant
+Dining and Drinking > Restaurant > Mexican Restaurant > Taco Restaurant
+Dining and Drinking > Restaurant > Middle Eastern Restaurant
+Dining and Drinking > Restaurant > Middle Eastern Restaurant > Egyptian Restaurant
+Dining and Drinking > Restaurant > Middle Eastern Restaurant > Lebanese Restaurant
+Dining and Drinking > Restaurant > Middle Eastern Restaurant > Shawarma Restaurant
+Dining and Drinking > Restaurant > Middle Eastern Restaurant > Syrian Restaurant
+Dining and Drinking > Restaurant > Modern European Restaurant
+Dining and Drinking > Restaurant > Pizzeria
+Dining and Drinking > Restaurant > Salad Restaurant
+Dining and Drinking > Restaurant > Sandwich Spot
+Dining and Drinking > Restaurant > Seafood Restaurant
+Dining and Drinking > Restaurant > Southern Food Restaurant
+Dining and Drinking > Restaurant > Spanish Restaurant
+Dining and Drinking > Restaurant > Spanish Restaurant > Tapas Restaurant
+Dining and Drinking > Restaurant > Steakhouse
+Dining and Drinking > Restaurant > Turkish Restaurant
+Dining and Drinking > Restaurant > Vegan and Vegetarian Restaurant
+Dining and Drinking > Restaurant > Wings Joint
+Dining and Drinking > Snack Place
+Event > Entertainment Event > Festival
+Event > Other Event
+Health and Medicine > Dentist
+Health and Medicine > Hospital
+Health and Medicine > Medical Center
+Health and Medicine > Medical Lab
+Health and Medicine > Mental Health Service > Psychologist
+Health and Medicine > Nutritionist
+Health and Medicine > Optometrist
+Health and Medicine > Physical Therapy Clinic
+Health and Medicine > Physician
+Health and Medicine > Physician > Cardiologist
+Health and Medicine > Physician > Doctor's Office
+Health and Medicine > Physician > Ear, Nose and Throat Doctor
+Health and Medicine > Physician > Radiologist
+Health and Medicine > Weight Loss Center
+Landmarks and Outdoors > Bridge
+Landmarks and Outdoors > Historic and Protected Site
+Landmarks and Outdoors > Other Great Outdoors
+Landmarks and Outdoors > Park > Playground
+Landmarks and Outdoors > Plaza
+Landmarks and Outdoors > States and Municipalities > City
+Landmarks and Outdoors > States and Municipalities > Neighborhood
+Landmarks and Outdoors > Structure
+Retail
+Retail > Antique Store
+Retail > Arts and Crafts Store
+Retail > Automotive Retail > Car Dealership
+Retail > Automotive Retail > Motorcycle Dealership
+Retail > Baby Store
+Retail > Bookstore
+Retail > Bookstore > Used Bookstore
+Retail > Boutique
+Retail > Computers and Electronics Retail > Electronics Store
+Retail > Computers and Electronics Retail > Mobile Phone Store
+Retail > Construction Supplies Store
+Retail > Convenience Store
+Retail > Cosmetics Store
+Retail > Department Store
+Retail > Eyecare Store
+Retail > Fashion Retail > Children's Clothing Store
+Retail > Fashion Retail > Clothing Store
+Retail > Fashion Retail > Jewelry Store
+Retail > Fashion Retail > Men's Store
+Retail > Fashion Retail > Shoe Store
+Retail > Fashion Retail > Watch Store
+Retail > Fashion Retail > Women's Store
+Retail > Flea Market
+Retail > Flower Store
+Retail > Food and Beverage Retail
+Retail > Food and Beverage Retail > Beer Store
+Retail > Food and Beverage Retail > Butcher
+Retail > Food and Beverage Retail > Candy Store
+Retail > Food and Beverage Retail > Cheese Store
+Retail > Food and Beverage Retail > Chocolate Store
+Retail > Food and Beverage Retail > Coffee Roaster
+Retail > Food and Beverage Retail > Farmers Market
+Retail > Food and Beverage Retail > Fish Market
+Retail > Food and Beverage Retail > Fruit and Vegetable Store
+Retail > Food and Beverage Retail > Gourmet Store
+Retail > Food and Beverage Retail > Grocery Store
+Retail > Food and Beverage Retail > Grocery Store > Organic Grocery
+Retail > Food and Beverage Retail > Health Food Store
+Retail > Food and Beverage Retail > Herbs and Spices Store
+Retail > Food and Beverage Retail > Liquor Store
+Retail > Food and Beverage Retail > Supermarket
+Retail > Food and Beverage Retail > Wine Store
+Retail > Framing Store
+Retail > Furniture and Home Store
+Retail > Furniture and Home Store > Carpet Store
+Retail > Furniture and Home Store > Home Appliance Store
+Retail > Furniture and Home Store > Housewares Store
+Retail > Furniture and Home Store > Kitchen Supply Store
+Retail > Furniture and Home Store > Lighting Store
+Retail > Furniture and Home Store > Mattress Store
+Retail > Gift Store
+Retail > Hardware Store
+Retail > Leather Goods Store
+Retail > Luggage Store
+Retail > Market
+Retail > Miscellaneous Store
+Retail > Music Store
+Retail > Office Supply Store
+Retail > Outdoor Supply Store
+Retail > Outlet Store
+Retail > Perfume Store
+Retail > Pet Supplies Store
+Retail > Pharmacy
+Retail > Shopping Mall
+Retail > Smoke Shop
+Retail > Souvenir Store
+Retail > Sporting Goods Retail
+Retail > Sporting Goods Retail > Bicycle Store
+Retail > Sporting Goods Retail > Fishing Store
+Retail > Toy Store
+Sports and Recreation
+Sports and Recreation > Gym and Studio
+Sports and Recreation > Gym and Studio > Cycle Studio
+Sports and Recreation > Gym and Studio > Dance Studio
+Sports and Recreation > Gym and Studio > Gym
+Sports and Recreation > Gym and Studio > Pilates Studio
+Sports and Recreation > Gym and Studio > Yoga Studio
+Sports and Recreation > Gymnastics > Gymnastics Center
+Sports and Recreation > Indoor Play Area
+Sports and Recreation > Racquet Sports > Racquet Sport Club
+Sports and Recreation > Racquet Sports > Squash Court
+Sports and Recreation > Racquet Sports > Tennis > Tennis Court
+Sports and Recreation > Running and Track > Track
+Sports and Recreation > Soccer > Soccer Field
+Sports and Recreation > Sports Club
+Sports and Recreation > Water Sports > Swimming > Swimming Pool
+Travel and Transportation > Electric Vehicle Charging Station
+Travel and Transportation > Fuel Station
+Travel and Transportation > Lodging > Bed and Breakfast
+Travel and Transportation > Lodging > Hotel
+Travel and Transportation > Parking
+Travel and Transportation > Road
+Travel and Transportation > Transport Hub > Bus Station
+Travel and Transportation > Transport Hub > Light Rail Station
+Travel and Transportation > Transport Hub > Metro Station
+Travel and Transportation > Transport Hub > Tram Station
+Travel and Transportation > Transportation Service > Public Transportation > Bus Line
+Travel and Transportation > Travel Agency

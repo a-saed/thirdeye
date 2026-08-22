@@ -1,0 +1,38 @@
+# Fly.io. The API holds the whole store in RAM, so the machine is sized by
+# memory rather than CPU: ~142 MB resident today, plus headroom for the place
+# table and request churn.
+app = "thirdeye"
+primary_region = "cdg"   # closest Fly region to Egypt with decent latency
+
+[build]
+  dockerfile = "api/Dockerfile"
+
+[env]
+  DATA_DIR = "/data"
+  WEB_DIR = "/web"
+
+[http_service]
+  internal_port = 8080
+  force_https = true
+  auto_stop_machines = false   # a cold start reloads 142 MB of parquet
+  auto_start_machines = true
+  min_machines_running = 1
+
+[[vm]]
+  memory = "1gb"
+  cpu_kind = "shared"
+  cpus = 1
+
+# Parquet tables and the built SPA. Both are updated by deploy/pipeline runs
+# rather than by the app, so a single volume is enough.
+[[mounts]]
+  source = "thirdeye_data"
+  destination = "/data"
+
+[checks.health]
+  type = "http"
+  port = 8080
+  path = "/healthz"
+  interval = "30s"
+  timeout = "5s"
+  grace_period = "60s"   # parquet load takes ~10s cold

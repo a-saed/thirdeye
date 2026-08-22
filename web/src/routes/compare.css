@@ -1,0 +1,298 @@
+/* Compare screen. Tokens only. */
+body.route-compare { background: var(--canvas); color: var(--text); }
+body.route-compare #root { overflow-y: auto; }
+
+.cmp {
+  /* Flex column so the footer can take margin-top:auto and sit at the bottom
+     regardless of how much content is above it. */
+  display: flex; flex-direction: column;
+  min-height: 100vh; background: var(--canvas); color: var(--text);
+  font-family: var(--font); font-size: var(--t-body); line-height: 22px;
+  max-width: 1120px; margin: 0 auto; padding: var(--s6) var(--s6) 0;
+}
+.cmp-head {
+  position: sticky; top: 0; z-index: 20; background: var(--canvas);
+  display: flex; align-items: center; justify-content: space-between;
+  gap: var(--s4); flex-wrap: wrap;
+  padding: var(--s3) 0 var(--s4); border-bottom: 1px solid var(--border);
+}
+.cmp-brand { display: inline-flex; }
+.cmp-controls { display: flex; align-items: center; gap: var(--s4); flex-wrap: wrap; }
+.cmp-chips { display: flex; gap: var(--s2); }
+.cmp-chip {
+  font-family: inherit; font-size: var(--t-body); padding: 4px var(--s3);
+  border-radius: var(--r-pill); background: var(--surface-2);
+  color: var(--text-muted); border: 1px solid transparent; cursor: pointer;
+}
+.cmp-chip.on { background: var(--accent); color: var(--canvas); font-weight: 500; }
+.cmp-rings { display: flex; align-items: center; gap: var(--s2); }
+.cmp-eyebrow {
+  font-size: var(--t-eyebrow); letter-spacing: .04em; text-transform: uppercase;
+  color: var(--text-faint);
+}
+.cmp-ring {
+  display: flex; flex-direction: column; align-items: flex-start;
+  font-family: inherit; font-size: var(--t-caption);
+  padding: 3px var(--s2); border-radius: var(--r-control);
+  background: var(--surface-2); color: var(--text-muted);
+  border: 1px solid transparent; cursor: pointer;
+}
+.cmp-ring.on { background: var(--accent); border-color: var(--accent); color: var(--canvas); }
+.cmp-ring-w { font-size: var(--t-eyebrow); color: var(--text-faint); }
+.cmp-ring.on .cmp-ring-w { color: rgba(16, 19, 21, 0.72); }
+
+/* ---- the two slots ---- */
+.cmp-slots {
+  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--s3); margin: var(--s4) 0;
+}
+@media (max-width: 760px) { .cmp-slots { grid-template-columns: minmax(0, 1fr); } }
+/* Normal flow, not absolute positioning. Both actions used to be pinned to the
+   same corner independently, so "Open full report" ran underneath "Choose".
+   A flex column puts the content first and the actions on their own row, which
+   also stops the two from ever competing for the same space again. */
+.cmp-slot {
+  position: relative; display: flex; flex-direction: column; gap: 2px;
+  background: var(--surface-2); border-radius: var(--r-card);
+  padding: var(--s3) var(--s4); border-left: 3px solid var(--accent);
+}
+/* B gets a second hue — never the accent, which means corroboration here. */
+.cmp-slot-b { border-left-color: #8B9DF0; }
+.cmp-slot-tag {
+  font-size: var(--t-eyebrow); letter-spacing: .04em; color: var(--text-faint);
+}
+.cmp-slot-name { font-size: var(--t-head); line-height: 26px; font-weight: 500; }
+.cmp-slot-sub { font-size: var(--t-caption); color: var(--text-faint); }
+.cmp-slot-empty { font-size: var(--t-head); color: var(--text-disabled); }
+.cmp-dot { color: var(--text-disabled); margin: 0 5px; }
+.cmp-change {
+  font-family: inherit; font-size: var(--t-caption);
+  padding: 4px var(--s3); border-radius: var(--r-control);
+  background: var(--surface-3); color: var(--text-muted);
+  border: 1px solid var(--border); cursor: pointer;
+}
+.cmp-change:hover { color: var(--text); }
+
+.cmp-picker {
+  position: absolute; top: calc(100% + 6px); left: 0; right: 0; z-index: 15;
+  background: rgba(25, 29, 33, 0.96);
+  -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
+  border: 1px solid var(--border-strong); border-radius: var(--r-card);
+  padding: var(--s3); box-shadow: 0 12px 36px rgba(0, 0, 0, 0.55);
+}
+.cmp-search {
+  width: 100%; font-family: inherit; font-size: var(--t-body);
+  padding: 7px var(--s3); border-radius: var(--r-control);
+  background: var(--surface-2); color: var(--text); border: 1px solid var(--border);
+}
+.cmp-search:focus { outline: none; border-color: var(--accent); }
+.cmp-hits { list-style: none; margin: var(--s2) 0 0; padding: 0; }
+.cmp-hits button {
+  display: flex; flex-direction: column; width: 100%; text-align: left;
+  font-family: inherit; padding: 5px var(--s2); border: none; background: none;
+  color: var(--text); cursor: pointer; border-radius: var(--r-control);
+}
+.cmp-hits button:hover { background: var(--surface-2); }
+.cmp-hit-sub { font-size: var(--t-caption); color: var(--text-faint); }
+.cmp-rec-h { display: block; margin: var(--s3) 0 var(--s1); }
+.cmp-pick-note { margin: var(--s3) 0 0; font-size: var(--t-caption); color: var(--text-disabled); }
+
+/* ---- map ---- */
+.cmp-map {
+  height: 260px; border-radius: var(--r-card); overflow: hidden;
+  border: 1px solid var(--border); margin-bottom: var(--s6);
+}
+
+/* ---- metric rows ---- */
+.cmp-rows { margin-bottom: var(--s8); }
+.cmp-rowhead, .cmp-row {
+  display: grid;
+  grid-template-columns: minmax(160px, 1.2fr) 110px minmax(120px, 1.6fr) 110px minmax(150px, 1fr);
+  align-items: center; gap: var(--s3);
+}
+.cmp-rowhead {
+  font-size: var(--t-eyebrow); letter-spacing: .04em; text-transform: uppercase;
+  color: var(--text-faint); padding-bottom: var(--s2);
+  border-bottom: 1px solid var(--border);
+}
+.cmp-side { text-align: right; color: var(--accent); }
+.cmp-side-b { text-align: left; color: #8B9DF0; }
+.cmp-row { padding: var(--s3) 0; border-bottom: 1px solid var(--border); }
+/* ==========================================================================
+   MOBILE
+   A five-column comparison row cannot survive 390px, and shrinking it turns
+   both numbers into truncated stubs. Each row becomes a small block instead:
+   label on top, the two values side by side under it with the bar between
+   them, verdict underneath. Still one row per metric — the organising idea
+   survives, only the geometry changes.
+   ========================================================================== */
+@media (max-width: 860px) {
+  .cmp-rowhead { display: none; }
+  .cmp-row {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    grid-template-areas:
+      'label label label'
+      'a     bars  b'
+      'verd  verd  verd';
+    gap: var(--s2) var(--s3);
+    padding: var(--s4) 0;
+  }
+  .cmp-label { grid-area: label; }
+  .cmp-val-a { grid-area: a; }
+  .cmp-bars  { grid-area: bars; min-width: 90px; }
+  .cmp-val-b { grid-area: b; }
+  .cmp-verdict { grid-area: verd; flex-direction: row; flex-wrap: wrap; gap: var(--s3); }
+  /* Without the header row, each value needs its own label. */
+  .cmp-val-a::before, .cmp-val-b::before {
+    content: attr(data-side); font-size: var(--t-eyebrow); color: var(--text-faint);
+    margin-right: 4px;
+  }
+}
+
+@media (max-width: 640px) {
+  .cmp { padding: var(--s4) var(--s3) 0; }
+  .cmp-head { position: static; flex-direction: column; align-items: stretch; gap: var(--s3); }
+  .cmp-controls { flex-direction: column; align-items: stretch; gap: var(--s3); }
+  .cmp-chips { flex-wrap: wrap; }
+  .cmp-rings { flex-wrap: wrap; }
+  .cmp-ring { flex: 1; align-items: center; }
+  .cmp-brand { align-self: flex-start; }
+  .cmp-picker-map { height: 300px; }
+  .cmp-mini-map { height: 200px; }
+  .cmp-share { justify-content: flex-start; }
+}
+
+@media (max-width: 380px) {
+  .cmp-row { grid-template-columns: 1fr auto 1fr; }
+  .cmp-val { font-size: var(--t-body); }
+  .cmp-intro h1 { font-size: var(--t-head); line-height: 26px; }
+}
+
+/* Touch targets */
+@media (pointer: coarse) {
+  .cmp-chip { padding: 10px var(--s3); }
+  .cmp-ring { padding: 8px var(--s3); }
+  .cmp-change { min-height: 40px; padding: 6px var(--s3); }
+  .cmp-hits button { padding: 10px var(--s2); }
+  .cmp-search { padding: 11px var(--s3); }
+}
+
+.cmp-label { font-size: var(--t-body); display: flex; flex-direction: column; }
+.cmp-dir { font-size: var(--t-eyebrow); color: var(--text-faint); cursor: help; }
+.cmp-val {
+  display: flex; align-items: baseline; gap: 5px; justify-content: flex-end;
+  font-size: var(--t-head); color: var(--text-muted);
+}
+.cmp-val-b { justify-content: flex-start; }
+/* The leader is brighter, not coloured: colour on this screen already means
+   confidence, and a second meaning would break the encoding. */
+.cmp-val.lead { color: var(--text); font-weight: 500; }
+
+.cmp-bars { display: flex; align-items: center; gap: 2px; }
+.cmp-bar-side { flex: 1; display: flex; height: 8px; }
+.cmp-bar-side:first-child { justify-content: flex-end; }
+.cmp-bar-mid { width: 1px; height: 14px; background: var(--border-strong); }
+.cmp-bar { height: 8px; border-radius: 2px; transition: width var(--m-enter); }
+.cmp-bar-a { background: var(--accent); opacity: .35; }
+.cmp-bar-b { background: #8B9DF0; opacity: .35; }
+.cmp-bar.lead { opacity: .9; }
+
+.cmp-verdict {
+  font-size: var(--t-caption); color: var(--text-faint);
+  display: flex; flex-direction: column; gap: 1px;
+}
+.cmp-verdict strong { color: var(--text); font-weight: 500; }
+.cmp-weak { color: var(--amber); cursor: help; }
+.cmp-dim { color: var(--text-disabled); }
+.cmp-conf { font-size: 9px; }
+.cmp-conf-corroborated { color: var(--accent); }
+.cmp-conf-single_source { color: var(--amber); }
+.cmp-conf-unavailable { color: var(--text-disabled); }
+
+.cmp-foot {
+  margin: var(--s4) 0 0; max-width: 74ch;
+  font-size: var(--t-caption); line-height: 18px; color: var(--text-faint);
+}
+
+/* ---- caveats ---- */
+.cmp-caveats { margin-bottom: var(--s8); padding-top: var(--s6); border-top: 1px solid var(--border); }
+.cmp-caveats h2 { font-size: var(--t-head); line-height: 26px; font-weight: 500; margin: 0 0 var(--s3); }
+.cmp-caveats p { margin: 0 0 var(--s3); max-width: 74ch; color: var(--text-muted); }
+.cmp-caveats strong { color: var(--text); font-weight: 500; }
+.cmp-caveats .num { color: var(--text); }
+.cmp-err { color: var(--amber); font-size: var(--t-caption); }
+.cmp-nodata { color: var(--text-muted); }
+.cmp-share { display: flex; justify-content: flex-end; margin-top: var(--s3); }
+
+/* ---- one small map per location, same scale, side by side ---- */
+.cmp-minis {
+  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--s3); margin-bottom: var(--s6);
+}
+@media (max-width: 760px) { .cmp-minis { grid-template-columns: minmax(0, 1fr); } }
+.cmp-mini { display: flex; flex-direction: column; gap: var(--s2); min-width: 0; }
+.cmp-mini-map {
+  height: 240px; border-radius: var(--r-card); overflow: hidden;
+  border: 1px solid var(--border);
+}
+.cmp-mini-cap {
+  font-size: var(--t-caption); color: var(--text-faint);
+  display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
+}
+.cmp-mini-tag {
+  font-size: var(--t-eyebrow); padding: 0 5px; border-radius: var(--r-pill);
+  color: var(--canvas); font-weight: 500;
+}
+.cmp-mini-a { background: var(--accent); }
+.cmp-mini-b { background: #8B9DF0; }
+
+/* nothing to compare: no bar, just the centre tick */
+.cmp-bars-none { justify-content: center; opacity: .5; }
+
+/* coverage, shown before a candidate is chosen */
+.cmp-cov { font-size: var(--t-eyebrow); margin-top: 1px; }
+.cmp-cov-in { color: var(--accent); }
+.cmp-cov-thin { color: var(--amber); }
+.cmp-cov-out { color: var(--text-disabled); }
+.cmp-cov-wait { color: var(--text-disabled); }
+
+/* ---- empty state ---- */
+.cmp-intro { margin: var(--s6) 0 var(--s4); }
+.cmp-intro h1 {
+  margin: 0 0 var(--s2); font-size: var(--t-hero); line-height: 32px; font-weight: 500;
+}
+.cmp-intro p { margin: 0; max-width: 62ch; color: var(--text-muted); }
+
+.cmp-picker-map-wrap { position: relative; margin-bottom: var(--s6); }
+.cmp-picker-map {
+  height: 380px; border-radius: var(--r-card); overflow: hidden;
+  border: 1px solid var(--border);
+}
+.cmp-map-skel { position: absolute; inset: 0 0 26px 0; }
+.cmp-picker-cap {
+  margin: var(--s2) 0 0; font-size: var(--t-caption); color: var(--text-faint);
+}
+.cmp-picker-err { color: var(--amber); }
+.cmp-slot .as-err { margin-top: var(--s2); }
+
+/* ---- per-side actions ---- */
+.cmp-slot-actions {
+  display: flex; align-items: center; justify-content: flex-end;
+  gap: var(--s2); margin-top: var(--s3);
+  padding-top: var(--s2); border-top: 1px solid var(--border);
+}
+.cmp-open {
+  font-size: var(--t-caption); color: var(--text-muted);
+  text-decoration: none; white-space: nowrap;
+  padding: 4px var(--s3); border-radius: var(--r-control);
+  border: 1px solid transparent;
+}
+.cmp-open:hover { color: var(--accent); border-color: var(--border-strong); }
+/* Disabled with a reason in the tooltip, not simply greyed out. */
+.cmp-open-off { color: var(--text-disabled); cursor: help; }
+.cmp-open-off:hover { color: var(--text-disabled); border-color: transparent; }
+@media (max-width: 640px) {
+  .cmp-slot-actions { justify-content: space-between; }
+  .cmp-open, .cmp-change { flex: 1; text-align: center; }
+}

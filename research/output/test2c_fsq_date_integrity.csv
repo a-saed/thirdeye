@@ -1,0 +1,4 @@
+district,total,date_created_null,date_created_empty,date_created_unparseable,date_created_usable,date_closed_null,date_closed_empty,date_closed_unparseable,date_closed_usable,date_refreshed_null,date_refreshed_empty,date_refreshed_unparseable,date_refreshed_usable
+Sheikh Zayed,490,0,0,0,490,458,0,0,32,0,0,0,490
+Maadi,1025,0,0,0,1025,964,0,0,61,0,0,0,1025
+Imbaba,84,0,0,0,84,81,0,0,3,0,0,0,84

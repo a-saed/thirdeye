@@ -1,0 +1,14 @@
+.cl {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: inherit; font-size: var(--t-caption); line-height: 18px;
+  padding: 4px var(--s3); border-radius: var(--r-control);
+  background: var(--surface-2); color: var(--text-muted);
+  border: 1px solid var(--border); cursor: pointer;
+  transition: color var(--m-state), border-color var(--m-state);
+}
+.cl:hover { color: var(--text); border-color: var(--border-strong); }
+.cl svg {
+  width: 13px; height: 13px; fill: none; stroke: currentColor;
+  stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round;
+}
+.cl-done { color: var(--accent); border-color: var(--accent); }

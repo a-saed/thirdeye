@@ -1,0 +1,5 @@
+source,name,category,lat,lon,date_created,in_both_sources,match_group,position_outlier_m,coord_group_size,collapsed_coord,likely_not_storefront,exists_today,category_correct,notes,verify_group
+overture,Prof.Maha Ezzat Clinic,doctor,29.953121879229,31.263892650604,,n,-1,,1,n,n,,,,MEDICAL/CLINIC
+overture,Thakanat El Maadi Pharmacy,pharmacy,29.95217998,31.26469787,,n,-1,,1,n,n,,,,MEDICAL/CLINIC
+overture,دكتور محمد حسن الكبير,ear_nose_and_throat,29.95019044,31.26757329,,n,-1,,1,n,n,,,,MEDICAL/CLINIC
+overture,عيادة دكتورة مها عزت ودكتور ياسر جوهري,hospital,29.953128,31.2640226,,n,-1,,1,n,n,,,,MEDICAL/CLINIC

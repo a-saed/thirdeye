@@ -1,0 +1,1701 @@
+{
+  "query": {
+    "lat": 29.9513,
+    "lon": 31.2664,
+    "radius_m": 500,
+    "k_ring": 3
+  },
+  "context": {
+    "land_area_km2": 3.75,
+    "raw_area_km2": 4.59,
+    "land_fraction_mean": 0.82,
+    "saturation_class": "SATURATED",
+    "builtup_pct": 29.01,
+    "coverage_ratio": 0.49,
+    "density_distorted": false,
+    "cell_count": 37,
+    "h3_res": 9
+  },
+  "metrics": [
+    {
+      "metric": "builtup_presence_m2",
+      "value": 679215.75,
+      "value_per_land_km2": 181165.36,
+      "track": "built_environment",
+      "confidence": "single_source",
+      "contributing_sources": [
+        "ghsl_built_s",
+        "open_buildings"
+      ],
+      "as_of": "2023-06-30",
+      "source_snapshots": {
+        "ghsl_built_s": "R2023A_E2025",
+        "open_buildings": "v1_2023_06_30"
+      },
+      "agreement_ratio": 0.536,
+      "stale": false
+    },
+    {
+      "metric": "business_count.cafe",
+      "value": 130,
+      "value_per_land_km2": 34.67,
+      "track": "business",
+      "confidence": "single_source",
+      "contributing_sources": [
+        "fsq",
+        "overture"
+      ],
+      "as_of": "2026-08-19",
+      "source_snapshots": {
+        "fsq": "6981762386080966939",
+        "overture": "2026-08-19.0"
+      },
+      "agreement_ratio": 0.5,
+      "stale": false
+    },
+    {
+      "metric": "business_count.grocery",
+      "value": 14,
+      "value_per_land_km2": 3.73,
+      "track": "business",
+      "confidence": "single_source",
+      "contributing_sources": [
+        "fsq",
+        "overture"
+      ],
+      "as_of": "2026-08-19",
+      "source_snapshots": {
+        "fsq": "6981762386080966939",
+        "overture": "2026-08-19.0"
+      },
+      "agreement_ratio": 1,
+      "stale": false
+    },
+    {
+      "metric": "business_count.gym",
+      "value": 21,
+      "value_per_land_km2": 5.6,
+      "track": "business",
+      "confidence": "single_source",
+      "contributing_sources": [
+        "fsq",
+        "overture"
+      ],
+      "as_of": "2026-08-19",
+      "source_snapshots": {
+        "fsq": "6981762386080966939",
+        "overture": "2026-08-19.0"
+      },
+      "agreement_ratio": 0,
+      "stale": false
+    },
+    {
+      "metric": "business_count.pharmacy",
+      "value": 20,
+      "value_per_land_km2": 5.33,
+      "track": "business",
+      "confidence": "single_source",
+      "contributing_sources": [
+        "fsq",
+        "overture"
+      ],
+      "as_of": "2026-08-19",
+      "source_snapshots": {
+        "fsq": "6981762386080966939",
+        "overture": "2026-08-19.0"
+      },
+      "agreement_ratio": 1,
+      "stale": false
+    },
+    {
+      "metric": "business_count.restaurant",
+      "value": 265,
+      "value_per_land_km2": 70.68,
+      "track": "business",
+      "confidence": "single_source",
+      "contributing_sources": [
+        "fsq",
+        "overture"
+      ],
+      "as_of": "2026-08-19",
+      "source_snapshots": {
+        "fsq": "6981762386080966939",
+        "overture": "2026-08-19.0"
+      },
+      "agreement_ratio": 0.487,
+      "stale": false
+    },
+    {
+      "metric": "business_count.total",
+      "value": 1474,
+      "value_per_land_km2": 393.16,
+      "track": "business",
+      "confidence": "single_source",
+      "contributing_sources": [
+        "fsq",
+        "overture"
+      ],
+      "as_of": "2026-08-19",
+      "source_snapshots": {
+        "fsq": "6981762386080966939",
+        "overture": "2026-08-19.0"
+      },
+      "agreement_ratio": 0.682,
+      "stale": false
+    },
+    {
+      "metric": "population",
+      "value": 29682,
+      "value_per_land_km2": 7917,
+      "track": "population",
+      "confidence": "single_source",
+      "contributing_sources": [
+        "kontur"
+      ],
+      "as_of": "2023-11-01",
+      "source_snapshots": {
+        "kontur": "20231101"
+      },
+      "agreement_ratio": 0,
+      "stale": true
+    }
+  ],
+  "time_series": [
+    {
+      "metric": "business_count.cafe",
+      "track": "business",
+      "series_raw": [
+        {
+          "as_of": "2024-02-15",
+          "snapshot_id": "2024-02-15-alpha-0",
+          "value": 46,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2024-03-12",
+          "snapshot_id": "2024-03-12-alpha-0",
+          "value": 44,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2024-08-20",
+          "snapshot_id": "2024-08-20-0",
+          "value": 43,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2024-09-18",
+          "snapshot_id": "2024-09-18-0",
+          "value": 9,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2024-10-23",
+          "snapshot_id": "2024-10-23-0",
+          "value": 9,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2024-11-13",
+          "snapshot_id": "2024-11-13-0",
+          "value": 9,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2024-12-18",
+          "snapshot_id": "2024-12-18-0",
+          "value": 9,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2025-01-22",
+          "snapshot_id": "2025-01-22-0",
+          "value": 9,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2025-03-19",
+          "snapshot_id": "2025-03-19-1",
+          "value": 47,
+          "confidence": "single_source",
+          "status": "artifact_suspected"
+        },
+        {
+          "as_of": "2025-04-23",
+          "snapshot_id": "2025-04-23-0",
+          "value": 46,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2025-05-21",
+          "snapshot_id": "2025-05-21-0",
+          "value": 43,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2025-06-25",
+          "snapshot_id": "2025-06-25-0",
+          "value": 42,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2025-09-24",
+          "snapshot_id": "2025-09-24-0",
+          "value": 44,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2025-10-22",
+          "snapshot_id": "2025-10-22-0",
+          "value": 44,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2025-11-19",
+          "snapshot_id": "2025-11-19-0",
+          "value": 43,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2025-12-17",
+          "snapshot_id": "2025-12-17-0",
+          "value": 43,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2026-01-21",
+          "snapshot_id": "2026-01-21-0",
+          "value": 43,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2026-02-18",
+          "snapshot_id": "2026-02-18-0",
+          "value": 43,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2026-03-18",
+          "snapshot_id": "2026-03-18-0",
+          "value": 40,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2026-04-15",
+          "snapshot_id": "2026-04-15-0",
+          "value": 41,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2026-05-20",
+          "snapshot_id": "2026-05-20-0",
+          "value": 39,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2026-07-22",
+          "snapshot_id": "2026-07-22.0",
+          "value": 43,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2026-08-19",
+          "snapshot_id": "2026-08-19.0",
+          "value": 39,
+          "confidence": "single_source",
+          "status": "ok"
+        }
+      ],
+      "series_corrected": [
+        {
+          "as_of": "2025-03-19",
+          "snapshot_id": "2025-03-19-1",
+          "value": 47,
+          "confidence": "single_source",
+          "status": "artifact_suspected"
+        },
+        {
+          "as_of": "2025-04-23",
+          "snapshot_id": "2025-04-23-0",
+          "value": 46,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2025-05-21",
+          "snapshot_id": "2025-05-21-0",
+          "value": 43,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2025-06-25",
+          "snapshot_id": "2025-06-25-0",
+          "value": 42,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2025-09-24",
+          "snapshot_id": "2025-09-24-0",
+          "value": 44,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2025-10-22",
+          "snapshot_id": "2025-10-22-0",
+          "value": 44,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2025-11-19",
+          "snapshot_id": "2025-11-19-0",
+          "value": 43,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2025-12-17",
+          "snapshot_id": "2025-12-17-0",
+          "value": 43,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2026-01-21",
+          "snapshot_id": "2026-01-21-0",
+          "value": 43,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2026-02-18",
+          "snapshot_id": "2026-02-18-0",
+          "value": 43,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2026-03-18",
+          "snapshot_id": "2026-03-18-0",
+          "value": 40,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2026-04-15",
+          "snapshot_id": "2026-04-15-0",
+          "value": 41,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2026-05-20",
+          "snapshot_id": "2026-05-20-0",
+          "value": 39,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2026-07-22",
+          "snapshot_id": "2026-07-22.0",
+          "value": 43,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2026-08-19",
+          "snapshot_id": "2026-08-19.0",
+          "value": 39,
+          "confidence": "single_source",
+          "status": "ok"
+        }
+      ],
+      "excluded_from_corrected": [
+        {
+          "snapshot_id": "2024-02-15-alpha-0",
+          "as_of": "2024-02-15",
+          "value": 46,
+          "reason": "precedes the last bulk-import step detected in this catchment's own aggregated series; belongs to a pre-import baseline"
+        },
+        {
+          "snapshot_id": "2024-03-12-alpha-0",
+          "as_of": "2024-03-12",
+          "value": 44,
+          "reason": "precedes the last bulk-import step detected in this catchment's own aggregated series; belongs to a pre-import baseline"
+        },
+        {
+          "snapshot_id": "2024-08-20-0",
+          "as_of": "2024-08-20",
+          "value": 43,
+          "reason": "precedes the last bulk-import step detected in this catchment's own aggregated series; belongs to a pre-import baseline"
+        },
+        {
+          "snapshot_id": "2024-09-18-0",
+          "as_of": "2024-09-18",
+          "value": 9,
+          "reason": "precedes the last bulk-import step detected in this catchment's own aggregated series; belongs to a pre-import baseline"
+        },
+        {
+          "snapshot_id": "2024-10-23-0",
+          "as_of": "2024-10-23",
+          "value": 9,
+          "reason": "precedes the last bulk-import step detected in this catchment's own aggregated series; belongs to a pre-import baseline"
+        },
+        {
+          "snapshot_id": "2024-11-13-0",
+          "as_of": "2024-11-13",
+          "value": 9,
+          "reason": "precedes the last bulk-import step detected in this catchment's own aggregated series; belongs to a pre-import baseline"
+        },
+        {
+          "snapshot_id": "2024-12-18-0",
+          "as_of": "2024-12-18",
+          "value": 9,
+          "reason": "precedes the last bulk-import step detected in this catchment's own aggregated series; belongs to a pre-import baseline"
+        },
+        {
+          "snapshot_id": "2025-01-22-0",
+          "as_of": "2025-01-22",
+          "value": 9,
+          "reason": "precedes the last bulk-import step detected in this catchment's own aggregated series; belongs to a pre-import baseline"
+        }
+      ],
+      "correction_status": "applied",
+      "artifact_suspected_count": 1,
+      "member_cells_with_artifacts": 0,
+      "member_cells_total": 15,
+      "growth_pct_raw": -15.2,
+      "growth_pct_corrected": -17,
+      "gap_note": "Snapshot 2026-06-17.0 is missing between [2026-05-20-0 2026-07-22.0]. Overture S3 retains only ~2 releases and had aged it out; Azure held only 0-byte placeholder blobs; the Source Cooperative mirror never received it. Permanently unrecoverable at any extent. Treat as missing data. Do NOT render as a decline or as zero."
+    },
+    {
+      "metric": "business_count.grocery",
+      "track": "business",
+      "series_raw": [
+        {
+          "as_of": "2024-02-15",
+          "snapshot_id": "2024-02-15-alpha-0",
+          "value": 4,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2024-03-12",
+          "snapshot_id": "2024-03-12-alpha-0",
+          "value": 4,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2024-08-20",
+          "snapshot_id": "2024-08-20-0",
+          "value": 5,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2024-09-18",
+          "snapshot_id": "2024-09-18-0",
+          "value": 3,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2024-10-23",
+          "snapshot_id": "2024-10-23-0",
+          "value": 3,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2024-11-13",
+          "snapshot_id": "2024-11-13-0",
+          "value": 3,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2024-12-18",
+          "snapshot_id": "2024-12-18-0",
+          "value": 3,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2025-01-22",
+          "snapshot_id": "2025-01-22-0",
+          "value": 3,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2025-03-19",
+          "snapshot_id": "2025-03-19-1",
+          "value": 5,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2025-04-23",
+          "snapshot_id": "2025-04-23-0",
+          "value": 4,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2025-05-21",
+          "snapshot_id": "2025-05-21-0",
+          "value": 4,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2025-06-25",
+          "snapshot_id": "2025-06-25-0",
+          "value": 4,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2025-09-24",
+          "snapshot_id": "2025-09-24-0",
+          "value": 7,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2025-10-22",
+          "snapshot_id": "2025-10-22-0",
+          "value": 8,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2025-11-19",
+          "snapshot_id": "2025-11-19-0",
+          "value": 7,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2025-12-17",
+          "snapshot_id": "2025-12-17-0",
+          "value": 8,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2026-01-21",
+          "snapshot_id": "2026-01-21-0",
+          "value": 8,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2026-02-18",
+          "snapshot_id": "2026-02-18-0",
+          "value": 8,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2026-03-18",
+          "snapshot_id": "2026-03-18-0",
+          "value": 8,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2026-04-15",
+          "snapshot_id": "2026-04-15-0",
+          "value": 8,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2026-05-20",
+          "snapshot_id": "2026-05-20-0",
+          "value": 8,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2026-07-22",
+          "snapshot_id": "2026-07-22.0",
+          "value": 8,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2026-08-19",
+          "snapshot_id": "2026-08-19.0",
+          "value": 7,
+          "confidence": "single_source",
+          "status": "ok"
+        }
+      ],
+      "series_corrected": null,
+      "excluded_from_corrected": [],
+      "correction_status": "not_needed",
+      "artifact_suspected_count": 0,
+      "member_cells_with_artifacts": 0,
+      "member_cells_total": 5,
+      "growth_pct_raw": 75,
+      "growth_pct_corrected": null,
+      "gap_note": "Snapshot 2026-06-17.0 is missing between [2026-05-20-0 2026-07-22.0]. Overture S3 retains only ~2 releases and had aged it out; Azure held only 0-byte placeholder blobs; the Source Cooperative mirror never received it. Permanently unrecoverable at any extent. Treat as missing data. Do NOT render as a decline or as zero."
+    },
+    {
+      "metric": "business_count.gym",
+      "track": "business",
+      "series_raw": [
+        {
+          "as_of": "2024-02-15",
+          "snapshot_id": "2024-02-15-alpha-0",
+          "value": 8,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2024-03-12",
+          "snapshot_id": "2024-03-12-alpha-0",
+          "value": 11,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2024-08-20",
+          "snapshot_id": "2024-08-20-0",
+          "value": 11,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2024-09-18",
+          "snapshot_id": "2024-09-18-0",
+          "value": 4,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2024-10-23",
+          "snapshot_id": "2024-10-23-0",
+          "value": 4,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2024-11-13",
+          "snapshot_id": "2024-11-13-0",
+          "value": 4,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2024-12-18",
+          "snapshot_id": "2024-12-18-0",
+          "value": 4,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2025-01-22",
+          "snapshot_id": "2025-01-22-0",
+          "value": 4,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2025-03-19",
+          "snapshot_id": "2025-03-19-1",
+          "value": 9,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2025-04-23",
+          "snapshot_id": "2025-04-23-0",
+          "value": 7,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2025-05-21",
+          "snapshot_id": "2025-05-21-0",
+          "value": 7,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2025-06-25",
+          "snapshot_id": "2025-06-25-0",
+          "value": 8,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2025-09-24",
+          "snapshot_id": "2025-09-24-0",
+          "value": 7,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2025-10-22",
+          "snapshot_id": "2025-10-22-0",
+          "value": 9,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2025-11-19",
+          "snapshot_id": "2025-11-19-0",
+          "value": 10,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2025-12-17",
+          "snapshot_id": "2025-12-17-0",
+          "value": 9,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2026-01-21",
+          "snapshot_id": "2026-01-21-0",
+          "value": 9,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2026-02-18",
+          "snapshot_id": "2026-02-18-0",
+          "value": 9,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2026-03-18",
+          "snapshot_id": "2026-03-18-0",
+          "value": 8,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2026-04-15",
+          "snapshot_id": "2026-04-15-0",
+          "value": 9,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2026-05-20",
+          "snapshot_id": "2026-05-20-0",
+          "value": 8,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2026-07-22",
+          "snapshot_id": "2026-07-22.0",
+          "value": 9,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2026-08-19",
+          "snapshot_id": "2026-08-19.0",
+          "value": 8,
+          "confidence": "single_source",
+          "status": "ok"
+        }
+      ],
+      "series_corrected": null,
+      "excluded_from_corrected": [],
+      "correction_status": "not_needed",
+      "artifact_suspected_count": 0,
+      "member_cells_with_artifacts": 0,
+      "member_cells_total": 9,
+      "growth_pct_raw": 0,
+      "growth_pct_corrected": null,
+      "gap_note": "Snapshot 2026-06-17.0 is missing between [2026-05-20-0 2026-07-22.0]. Overture S3 retains only ~2 releases and had aged it out; Azure held only 0-byte placeholder blobs; the Source Cooperative mirror never received it. Permanently unrecoverable at any extent. Treat as missing data. Do NOT render as a decline or as zero."
+    },
+    {
+      "metric": "business_count.pharmacy",
+      "track": "business",
+      "series_raw": [
+        {
+          "as_of": "2024-02-15",
+          "snapshot_id": "2024-02-15-alpha-0",
+          "value": 7,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2024-03-12",
+          "snapshot_id": "2024-03-12-alpha-0",
+          "value": 7,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2024-08-20",
+          "snapshot_id": "2024-08-20-0",
+          "value": 6,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2024-09-18",
+          "snapshot_id": "2024-09-18-0",
+          "value": 3,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2024-10-23",
+          "snapshot_id": "2024-10-23-0",
+          "value": 3,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2024-11-13",
+          "snapshot_id": "2024-11-13-0",
+          "value": 3,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2024-12-18",
+          "snapshot_id": "2024-12-18-0",
+          "value": 3,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2025-01-22",
+          "snapshot_id": "2025-01-22-0",
+          "value": 3,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2025-03-19",
+          "snapshot_id": "2025-03-19-1",
+          "value": 11,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2025-04-23",
+          "snapshot_id": "2025-04-23-0",
+          "value": 11,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2025-05-21",
+          "snapshot_id": "2025-05-21-0",
+          "value": 11,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2025-06-25",
+          "snapshot_id": "2025-06-25-0",
+          "value": 11,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2025-09-24",
+          "snapshot_id": "2025-09-24-0",
+          "value": 12,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2025-10-22",
+          "snapshot_id": "2025-10-22-0",
+          "value": 12,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2025-11-19",
+          "snapshot_id": "2025-11-19-0",
+          "value": 12,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2025-12-17",
+          "snapshot_id": "2025-12-17-0",
+          "value": 11,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2026-01-21",
+          "snapshot_id": "2026-01-21-0",
+          "value": 11,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2026-02-18",
+          "snapshot_id": "2026-02-18-0",
+          "value": 11,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2026-03-18",
+          "snapshot_id": "2026-03-18-0",
+          "value": 11,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2026-04-15",
+          "snapshot_id": "2026-04-15-0",
+          "value": 11,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2026-05-20",
+          "snapshot_id": "2026-05-20-0",
+          "value": 11,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2026-07-22",
+          "snapshot_id": "2026-07-22.0",
+          "value": 11,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2026-08-19",
+          "snapshot_id": "2026-08-19.0",
+          "value": 11,
+          "confidence": "single_source",
+          "status": "ok"
+        }
+      ],
+      "series_corrected": null,
+      "excluded_from_corrected": [],
+      "correction_status": "not_needed",
+      "artifact_suspected_count": 0,
+      "member_cells_with_artifacts": 0,
+      "member_cells_total": 11,
+      "growth_pct_raw": 57.1,
+      "growth_pct_corrected": null,
+      "gap_note": "Snapshot 2026-06-17.0 is missing between [2026-05-20-0 2026-07-22.0]. Overture S3 retains only ~2 releases and had aged it out; Azure held only 0-byte placeholder blobs; the Source Cooperative mirror never received it. Permanently unrecoverable at any extent. Treat as missing data. Do NOT render as a decline or as zero."
+    },
+    {
+      "metric": "business_count.restaurant",
+      "track": "business",
+      "series_raw": [
+        {
+          "as_of": "2024-02-15",
+          "snapshot_id": "2024-02-15-alpha-0",
+          "value": 76,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2024-03-12",
+          "snapshot_id": "2024-03-12-alpha-0",
+          "value": 72,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2024-08-20",
+          "snapshot_id": "2024-08-20-0",
+          "value": 69,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2024-09-18",
+          "snapshot_id": "2024-09-18-0",
+          "value": 46,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2024-10-23",
+          "snapshot_id": "2024-10-23-0",
+          "value": 46,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2024-11-13",
+          "snapshot_id": "2024-11-13-0",
+          "value": 46,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2024-12-18",
+          "snapshot_id": "2024-12-18-0",
+          "value": 46,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2025-01-22",
+          "snapshot_id": "2025-01-22-0",
+          "value": 46,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2025-03-19",
+          "snapshot_id": "2025-03-19-1",
+          "value": 100,
+          "confidence": "single_source",
+          "status": "artifact_suspected"
+        },
+        {
+          "as_of": "2025-04-23",
+          "snapshot_id": "2025-04-23-0",
+          "value": 98,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2025-05-21",
+          "snapshot_id": "2025-05-21-0",
+          "value": 90,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2025-06-25",
+          "snapshot_id": "2025-06-25-0",
+          "value": 92,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2025-09-24",
+          "snapshot_id": "2025-09-24-0",
+          "value": 110,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2025-10-22",
+          "snapshot_id": "2025-10-22-0",
+          "value": 108,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2025-11-19",
+          "snapshot_id": "2025-11-19-0",
+          "value": 107,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2025-12-17",
+          "snapshot_id": "2025-12-17-0",
+          "value": 106,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2026-01-21",
+          "snapshot_id": "2026-01-21-0",
+          "value": 106,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2026-02-18",
+          "snapshot_id": "2026-02-18-0",
+          "value": 107,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2026-03-18",
+          "snapshot_id": "2026-03-18-0",
+          "value": 108,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2026-04-15",
+          "snapshot_id": "2026-04-15-0",
+          "value": 106,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2026-05-20",
+          "snapshot_id": "2026-05-20-0",
+          "value": 104,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2026-07-22",
+          "snapshot_id": "2026-07-22.0",
+          "value": 104,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2026-08-19",
+          "snapshot_id": "2026-08-19.0",
+          "value": 101,
+          "confidence": "single_source",
+          "status": "ok"
+        }
+      ],
+      "series_corrected": [
+        {
+          "as_of": "2025-03-19",
+          "snapshot_id": "2025-03-19-1",
+          "value": 100,
+          "confidence": "single_source",
+          "status": "artifact_suspected"
+        },
+        {
+          "as_of": "2025-04-23",
+          "snapshot_id": "2025-04-23-0",
+          "value": 98,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2025-05-21",
+          "snapshot_id": "2025-05-21-0",
+          "value": 90,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2025-06-25",
+          "snapshot_id": "2025-06-25-0",
+          "value": 92,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2025-09-24",
+          "snapshot_id": "2025-09-24-0",
+          "value": 110,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2025-10-22",
+          "snapshot_id": "2025-10-22-0",
+          "value": 108,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2025-11-19",
+          "snapshot_id": "2025-11-19-0",
+          "value": 107,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2025-12-17",
+          "snapshot_id": "2025-12-17-0",
+          "value": 106,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2026-01-21",
+          "snapshot_id": "2026-01-21-0",
+          "value": 106,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2026-02-18",
+          "snapshot_id": "2026-02-18-0",
+          "value": 107,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2026-03-18",
+          "snapshot_id": "2026-03-18-0",
+          "value": 108,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2026-04-15",
+          "snapshot_id": "2026-04-15-0",
+          "value": 106,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2026-05-20",
+          "snapshot_id": "2026-05-20-0",
+          "value": 104,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2026-07-22",
+          "snapshot_id": "2026-07-22.0",
+          "value": 104,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2026-08-19",
+          "snapshot_id": "2026-08-19.0",
+          "value": 101,
+          "confidence": "single_source",
+          "status": "ok"
+        }
+      ],
+      "excluded_from_corrected": [
+        {
+          "snapshot_id": "2024-02-15-alpha-0",
+          "as_of": "2024-02-15",
+          "value": 76,
+          "reason": "precedes the last bulk-import step detected in this catchment's own aggregated series; belongs to a pre-import baseline"
+        },
+        {
+          "snapshot_id": "2024-03-12-alpha-0",
+          "as_of": "2024-03-12",
+          "value": 72,
+          "reason": "precedes the last bulk-import step detected in this catchment's own aggregated series; belongs to a pre-import baseline"
+        },
+        {
+          "snapshot_id": "2024-08-20-0",
+          "as_of": "2024-08-20",
+          "value": 69,
+          "reason": "precedes the last bulk-import step detected in this catchment's own aggregated series; belongs to a pre-import baseline"
+        },
+        {
+          "snapshot_id": "2024-09-18-0",
+          "as_of": "2024-09-18",
+          "value": 46,
+          "reason": "precedes the last bulk-import step detected in this catchment's own aggregated series; belongs to a pre-import baseline"
+        },
+        {
+          "snapshot_id": "2024-10-23-0",
+          "as_of": "2024-10-23",
+          "value": 46,
+          "reason": "precedes the last bulk-import step detected in this catchment's own aggregated series; belongs to a pre-import baseline"
+        },
+        {
+          "snapshot_id": "2024-11-13-0",
+          "as_of": "2024-11-13",
+          "value": 46,
+          "reason": "precedes the last bulk-import step detected in this catchment's own aggregated series; belongs to a pre-import baseline"
+        },
+        {
+          "snapshot_id": "2024-12-18-0",
+          "as_of": "2024-12-18",
+          "value": 46,
+          "reason": "precedes the last bulk-import step detected in this catchment's own aggregated series; belongs to a pre-import baseline"
+        },
+        {
+          "snapshot_id": "2025-01-22-0",
+          "as_of": "2025-01-22",
+          "value": 46,
+          "reason": "precedes the last bulk-import step detected in this catchment's own aggregated series; belongs to a pre-import baseline"
+        }
+      ],
+      "correction_status": "applied",
+      "artifact_suspected_count": 1,
+      "member_cells_with_artifacts": 4,
+      "member_cells_total": 26,
+      "divergence_note": "raw and corrected diverge materially for this catchment: 32.9% vs 1.0% first-to-last. 8 point(s) excluded as bulk-import artifacts. Do not present the raw figure as business formation without saying so.",
+      "growth_pct_raw": 32.9,
+      "growth_pct_corrected": 1,
+      "gap_note": "Snapshot 2026-06-17.0 is missing between [2026-05-20-0 2026-07-22.0]. Overture S3 retains only ~2 releases and had aged it out; Azure held only 0-byte placeholder blobs; the Source Cooperative mirror never received it. Permanently unrecoverable at any extent. Treat as missing data. Do NOT render as a decline or as zero."
+    },
+    {
+      "metric": "business_count.total",
+      "track": "business",
+      "series_raw": [
+        {
+          "as_of": "2024-02-15",
+          "snapshot_id": "2024-02-15-alpha-0",
+          "value": 481,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2024-03-12",
+          "snapshot_id": "2024-03-12-alpha-0",
+          "value": 469,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2024-08-20",
+          "snapshot_id": "2024-08-20-0",
+          "value": 464,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2024-09-18",
+          "snapshot_id": "2024-09-18-0",
+          "value": 465,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2024-10-23",
+          "snapshot_id": "2024-10-23-0",
+          "value": 465,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2024-11-13",
+          "snapshot_id": "2024-11-13-0",
+          "value": 465,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2024-12-18",
+          "snapshot_id": "2024-12-18-0",
+          "value": 465,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2025-01-22",
+          "snapshot_id": "2025-01-22-0",
+          "value": 465,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2025-03-19",
+          "snapshot_id": "2025-03-19-1",
+          "value": 673,
+          "confidence": "single_source",
+          "status": "artifact_suspected"
+        },
+        {
+          "as_of": "2025-04-23",
+          "snapshot_id": "2025-04-23-0",
+          "value": 674,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2025-05-21",
+          "snapshot_id": "2025-05-21-0",
+          "value": 646,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2025-06-25",
+          "snapshot_id": "2025-06-25-0",
+          "value": 653,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2025-09-24",
+          "snapshot_id": "2025-09-24-0",
+          "value": 724,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2025-10-22",
+          "snapshot_id": "2025-10-22-0",
+          "value": 707,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2025-11-19",
+          "snapshot_id": "2025-11-19-0",
+          "value": 693,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2025-12-17",
+          "snapshot_id": "2025-12-17-0",
+          "value": 692,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2026-01-21",
+          "snapshot_id": "2026-01-21-0",
+          "value": 692,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2026-02-18",
+          "snapshot_id": "2026-02-18-0",
+          "value": 694,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2026-03-18",
+          "snapshot_id": "2026-03-18-0",
+          "value": 687,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2026-04-15",
+          "snapshot_id": "2026-04-15-0",
+          "value": 724,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2026-05-20",
+          "snapshot_id": "2026-05-20-0",
+          "value": 712,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2026-07-22",
+          "snapshot_id": "2026-07-22.0",
+          "value": 732,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2026-08-19",
+          "snapshot_id": "2026-08-19.0",
+          "value": 696,
+          "confidence": "single_source",
+          "status": "ok"
+        }
+      ],
+      "series_corrected": [
+        {
+          "as_of": "2025-03-19",
+          "snapshot_id": "2025-03-19-1",
+          "value": 673,
+          "confidence": "single_source",
+          "status": "artifact_suspected"
+        },
+        {
+          "as_of": "2025-04-23",
+          "snapshot_id": "2025-04-23-0",
+          "value": 674,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2025-05-21",
+          "snapshot_id": "2025-05-21-0",
+          "value": 646,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2025-06-25",
+          "snapshot_id": "2025-06-25-0",
+          "value": 653,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2025-09-24",
+          "snapshot_id": "2025-09-24-0",
+          "value": 724,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2025-10-22",
+          "snapshot_id": "2025-10-22-0",
+          "value": 707,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2025-11-19",
+          "snapshot_id": "2025-11-19-0",
+          "value": 693,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2025-12-17",
+          "snapshot_id": "2025-12-17-0",
+          "value": 692,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2026-01-21",
+          "snapshot_id": "2026-01-21-0",
+          "value": 692,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2026-02-18",
+          "snapshot_id": "2026-02-18-0",
+          "value": 694,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2026-03-18",
+          "snapshot_id": "2026-03-18-0",
+          "value": 687,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2026-04-15",
+          "snapshot_id": "2026-04-15-0",
+          "value": 724,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2026-05-20",
+          "snapshot_id": "2026-05-20-0",
+          "value": 712,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2026-07-22",
+          "snapshot_id": "2026-07-22.0",
+          "value": 732,
+          "confidence": "single_source",
+          "status": "ok"
+        },
+        {
+          "as_of": "2026-08-19",
+          "snapshot_id": "2026-08-19.0",
+          "value": 696,
+          "confidence": "single_source",
+          "status": "ok"
+        }
+      ],
+      "excluded_from_corrected": [
+        {
+          "snapshot_id": "2024-02-15-alpha-0",
+          "as_of": "2024-02-15",
+          "value": 481,
+          "reason": "precedes the last bulk-import step detected in this catchment's own aggregated series; belongs to a pre-import baseline"
+        },
+        {
+          "snapshot_id": "2024-03-12-alpha-0",
+          "as_of": "2024-03-12",
+          "value": 469,
+          "reason": "precedes the last bulk-import step detected in this catchment's own aggregated series; belongs to a pre-import baseline"
+        },
+        {
+          "snapshot_id": "2024-08-20-0",
+          "as_of": "2024-08-20",
+          "value": 464,
+          "reason": "precedes the last bulk-import step detected in this catchment's own aggregated series; belongs to a pre-import baseline"
+        },
+        {
+          "snapshot_id": "2024-09-18-0",
+          "as_of": "2024-09-18",
+          "value": 465,
+          "reason": "precedes the last bulk-import step detected in this catchment's own aggregated series; belongs to a pre-import baseline"
+        },
+        {
+          "snapshot_id": "2024-10-23-0",
+          "as_of": "2024-10-23",
+          "value": 465,
+          "reason": "precedes the last bulk-import step detected in this catchment's own aggregated series; belongs to a pre-import baseline"
+        },
+        {
+          "snapshot_id": "2024-11-13-0",
+          "as_of": "2024-11-13",
+          "value": 465,
+          "reason": "precedes the last bulk-import step detected in this catchment's own aggregated series; belongs to a pre-import baseline"
+        },
+        {
+          "snapshot_id": "2024-12-18-0",
+          "as_of": "2024-12-18",
+          "value": 465,
+          "reason": "precedes the last bulk-import step detected in this catchment's own aggregated series; belongs to a pre-import baseline"
+        },
+        {
+          "snapshot_id": "2025-01-22-0",
+          "as_of": "2025-01-22",
+          "value": 465,
+          "reason": "precedes the last bulk-import step detected in this catchment's own aggregated series; belongs to a pre-import baseline"
+        }
+      ],
+      "correction_status": "applied",
+      "artifact_suspected_count": 1,
+      "member_cells_with_artifacts": 10,
+      "member_cells_total": 32,
+      "divergence_note": "raw and corrected diverge materially for this catchment: 44.7% vs 3.4% first-to-last. 8 point(s) excluded as bulk-import artifacts. Do not present the raw figure as business formation without saying so.",
+      "growth_pct_raw": 44.7,
+      "growth_pct_corrected": 3.4,
+      "gap_note": "Snapshot 2026-06-17.0 is missing between [2026-05-20-0 2026-07-22.0]. Overture S3 retains only ~2 releases and had aged it out; Azure held only 0-byte placeholder blobs; the Source Cooperative mirror never received it. Permanently unrecoverable at any extent. Treat as missing data. Do NOT render as a decline or as zero."
+    }
+  ],
+  "limitations": {
+    "duplicate_inflation_pct_range": [
+      3.2,
+      6.3
+    ],
+    "position_error_median_m": 10.2,
+    "position_error_p90_m": 58.5,
+    "position_error_max_m": 381.7,
+    "independence_caveat": "Overture and Foursquare are not independent sources: Foursquare is itself an Overture contributor (17.1%/10.6%/1.3% of Overture records across the three Cairo study districts). 'corroborated' means partially-overlapping feeds agree, not that two independent observers agree. The overlap is largest exactly where corroboration is most achievable.",
+    "notes": [
+      "population is a 2023 vintage and this catchment shows measured construction since; treat population as an underestimate."
+    ]
+  }
+}

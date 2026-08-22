@@ -1,0 +1,504 @@
+/* Report card layout. Tokens only — no hex values live here.
+ * Restrained by intent: one accent, generous space, and the numbers are the
+ * only thing that reads loudly. */
+
+body.route-report { background: var(--canvas); color: var(--text); }
+body.route-report #root { overflow-y: auto; }
+
+.rc {
+  /* Flex column so the footer can take margin-top:auto and sit at the bottom
+     regardless of how much content is above it. */
+  display: flex; flex-direction: column;
+  min-height: 100vh;
+  background: var(--canvas);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: var(--t-body);
+  line-height: 22px;
+  padding: var(--s6) var(--s6) var(--s8);
+  max-width: 1120px;
+  margin: 0 auto;
+}
+
+/* ---- header ---- */
+.rc-head {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: var(--s4); padding-bottom: var(--s4);
+  border-bottom: 1px solid var(--border);
+}
+.rc-loc { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; }
+.rc-loc-name { font-size: var(--t-head); font-weight: 500; }
+.rc-loc-coord { font-size: var(--t-caption); color: var(--text-faint); }
+
+/* ---- category chips ---- */
+.rc-chips { display: flex; gap: var(--s2); margin: var(--s4) 0 var(--s6); flex-wrap: wrap; }
+.rc-chip {
+  font-family: inherit; font-size: var(--t-body); line-height: 22px;
+  padding: 5px var(--s3); border-radius: var(--r-pill);
+  background: var(--surface-2); color: var(--text-muted);
+  border: 1px solid transparent; cursor: pointer;
+  transition: color var(--m-state), background var(--m-state), border-color var(--m-state);
+}
+.rc-chip:hover { color: var(--text); }
+/* The one accent on the screen, and it marks the active query. */
+.rc-chip.on { background: var(--accent); color: var(--canvas); font-weight: 500; }
+
+/* ---- layout ---- */
+/* Four metrics in ONE row: they scan as a set, and it leaves the width for the
+   chart rather than boxing it into a column. */
+.rc-cards {
+  display: grid; grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--s3); margin-bottom: var(--s6);
+}
+@media (max-width: 1000px) { .rc-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 560px)  { .rc-cards { grid-template-columns: minmax(0, 1fr); } }
+
+/* Two columns, ONE row, equal height. Both are cards with the same surface,
+   radius and border, so the map and the records read as one object rather than
+   two unrelated blocks — and the map stretches to fill instead of leaving a
+   hole under itself. */
+/* Map and records in ONE row so a hovered dot and its highlighted row are
+   visible together. Equal widths — they are equal partners, and 12 points in a
+   420px box overlap into a blob.
+   ---------------------------------------------------------------------------
+   THE min-height: 0 CHAIN IS LOad-BEARING. Grid and flex items default to
+   min-height: auto, which means they refuse to shrink below their content. A
+   65-row table therefore grew its card past the row height and spilled over
+   the chart and verdict underneath, instead of scrolling inside itself.
+   Every ancestor between the fixed-height row and the scrolling element needs
+   min-height: 0, or the constraint never reaches the scroll container. Adding
+   overflow: hidden to the cards is the belt to that braces: it clips anything
+   that still misbehaves rather than letting it escape over its neighbours. */
+.rc-main {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: var(--s3);
+  margin-bottom: var(--s6);
+  align-items: stretch;
+  height: 600px;
+}
+.rc-panel,
+.rc-side {
+  min-width: 0;
+  min-height: 0;
+}
+@media (max-width: 1000px) {
+  .rc-main { grid-template-columns: minmax(0, 1fr); height: auto; }
+  .rc-place-scroll { max-height: 60vh; }
+}
+
+/* ---- left card: map, layer toggles, context ---- */
+.rc-panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s3);
+  overflow: hidden;
+  background: var(--surface-2);
+  border-radius: var(--r-card);
+  padding: var(--s3);
+}
+/* The map takes the leftover space; everything under it keeps its own size. */
+.rc-map-wrap { position: relative; flex: 1 1 auto; min-height: 0; }
+/* The canvas is absolutely positioned inside that wrapper, so it inherits the
+   flexed height. Without this rule the div has no height at all and MapLibre
+   sizes its canvas to 0x0 — the controls still draw and the map is blank. */
+.rc-map {
+  position: absolute; inset: 0;
+  border-radius: var(--r-control); overflow: hidden;
+  border: 1px solid var(--border);
+}
+.rc-layers, .rc-ctx, .rc-ctx-note { flex: 0 0 auto; }
+
+.rc-ctx { display: flex; gap: var(--s6); margin: 0; }
+.rc-ctx > div { display: flex; flex-direction: column; }
+.rc-ctx dt {
+  font-size: var(--t-caption); line-height: 18px; color: var(--text-faint);
+  margin-bottom: 2px;
+}
+.rc-ctx dd { margin: 0; font-size: var(--t-body); line-height: 22px; }
+.rc-ctx-note {
+  margin: 0; font-size: var(--t-caption); line-height: 18px; color: var(--text-faint);
+}
+.rc-ctx-note strong { color: var(--text); font-weight: 500; }
+
+/* ---- right card: the records ---- */
+.rc-side { display: flex; }
+
+/* ---- metric cards ---- */
+
+.rc-card {
+  background: var(--surface-2); border-radius: var(--r-card);
+  padding: var(--s3) var(--s4) var(--s4);
+  display: flex; flex-direction: column;
+}
+/* The vintage line sits directly under the number; everything below it is
+   secondary and separated by a hairline so the eye can stop at the number. */
+.rc-card-foot + .rc-card-foot { margin-top: 2px; }
+.rc-card-label {
+  color: var(--text-faint); font-size: var(--t-caption); line-height: 18px;
+  margin-bottom: var(--s1);
+}
+/* Confidence sits ON the value's baseline. The number is the subject. */
+.rc-card-value {
+  display: flex; align-items: baseline; justify-content: space-between; gap: var(--s2);
+  font-size: var(--t-hero); line-height: 32px; font-weight: 500;
+  margin-bottom: var(--s2); flex-wrap: wrap;
+}
+/* Annotation, not body text. Same size, tighter leading, and it must never
+   out-weigh the number it qualifies. */
+.rc-card-foot {
+  color: var(--text-faint); font-size: var(--t-caption); line-height: 15px;
+  margin-top: 3px;
+}
+.rc-card-foot[title] { cursor: help; }
+.rc-missing { color: var(--text-muted); }
+.rc-sat { font-size: var(--t-head); line-height: 32px; }
+.rc-stale { color: var(--amber); }
+.rc-dim { color: var(--text-faint); }
+.rc-dot { color: var(--text-disabled); margin: 0 6px; }
+
+/* ---- badges ---- */
+.rc-badge {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 2px var(--s2); border-radius: var(--r-pill);
+  font-size: var(--t-caption); line-height: 18px; font-weight: 400;
+  white-space: nowrap;
+}
+.rc-glyph { font-size: 9px; line-height: 1; }
+/* Tints at 0.16 alpha. single_source is deliberately as quiet as the others:
+   no border, no icon, no stronger fill. It is the normal state. */
+.rc-badge-corroborated { background: rgba(69, 201, 165, 0.16); color: var(--accent); }
+.rc-badge-single_source { background: rgba(216, 163, 63, 0.16); color: var(--amber); }
+/* Full-chroma --no-data on its own tint measures 2.70:1. Uses --text-muted. */
+.rc-badge-unavailable { background: var(--surface-3); color: var(--text-muted); }
+
+/* ---- series ---- */
+.rc-series { margin-bottom: var(--s8); }
+.rc-series .rc-chart { height: 150px; }
+.rc-series-head {
+  display: flex; align-items: baseline; justify-content: space-between;
+  gap: var(--s3); margin-bottom: var(--s3);
+}
+.rc h2 { font-size: var(--t-head); line-height: 26px; font-weight: 500; margin: 0; }
+.rc h3 {
+  font-size: var(--t-caption); line-height: 18px; font-weight: 400;
+  color: var(--text-faint); margin: var(--s4) 0 var(--s2);
+}
+
+/* The chart IS the scrubber - drag anywhere on it. One control, not two. */
+.rc-chart {
+  width: 100%; height: 132px;
+  background: var(--surface); border-radius: var(--r-card);
+  cursor: col-resize; touch-action: none; user-select: none;
+}
+.rc-chart svg { display: block; }
+/* Nothing plottable: no chrome pretending there is a chart. */
+.rc-chart-empty { display: none; }
+.rc-line { fill: none; stroke: var(--accent); stroke-width: 1.4; stroke-linejoin: round; }
+.rc-pt { fill: var(--accent); }
+.rc-pt-on { fill: var(--text); }
+/* An artifact point is MARKED, never removed or smoothed. */
+.rc-pt-artifact { fill: var(--amber); }
+.rc-cursor { stroke: var(--border-strong); stroke-width: 1; }
+
+.rc-axis {
+  display: flex; justify-content: space-between; gap: var(--s3);
+  margin-top: var(--s2); font-size: var(--t-caption); color: var(--text-faint);
+}
+.rc-series-cur { font-size: var(--t-caption); color: var(--text-faint); }
+.rc-series-v { color: var(--text); font-size: var(--t-head); font-weight: 500; }
+/* The series is a NARROWER quantity than the headline metric. Labelled at the
+   number itself, so the two can never be read as the same thing. */
+.rc-series-scope {
+  margin-left: 6px; padding: 1px 6px; border-radius: var(--r-pill);
+  background: var(--surface-2); color: var(--text-faint); font-size: var(--t-eyebrow);
+}
+
+.rc-legend-line {
+  margin-top: var(--s2); font-size: var(--t-caption); line-height: 18px;
+  color: var(--text-faint); display: flex; align-items: center; flex-wrap: wrap;
+}
+.rc-key {
+  width: 8px; height: 8px; border-radius: 50%; display: inline-block;
+  margin-right: 6px; flex: none;
+}
+.rc-key-artifact { background: var(--amber); }
+
+.rc-home { display: inline-flex; }
+.rc-back {
+  display: inline-block; margin-top: var(--s3);
+  color: var(--text-faint); font-size: var(--t-caption); text-decoration: none;
+}
+.rc-back:hover { color: var(--text); }
+
+.rc-note {
+  color: var(--text-faint); font-size: var(--t-caption); line-height: 18px;
+  margin: var(--s2) 0 0; max-width: 78ch;
+}
+/* Amber, not red. This system has no error colour — see DESIGN.md §3. */
+.rc-warn { color: var(--amber); }
+.rc-callout {
+  background: var(--surface-2); border-radius: var(--r-control);
+  padding: var(--s2) var(--s3); margin: 0 0 var(--s3);
+  font-size: var(--t-caption); line-height: 18px; color: var(--text-muted);
+}
+.rc-callout-warn { color: var(--amber); }
+
+/* ---- verdict ---- */
+.rc-verdict {
+  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s6);
+  padding-top: var(--s6); border-top: 1px solid var(--border);
+}
+@media (max-width: 860px) { .rc-verdict { grid-template-columns: minmax(0, 1fr); } }
+.rc-verdict ul { margin: var(--s3) 0 0; padding: 0; list-style: none; }
+.rc-verdict-col { min-width: 0; }
+.rc-verdict p {
+  color: var(--text-muted); font-size: var(--t-body); line-height: 23px;
+  margin: var(--s3) 0 0; max-width: 62ch;
+}
+.rc-verdict p strong { color: var(--text); font-weight: 500; }
+.rc-verdict .num { color: var(--text); }
+
+/* ---- states ---- */
+.rc-loading { color: var(--text-faint); padding: var(--s8) 0; }
+.rc-err {
+  background: var(--surface-2); border-radius: var(--r-card);
+  padding: var(--s4); color: var(--amber); font-size: var(--t-body);
+}
+.rc-err-sub { color: var(--text-faint); font-size: var(--t-caption); margin-top: var(--s2); }
+
+/* ---- the records behind the count ---- */
+.rc-places {
+  flex: 1; min-width: 0; min-height: 0; overflow: hidden;
+  display: flex; flex-direction: column;
+  background: var(--surface-2); border-radius: var(--r-card); padding: var(--s3);
+}
+.rc-places-bar {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: var(--s3); margin-bottom: var(--s2); flex: 0 0 auto;
+}
+.rc-places-body { display: flex; flex-direction: column; flex: 1 1 auto; min-height: 0; margin-top: 0; }
+.rc-places-note { margin: 0 0 var(--s2); max-width: none; flex: 0 0 auto; }
+.rc-disclose {
+  font-family: inherit; font-size: var(--t-body); line-height: 22px;
+  display: inline-flex; align-items: center; gap: var(--s2);
+  padding: 0; background: none; border: none; color: var(--text);
+  cursor: pointer; transition: color var(--m-state);
+}
+.rc-disclose:hover { color: var(--accent); }
+.rc-disclose-arrow { color: var(--text-faint); font-size: var(--t-eyebrow); }
+
+/* Scrolls inside the card. The row height comes from the grid, so a 300-row
+   category never changes it and the map beside it always ends on the same
+   line. The count and the caveat above stay put while the rows move — they
+   are what stops the list reading as a bare inventory. */
+.rc-place-scroll {
+  flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain;
+  border: 1px solid var(--border); border-radius: var(--r-control);
+  background: var(--surface);
+}
+.rc-place-filter {
+  display: inline-flex; align-items: center; gap: 6px; flex: none;
+  color: var(--text-muted); font-size: var(--t-caption);
+  cursor: pointer; user-select: none; white-space: nowrap;
+}
+.rc-place-filter input { accent-color: var(--accent); margin: 0; cursor: pointer; }
+
+/* table-layout fixed so a long source category cannot re-flow the whole table;
+   every row is exactly one line high and the list scans vertically. */
+.rc-place-table { width: 100%; border-collapse: collapse; table-layout: fixed; font-size: var(--t-body); }
+/* Sticky header: with 30+ rows the columns must stay identifiable while
+   scrolling. Needs an OPAQUE background or rows show through it. */
+.rc-place-table th {
+  position: sticky; top: 0; z-index: 2;
+  font-weight: 400; font-size: var(--t-caption); color: var(--text-faint);
+  text-align: left; padding: var(--s2) var(--s3) var(--s2) 0;
+  background: var(--surface); border-bottom: 1px solid var(--border);
+}
+.rc-place-table th:first-child, .rc-place-table td:first-child { padding-left: var(--s3); }
+.rc-place-table th.num { text-align: right; }
+.rc-place-table td {
+  padding: 5px var(--s3) 5px 0; border-bottom: 1px solid var(--border);
+  color: var(--text); white-space: nowrap;
+}
+.rc-place-table tr:last-child td { border-bottom: none; }
+.rc-place-table td.num { text-align: right; font-variant-numeric: tabular-nums; }
+/* Truncate rather than wrap; the full value is in the title attribute. */
+.rc-cell { overflow: hidden; text-overflow: ellipsis; }
+
+.rc-place-foot {
+  margin-top: var(--s2); color: var(--text-faint); font-size: var(--t-caption);
+}
+/* Flags are marked, never hidden or merged. Amber, not red: something to
+   check, not an error. Their own column keeps every name flush left. */
+.rc-flags { white-space: nowrap; }
+.rc-tag {
+  display: inline-block; padding: 1px 5px; border-radius: var(--r-pill);
+  font-size: var(--t-eyebrow); line-height: 14px; cursor: help;
+}
+.rc-tag + .rc-tag { margin-left: 4px; }
+.rc-tag-dup { background: rgba(216, 163, 63, 0.16); color: var(--amber); }
+/* Coordinate collapse is a DIFFERENT defect from duplication — distinct
+   businesses sharing one position — so it gets a neutral mark, not amber. */
+.rc-tag-stack { background: var(--surface-3); color: var(--text-muted); }
+
+/* "10 of 18" — the relationship, not two numbers in different places. */
+.rc-series-of { margin-left: 5px; color: var(--text-faint); font-size: var(--t-body); }
+.rc-callout-tight { padding: 5px var(--s3); cursor: help; }
+/* Measured growth is the one positive signal this dataset produces. It gets
+   the accent — and nothing else on the card does. */
+.rc-growth { color: var(--accent); }
+.rc-growth .num { color: var(--accent); }
+
+/* ---- discrete ring selector ---- */
+.rc-controls {
+  display: flex; align-items: flex-start; justify-content: space-between;
+  gap: var(--s4); flex-wrap: wrap; margin: var(--s4) 0 var(--s6);
+}
+.rc-chips { margin: 0; }
+.rc-rings { display: flex; gap: var(--s2); }
+.rc-ring {
+  display: flex; flex-direction: column; align-items: flex-start; gap: 1px;
+  font-family: inherit; padding: 4px var(--s3); border-radius: var(--r-control);
+  background: var(--surface-2); color: var(--text-muted);
+  border: 1px solid transparent; cursor: pointer;
+  transition: color var(--m-state), border-color var(--m-state);
+}
+.rc-ring:hover { color: var(--text); }
+.rc-ring.on { color: var(--text); border-color: var(--border-strong); background: var(--surface-3); }
+.rc-ring-a { font-size: var(--t-caption); font-variant-numeric: tabular-nums; }
+.rc-ring-w { font-size: var(--t-eyebrow); color: var(--text-faint); }
+
+/* ---- three toggles, never a layer manager ---- */
+.rc-layers { display: flex; flex-direction: column; gap: 6px; flex: none; }
+.rc-layer-toggles { display: flex; flex-wrap: wrap; gap: var(--s3); }
+.rc-layer-toggles label {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: var(--t-caption); color: var(--text-muted);
+  cursor: pointer; user-select: none;
+}
+.rc-layer-toggles input { accent-color: var(--accent); margin: 0; cursor: pointer; }
+.rc-layer-legend {
+  display: flex; flex-wrap: wrap; gap: var(--s3);
+  font-size: var(--t-eyebrow); color: var(--text-faint);
+}
+.rc-layer-legend span { display: inline-flex; align-items: center; gap: 4px; }
+.rc-layer-legend i {
+  width: 7px; height: 7px; border-radius: 50%; display: inline-block;
+}
+/* Source colours: two neutral hues plus the accent for agreement. The accent
+   still means "corroborated" here — a point both feeds saw. */
+.rc-dot-both { background: var(--accent); }
+.rc-dot-ov { background: #6BA8D8; }
+.rc-dot-fsq { background: #C77FD0; }
+.rc-dot-dup { background: transparent; border: 1.5px solid var(--amber); }
+
+/* hover link, both directions */
+.rc-place-table tr.rc-row-on td { background: var(--surface-3); }
+.rc-place-table tbody tr { cursor: default; }
+
+/* ---- sticky topbar: the location must not scroll away on a long page ---- */
+.rc-sticky {
+  position: sticky; top: 0; z-index: 20;
+  background: var(--canvas); padding-top: var(--s3);
+}
+
+/* ---- catchment selector ---- */
+.rc-rings { align-items: center; }
+.rc-rings-label {
+  font-size: var(--t-eyebrow); letter-spacing: .04em; text-transform: uppercase;
+  color: var(--text-faint); margin-right: 2px;
+}
+/* Selected state carries the accent, like the category chips — three unlabelled
+   neutral buttons gave no clue which was live. */
+.rc-ring.on {
+  background: var(--accent); border-color: var(--accent); color: var(--canvas);
+}
+.rc-ring.on .rc-ring-w { color: rgba(16, 19, 21, 0.72); }
+
+/* focused row keeps its highlight after the cursor leaves */
+.rc-place-table tr.rc-row-focus td {
+  background: var(--surface-3);
+  box-shadow: inset 2px 0 0 var(--accent);
+}
+.rc-place-table tbody tr { cursor: pointer; }
+/* It carries a tooltip, so it gets an affordance. Amber with no underline read
+   as a dead link. */
+.rc-gap {
+  color: var(--amber); cursor: help;
+  border-bottom: 1px dotted currentColor;
+}
+.rc-gap::after { content: ' ⓘ'; font-size: var(--t-eyebrow); opacity: .8; }
+
+.rc-subnav { display: flex; gap: var(--s4); align-items: baseline; flex-wrap: wrap; }
+
+/* Skeletons occupy the same boxes as the content they stand in for. */
+.rc-skel .rc-panel, .rc-skel .rc-places { padding: 0; background: none; }
+.rc-table-skel { padding: var(--s2) var(--s3); }
+.rc-table-skel-row {
+  display: grid; grid-template-columns: 48px 1fr 74px 110px;
+  gap: var(--s3); align-items: center; padding: 7px 0;
+  border-bottom: 1px solid var(--border);
+}
+.rc-err .as-retry { margin-top: var(--s2); }
+
+/* ==========================================================================
+   MOBILE
+   ========================================================================== */
+.rc-col-dist { width: 48px; }
+.rc-col-flags { width: 88px; }
+.rc-col-src { width: 74px; }
+.rc-col-cat { width: 168px; }
+/* Secondary metadata is folded under the name on narrow screens only. */
+.rc-sub-meta { display: none; }
+
+@media (max-width: 700px) {
+  .rc { padding: var(--s4) var(--s3) 0; }
+
+  /* Five columns become two. Source, category and flags move under the name,
+     which keeps every row one tap target instead of a horizontal scroll. */
+  .rc-col-flags, .rc-col-src, .rc-col-cat,
+  th.rc-col-flags, th.rc-col-src, th.rc-col-cat,
+  .rc-place-table td.rc-flags,
+  .rc-place-table td:nth-child(4),
+  .rc-place-table td:nth-child(5) { display: none; }
+  .rc-place-table { table-layout: auto; }
+  .rc-place-table td.rc-cell { white-space: normal; }
+  .rc-sub-meta {
+    display: block; font-size: var(--t-caption); color: var(--text-faint);
+    margin-top: 1px;
+  }
+  .rc-sub-meta .rc-tag { margin-left: var(--s2); }
+
+  /* The sticky topbar takes too much of a short viewport. */
+  .rc-sticky { position: static; }
+  .rc-head { flex-direction: column; align-items: flex-start; gap: var(--s2); }
+  .rc-loc { align-items: flex-start; }
+
+  /* Controls stack rather than fight for one line. */
+  .rc-controls { flex-direction: column; align-items: stretch; gap: var(--s3); }
+  .rc-chips { flex-wrap: wrap; }
+  .rc-rings { flex-wrap: wrap; }
+
+  .rc-main { height: auto; }
+  .rc-map-wrap { height: 300px; flex: none; }
+  .rc-place-scroll { max-height: 60vh; }
+  .rc-verdict { gap: var(--s4); }
+}
+
+@media (max-width: 380px) {
+  .rc-ring { flex: 1; }
+  .rc-card-value { font-size: var(--t-head); line-height: 26px; }
+}
+
+/* Touch targets: chips and buttons were ~22px of hit area. */
+@media (pointer: coarse) {
+  .rc-chip { padding: 10px var(--s3); }
+  .rc-ring { padding: 8px var(--s3); }
+  .rc-disclose, .rc-place-filter, .rc-layer-toggles label { min-height: 44px; }
+  .rc-place-table td { padding-top: 10px; padding-bottom: 10px; }
+}
+
+/* Returning to a comparison is the primary way back when you arrived from one. */
+.rc-back-primary { color: var(--text); }
+.rc-back-primary:hover { color: var(--accent); }

@@ -1,0 +1,16 @@
+{
+  "name": "Third Eye — location intelligence",
+  "short_name": "Third Eye",
+  "description": "Location intelligence for Greater Cairo, Giza, Qalyubiya and Alexandria, built on free and open geodata. Every number carries its confidence and vintage.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "theme_color": "#101315",
+  "background_color": "#101315",
+  "icons": [
+    { "src": "/brand/icon-teal.svg", "sizes": "any", "type": "image/svg+xml" },
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

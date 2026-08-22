@@ -1,0 +1,31 @@
+source,name,category,lat,lon,date_created,in_both_sources,match_group,position_outlier_m,coord_group_size,collapsed_coord,likely_not_storefront,exists_today,category_correct,notes,verify_group
+fsq,Ahmed El Wasime Beauty Salon,Business and Professional Services > Health and Beauty Service,29.952752,31.264155,2022-05-01,n,-1,,1,n,n,,,,RETAIL/SERVICE
+fsq,English Capsules Maadi Branch,Community and Government > Education > Adult Education,29.95291,31.263909,2022-12-13,n,-1,,1,n,n,,,,RETAIL/SERVICE
+fsq,German Beauty Center Heidi,Business and Professional Services > Health and Beauty Service > Hair Salon,29.95275542952373,31.26473507924318,2013-09-12,n,-1,,1,n,n,,,,RETAIL/SERVICE
+fsq,IL Pennello Ceramic Café,Arts and Entertainment > Art Gallery,29.950988143889766,31.266751536235347,2011-08-30,y,8,,1,n,n,,,,RETAIL/SERVICE
+fsq,Maadi Used Books,Retail > Bookstore > Used Bookstore,29.952206775850733,31.265064795260784,2015-04-22,y,13,,1,n,n,,,,RETAIL/SERVICE
+fsq,Maison du Caire,Retail > Leather Goods Store,29.951124,31.266415,2016-05-16,n,-1,,1,n,n,,,,RETAIL/SERVICE
+fsq,Sheshtawy Garden,Arts and Entertainment > Performing Arts Venue > Concert Hall,29.950307846069336,31.268129348754883,2014-06-26,n,-1,,1,n,n,,,,RETAIL/SERVICE
+fsq,Sonata Music Center,Community and Government > Education > Music School,29.95270319309946,31.26412035199869,2016-11-08,y,11,,1,n,n,,,,RETAIL/SERVICE
+fsq,Xpress Mobile,Retail > Shopping Mall,29.95114008905077,31.266253291332305,2018-04-30,n,-1,,1,n,n,,,,RETAIL/SERVICE
+fsq,أسواق أولاد سلطان,Retail > Market,29.95203399658203,31.26508140563965,2013-10-19,y,7,,1,n,n,,,,RETAIL/SERVICE
+overture,Amwage,hair_supply_stores,29.95256363,31.26415187,,n,-1,,1,n,n,,,,RETAIL/SERVICE
+overture,Ayadina Mzm Handmade Products,art_gallery,29.95123177,31.26596763,,n,-1,,1,n,n,,,,RETAIL/SERVICE
+overture,Engineering Company for Electronics,computer_store,29.95265717,31.26405561,,n,-1,,1,n,n,,,,RETAIL/SERVICE
+overture,German Beauty Center,beauty_salon,29.9506239,31.26782903,,n,-1,,1,n,n,,,,RETAIL/SERVICE
+overture,MECC Maadi Engineering Company,automotive_repair,29.950486986423314,31.26706810588989,,n,-1,,1,n,n,,,,RETAIL/SERVICE
+overture,Maadi used books,bookstore,29.9520893,31.26518879,,y,13,,1,n,n,,,,RETAIL/SERVICE
+overture,Mansour’s Space,art_gallery,29.95252513,31.26508371,,n,-1,,1,n,n,,,,RETAIL/SERVICE
+overture,Marvel Clinics,beauty_and_spa,29.951455703671,31.265387,,n,-1,,1,n,n,,,,RETAIL/SERVICE
+overture,Nicotine Vape Store,shopping_center,29.95205998,31.26494376,,n,-1,,1,n,n,,,,RETAIL/SERVICE
+overture,Peekaboo Pet Shop,veterinarian,29.95109643,31.26623801,,n,-1,,1,n,n,,,,RETAIL/SERVICE
+overture,Pets are people too,pet_boarding,29.95082762527,31.266523862759,,n,-1,,1,n,n,,,,RETAIL/SERVICE
+overture,Point9,video_game_store,29.95314379,31.26384221,,n,-1,,1,n,n,,,,RETAIL/SERVICE
+overture,Seen Films,event_photography,29.95162386,31.26647408,,n,-1,,1,n,n,,,,RETAIL/SERVICE
+overture,Sonata Music Center    سوناتا لتعليم العزف و الغناء,music_school,29.952545536067,31.264117956161,,y,11,,1,n,n,,,,RETAIL/SERVICE
+overture,Turquoise Clinic,laser_hair_removal,29.9526414,31.26407512,,n,-1,,1,n,n,,,,RETAIL/SERVICE
+overture,X store mobile accessories,mobile_phone_store,29.952052852973,31.264904483857,,n,-1,,1,n,n,,,,RETAIL/SERVICE
+overture,اولاد سلطان - Sultan Sons,grocery_store,29.952052852973,31.264944076538,,y,7,,1,n,n,,,,RETAIL/SERVICE
+overture,جزارة الحاج عبده,butcher_shop,29.95259997,31.26399897,,n,-1,,1,n,n,,,,RETAIL/SERVICE
+overture,شركة الاندلس للشحن والتخليص الجمركي,transportation,29.95298722,31.26347121,,n,-1,,1,n,n,,,,RETAIL/SERVICE
+overture,مطبعه العزازي elazazy center,printing_services,29.95265243868,31.264058947563,,n,-1,,1,n,n,,,,RETAIL/SERVICE

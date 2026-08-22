@@ -1,0 +1,44 @@
+{
+  "Smouha (high)": {
+    "center": {
+      "lat": 31.211369,
+      "lon": 29.956052
+    },
+    "bbox": {
+      "xmin": 29.948174,
+      "xmax": 29.96393,
+      "ymin": 31.204632,
+      "ymax": 31.218106
+    },
+    "note": "Smouha centred on the mosque<->Green Plaza commercial corridor midpoint (option A); the Nominatim match for Smouha was Smouha Club mosque, a landmark whose 1.5km box would be club grounds.",
+    "bbox_link": "https://www.openstreetmap.org/export#map=15&bbox=29.948174%2C31.204632%2C29.96393%2C31.218106"
+  },
+  "Sidi Gaber (middle)": {
+    "center": {
+      "lat": 31.2238448,
+      "lon": 29.9372404
+    },
+    "bbox": {
+      "xmin": 29.929362,
+      "xmax": 29.945119,
+      "ymin": 31.217107,
+      "ymax": 31.230582
+    },
+    "note": "",
+    "bbox_link": "https://www.openstreetmap.org/export#map=15&bbox=29.929362%2C31.217107%2C29.945119%2C31.230582"
+  },
+  "Karmouz (low)": {
+    "center": {
+      "lat": 31.1762687,
+      "lon": 29.8911075
+    },
+    "bbox": {
+      "xmin": 29.883233,
+      "xmax": 29.898982,
+      "ymin": 31.169531,
+      "ymax": 31.183006
+    },
+    "note": "",
+    "bbox_link": "https://www.openstreetmap.org/export#map=15&bbox=29.883233%2C31.169531%2C29.898982%2C31.183006"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "_comment": [
+    "Live regions, grouped for display. Third Eye is a METHOD, not a Cairo",
+    "tool: it runs anywhere open data exists, and today it is pointed here.",
+    "Adding a city must be a config change, never a copy rewrite — so no UI",
+    "string names a place, and this file is the only place a place is named.",
+    "",
+    "A group appears in the UI only if the pipeline actually produced cells",
+    "for at least one of its governorates. The status line therefore cannot",
+    "claim coverage the data does not have."
+  ],
+  "groups": [
+    { "id": "greater_cairo", "name": "Greater Cairo",
+      "governorates": ["Cairo", "Giza", "Qalyubiya"] },
+    { "id": "alexandria", "name": "Alexandria",
+      "governorates": ["Alexandria"] }
+  ],
+  "roadmap_note": "More regions as the data allows."
+}

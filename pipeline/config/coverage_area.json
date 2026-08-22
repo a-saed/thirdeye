@@ -1,0 +1,43 @@
+{
+  "governorates": {
+    "Cairo": 4103336,
+    "Giza": 3824206,
+    "Alexandria": 3061846,
+    "Qalyubiya": 4103337
+  },
+  "built_up_mask": {
+    "dataset": "GHSL GHS-BUILT-S R2023A 2025, tiles R6_C21+R6_C22 (EPSG:4326)",
+    "min_builtup_m2_per_pixel": 500,
+    "buffer_m": 2000
+  },
+  "land_fraction": {
+    "dataset": "GHSL GHS-LAND R2022A 100m, tile R6_C21 (ESRI:54009)",
+    "scale": 10000.0,
+    "nodata": 65535,
+    "note": "REQUIRED field on every cell; all catchment metrics must normalise by land area"
+  },
+  "areas_km2": {
+    "admin_full": 46669.8,
+    "operational": 8708.3
+  },
+  "h3": {
+    "8": {
+      "cells_in_polygon": 10038,
+      "cells_with_land": 9938,
+      "cells_dropped_pure_water": 100,
+      "cells_without_land_data": 0,
+      "mean_land_fraction": 0.9725,
+      "cells_land_fraction_below_0.9": 540,
+      "cells_land_fraction_below_0.5": 190
+    },
+    "9": {
+      "cells_in_polygon": 70259,
+      "cells_with_land": 69103,
+      "cells_dropped_pure_water": 1156,
+      "cells_without_land_data": 0,
+      "mean_land_fraction": 0.9789,
+      "cells_land_fraction_below_0.9": 2721,
+      "cells_land_fraction_below_0.5": 1139
+    }
+  }
+}

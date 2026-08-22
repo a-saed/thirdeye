@@ -1,0 +1,41 @@
+# Secrets
+.env
+
+# Environments and build output
+.venv/
+__pycache__/
+*.pyc
+node_modules/
+web/dist/
+api/thirdeye-api
+api/api
+.dev-logs/
+
+# ---------------------------------------------------------------------------
+# DERIVED DATA IS NOT COMMITTED.
+#
+# Two reasons, and the second is the important one:
+#
+#  1. Tens of megabytes of binary in git is bad practice — it bloats every
+#     clone forever and diffs are meaningless.
+#  2. The sources carry mixed licences (ODbL, CDLA, Apache 2.0, CC BY 4.0).
+#     A derived database built from ODbL inputs can inherit share-alike
+#     obligations, and that is not a question anyone should have to reason
+#     about in order to read this code.
+#
+# Everything here is REPRODUCIBLE FROM PUBLIC SOURCES by running the pipeline,
+# which is a stronger claim than shipping a snapshot: anyone can rebuild it and
+# check the numbers rather than trusting ours. See docs/DATA.md.
+# ---------------------------------------------------------------------------
+data/
+
+# Derived artefacts that live outside data/
+web/public/coverage-res8.geojson
+web/public/coverage-summary.json
+web/public/regions.json
+pipeline/config/h3_land_fraction_res*.csv
+pipeline/config/coverage_area.gpkg
+research/output/*.parquet
+research/output/campus_records_candidates.csv
+research/output/campus_interior_records.csv
+research/output/*_pairs_*.csv

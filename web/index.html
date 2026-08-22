@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- Icons. The brand set's own size rule: the solid knockout variant below
+         20px, the ring variant at 24px and above. The knockout is transparent
+         and picks up whatever tab colour sits behind it, which is why the SVG
+         is listed first and the PNGs only serve browsers that ignore it. -->
+    <link rel="icon" href="/brand/favicon-teal.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon-16.png" sizes="16x16" type="image/png" />
+    <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png" />
+    <!-- iOS composites a transparent touch icon onto white, so this one is
+         opaque on --canvas rather than knocked out. -->
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+
+    <!-- --canvas. Dark is single-mode and deliberate (docs/DESIGN.md §1), so
+         this is not paired with a light-scheme alternative. -->
+    <meta name="theme-color" content="#101315" />
+
+    <!-- The sharper line lives HERE, not in the panel (DESIGN.md §10): a search
+         result or a shared link has no map to make the argument for it. -->
+    <title>Third Eye — location intelligence that shows its working</title>
+    <meta
+      name="description"
+      content="Businesses, population and construction for any point on the map. Open data, every figure sourced and dated, with the gaps left visible."
+    />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Third Eye" />
+    <meta
+      property="og:title"
+      content="Third Eye — location intelligence that shows its working"
+    />
+    <meta
+      property="og:description"
+      content="Businesses, population and construction for any point on the map. Open data, every figure sourced and dated, with the gaps left visible."
+    />
+    <meta property="og:image" content="/og-card.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Third Eye — location intelligence from open data" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta
+      name="twitter:title"
+      content="Third Eye — location intelligence that shows its working"
+    />
+    <meta
+      name="twitter:description"
+      content="Businesses, population and construction for any point on the map. Open data, every figure sourced and dated, with the gaps left visible."
+    />
+    <meta name="twitter:image" content="/og-card.png" />
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>

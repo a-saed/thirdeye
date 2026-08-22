@@ -1,0 +1,16 @@
+district,group,naive,mapped,delta,error_pct,members_present
+Sheikh Zayed,cafe,14,30,16,114.3,"['cafe', 'coffee_roastery', 'coffee_shop']"
+Sheikh Zayed,restaurant,25,80,55,220.0,"['american_restaurant', 'armenian_restaurant', 'bar_and_grill_restaurant', 'brazilian_restaurant', 'breakfast_and_brunch_restaurant', 'buffet_restaurant', 'burger_restaurant', 'chicken_wings_restaurant', 'chinese_restaurant', 'comfort_food_restaurant', 'egyptian_restaurant', 'european_restaurant', 'fast_food_restaurant', 'french_restaurant', 'indo_chinese_restaurant', 'italian_restaurant', 'japanese_restaurant', 'latin_american_restaurant', 'lebanese_restaurant', 'mediterranean_restaurant', 'middle_eastern_restaurant', 'pizza_restaurant', 'restaurant', 'seafood_restaurant', 'soup_restaurant', 'southern_restaurant', 'steakhouse', 'sushi_restaurant', 'syrian_restaurant', 'thai_restaurant', 'theme_restaurant', 'turkish_restaurant']"
+Sheikh Zayed,pharmacy,2,2,0,0.0,['pharmacy']
+Sheikh Zayed,gym,6,6,0,0.0,['gym']
+Sheikh Zayed,grocery,0,7,7,inf,"['grocery_store', 'organic_grocery_store', 'specialty_grocery_store', 'supermarket']"
+Maadi,cafe,22,50,28,127.3,"['cafe', 'coffee_shop']"
+Maadi,restaurant,42,109,67,159.5,"['american_restaurant', 'asian_restaurant', 'barbecue_restaurant', 'burger_restaurant', 'chinese_restaurant', 'diner', 'doner_kebab', 'egyptian_restaurant', 'european_restaurant', 'falafel_restaurant', 'fast_food_restaurant', 'indian_restaurant', 'indo_chinese_restaurant', 'italian_restaurant', 'japanese_restaurant', 'lebanese_restaurant', 'middle_eastern_restaurant', 'pizza_restaurant', 'restaurant', 'sandwich_shop', 'seafood_restaurant', 'sushi_restaurant', 'syrian_restaurant', 'vegetarian_restaurant']"
+Maadi,pharmacy,20,20,0,0.0,['pharmacy']
+Maadi,gym,8,12,4,50.0,"['gym', 'gymnastics_center', 'martial_arts_club', 'pilates_studio', 'yoga_studio']"
+Maadi,grocery,0,8,8,inf,"['grocery_store', 'specialty_grocery_store', 'supermarket']"
+Imbaba,cafe,1,6,5,500.0,"['cafe', 'coffee_shop']"
+Imbaba,restaurant,12,23,11,91.7,"['barbecue_restaurant', 'breakfast_and_brunch_restaurant', 'egyptian_restaurant', 'fast_food_restaurant', 'pizza_restaurant', 'restaurant', 'seafood_restaurant', 'soup_restaurant']"
+Imbaba,pharmacy,10,10,0,0.0,['pharmacy']
+Imbaba,gym,4,5,1,25.0,"['gym', 'martial_arts_club']"
+Imbaba,grocery,0,8,8,inf,"['grocery_store', 'supermarket']"

@@ -1,0 +1,6 @@
+source,name,category,lat,lon,date_created,in_both_sources,match_group,position_outlier_m,coord_group_size,collapsed_coord,likely_not_storefront,exists_today,category_correct,notes,verify_group
+fsq,Lan Yuan,,29.952230852953548,31.264701548748977,2010-03-12,n,-1,,1,n,n,,,,UNCLEAR/NO CATEGORY
+overture,JINISTOCK.egy,,29.953107675260878,31.264006111261047,,n,-1,,1,n,n,,,,UNCLEAR/NO CATEGORY
+overture,Kiro cafe,,29.95260273,31.26407621,,y,15,29.4,1,n,n,,,,UNCLEAR/NO CATEGORY
+overture,Tm cafe,,29.94996787,31.26825162,,n,-1,,1,n,n,,,,UNCLEAR/NO CATEGORY
+overture,قهوة قمر الزمان المعادي ش ٩,,29.95221777516439,31.264628637909528,,y,9,,1,n,n,,,,UNCLEAR/NO CATEGORY

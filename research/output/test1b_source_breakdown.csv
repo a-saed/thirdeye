@@ -1,0 +1,15 @@
+district,dataset,n,pct
+Sheikh Zayed,meta,381,77.6
+Sheikh Zayed,Foursquare,84,17.11
+Sheikh Zayed,Microsoft,15,3.05
+Sheikh Zayed,PinMeTo,6,1.22
+Sheikh Zayed,AllThePlaces,5,1.02
+Maadi,meta,853,86.07
+Maadi,Foursquare,105,10.6
+Maadi,Microsoft,23,2.32
+Maadi,AllThePlaces,7,0.71
+Maadi,PinMeTo,3,0.3
+Imbaba,meta,305,96.52
+Imbaba,Foursquare,4,1.27
+Imbaba,AllThePlaces,4,1.27
+Imbaba,Microsoft,3,0.95

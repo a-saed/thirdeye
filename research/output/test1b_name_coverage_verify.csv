@@ -1,0 +1,4 @@
+district,total,n_null,n_empty_string,n_whitespace_only,pct_missing_name
+Sheikh Zayed,491,0,0,0,0.0
+Maadi,991,0,0,0,0.0
+Imbaba,316,0,0,0,0.0

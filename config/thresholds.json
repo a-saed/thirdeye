@@ -1,0 +1,70 @@
+{
+  "_comment": [
+    "ONE SOURCE OF TRUTH for every tunable threshold in the product.",
+    "",
+    "Read by the Python pipeline, the Go API and the frontend build. Nothing",
+    "may redeclare a value that lives here: a constant copied into two",
+    "languages is a rule with two places to get it wrong, and this project has",
+    "already shipped the same rule twice with different behaviour.",
+    "",
+    "The Go API REFUSES TO START if a value it needs is missing, rather than",
+    "falling back to a default that might not match what the pipeline used.",
+    "That is the pattern the artifact detector already follows via the history",
+    "manifest.",
+    "",
+    "Every value carries the finding that produced it. Change one and the",
+    "reason has to change with it."
+  ],
+
+  "resolutions": {
+    "_why": "res-9 (~0.105 km2) is fine enough that a 500 m k-ring approximates a circle; res-8 (~0.74 km2) is the coverage grid and Kontur's native resolution.",
+    "report": 9,
+    "coverage": 8
+  },
+
+  "catchment": {
+    "_why": "Cells are ~0.105 km2, so a continuous radius moves nothing then jumps 7 cells to 19. k=0 is one cell, and at that size a shop 30 m past the boundary vanishes while cross-source position error is 58 m at p90 - two nearby pins would disagree for reasons that are resolution, not geography.",
+    "default_k": 1,
+    "max_k": 12,
+    "default_radius_m": 500
+  },
+
+  "land_fraction_floor": {
+    "_why": "Dividing by habitable land is right, but as the land share approaches zero the quotient stops describing geography: an Alexandria Corniche cell 99.99% sea produced 8,260,594 people/km2. land_fraction exceeds 0.95 for 95% of res-9 cells and only 0.34% fall below 0.05, so this discards almost nothing.",
+    "value": 0.05
+  },
+
+  "saturation": {
+    "_why": "GHSL built-up share of cell area. A SATURATED catchment reads flat on construction because it is built out - that means no new building, never no commercial change.",
+    "saturated_pct": 40.0,
+    "greenfield_pct": 10.0,
+    "growth_material_pct": 5.0
+  },
+
+  "corroboration": {
+    "_why": "Corroboration requires COUNT AGREEMENT, not co-existence. 0.5 was rejected as circular - it was the observed median disagreement, so setting the bar there would call the typical case agreement.",
+    "min_ratio": 0.667
+  },
+
+  "percentages": {
+    "_why": "A percentage needs a base big enough to carry one. 3 to 1 is '-66.7%', which dresses a difference of two records as a finding.",
+    "min_base": 10
+  },
+
+  "inhabited": {
+    "_why": "The operational polygon is four governorates plus a 2 km dilation ring, so it contains desert and Delta farmland whose cells lack business data because they lack businesses. Both conditions are required: population alone admits farmland, built-up alone admits airports and industrial land.",
+    "population_min": 100.0,
+    "builtup_pct_min": 5.0
+  },
+
+  "duplicates": {
+    "_why": "Deliberately conservative: the fuzzy matcher scored 100% in-sample and 25% out-of-sample, so only cross-source pairs close in space AND similar in name are flagged, and nothing is ever merged.",
+    "max_distance_m": 40.0,
+    "min_name_similarity": 0.72
+  },
+
+  "series": {
+    "_why": "A 3-point line renders as a trend and is not one. Better to withhold a corrected series with a stated reason than to plot something too short to read honestly.",
+    "min_corrected_points": 8
+  }
+}

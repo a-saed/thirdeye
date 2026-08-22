@@ -1,0 +1,421 @@
+/* Home / coverage map. Tokens only — no hex values.
+ * The map is the ground and is square-cornered; the panel is an object. */
+
+body.route-home { background: var(--canvas); color: var(--text); overflow: hidden; }
+
+.hm { position: absolute; inset: 0; font-family: var(--font); font-size: var(--t-body); }
+.hm-map { position: absolute; inset: 0; }
+
+.hm-panel {
+  position: absolute; top: 68px; left: var(--s4); z-index: 10;
+  width: var(--panel-w); max-height: calc(100% - 84px); overflow-y: auto;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--r-card); padding: var(--s4);
+  color: var(--text); line-height: 22px;
+}
+
+/* The question is the headline: it is what brings someone here, and inline
+   bold was making it read as the first clause of a paragraph. */
+.hm-h1 {
+  margin: 0 0 var(--s2);
+  font-size: var(--t-head); line-height: 26px; font-weight: 500;
+  color: var(--text); letter-spacing: -0.01em;
+}
+.hm-lede strong { color: var(--text-muted); font-weight: 500; }
+
+/* Running text uses --t-body. The intro was set at --t-caption, which is the
+   annotation size — the scale bump landed, it was just the wrong token on the
+   one paragraph a first-time visitor actually reads. */
+.hm-lede {
+  margin: 0 0 var(--s3); color: var(--text-muted);
+  font-size: var(--t-body); line-height: 22px;
+}
+.hm-cta {
+  margin: 0 0 var(--s4); color: var(--accent);
+  font-size: var(--t-body); line-height: 22px;
+}
+
+/* ---- legend: two denominators, always both ---- */
+.hm-legend { display: flex; flex-direction: column; gap: 6px; margin-bottom: var(--s3); }
+.hm-legend-head, .hm-legend-row { display: flex; align-items: center; gap: var(--s2); }
+.hm-legend-head {
+  font-size: var(--t-eyebrow); letter-spacing: .04em; text-transform: uppercase;
+  color: var(--text-faint); padding-left: 22px;
+}
+.hm-lab { flex: 1; font-size: var(--t-body); }
+.hm-pct { width: 54px; text-align: right; font-size: var(--t-caption); }
+.hm-dim { color: var(--text-faint); }
+.hm-sw { width: 14px; height: 14px; border-radius: 3px; flex: none; border: 1px solid var(--border); }
+/* Swatches carry the composited map colour, not the raw token, so the legend
+   matches what is actually on screen. */
+.hm-sw-corroborated { background: #3DAD8F; }
+.hm-sw-single_source { background: #5B4823; }
+.hm-sw-unavailable { background: #2B3237; }
+
+.hm-toggle {
+  display: flex; align-items: center; gap: var(--s2); margin-bottom: var(--s3);
+  color: var(--text-muted); font-size: var(--t-body); cursor: pointer; user-select: none;
+}
+.hm-toggle input { accent-color: var(--accent); margin: 0; cursor: pointer; }
+
+.hm-hint {
+  margin: 0; padding-top: var(--s3); border-top: 1px solid var(--border);
+  color: var(--text-faint); font-size: var(--t-caption); line-height: 18px;
+}
+
+/* ---- picked location ---- */
+.hm-pick {
+  padding: var(--s3); margin-bottom: var(--s3);
+  background: var(--surface-2); border-radius: var(--r-control);
+}
+.hm-pick-head {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: var(--s2); margin-bottom: var(--s2); font-size: var(--t-caption);
+}
+.hm-pick-sub { color: var(--text-faint); font-size: var(--t-caption); line-height: 18px; }
+.hm-dot { color: var(--text-disabled); margin: 0 5px; }
+.hm-warn { color: var(--amber); }
+
+.hm-badge {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 2px var(--s2); border-radius: var(--r-pill);
+  font-size: var(--t-caption); line-height: 18px; white-space: nowrap;
+}
+.hm-glyph { font-size: 9px; line-height: 1; }
+.hm-badge-corroborated { background: rgba(69, 201, 165, 0.16); color: var(--accent); }
+/* No warning styling. Single source is the normal state of this dataset. */
+.hm-badge-single_source { background: rgba(216, 163, 63, 0.16); color: var(--amber); }
+.hm-badge-unavailable { background: var(--surface-3); color: var(--text-muted); }
+
+.hm-btn {
+  margin-top: var(--s3); width: 100%;
+  font-family: inherit; font-size: var(--t-body); font-weight: 500; line-height: 22px;
+  padding: 7px var(--s3); border: none; border-radius: var(--r-control);
+  background: var(--accent); color: var(--canvas); cursor: pointer;
+  transition: filter var(--m-state);
+}
+.hm-btn:hover { filter: brightness(1.08); }
+.hm-btn:disabled { background: var(--surface-3); color: var(--text-disabled); cursor: not-allowed; }
+.hm-btn:disabled:hover { filter: none; }
+
+.hm-acc {
+  margin-top: var(--s2); color: var(--text-faint);
+  font-size: var(--t-caption); line-height: 18px;
+}
+.hm-acc.hm-warn { color: var(--amber); }
+
+.hm-pick-out { background: var(--surface-2); }
+.hm-out { margin: 0 0 var(--s2); color: var(--text-muted); font-size: var(--t-body); line-height: 22px; }
+.hm-out strong { color: var(--amber); font-weight: 500; }
+.hm-out-sub { margin: 0; color: var(--text-faint); font-size: var(--t-caption); line-height: 18px; }
+
+/* ---- governorate table ---- */
+.hm-gov { padding-top: var(--s3); border-top: 1px solid var(--border); }
+.hm-gov-h {
+  font-size: var(--t-eyebrow); letter-spacing: .04em; text-transform: uppercase;
+  color: var(--text-faint); margin-bottom: var(--s2);
+}
+.hm-gov-row {
+  display: flex; align-items: center; gap: var(--s2);
+  font-size: var(--t-caption); line-height: 18px;
+}
+.hm-gov-row .num { width: 54px; text-align: right; }
+
+/* ---- pin ---- */
+.hm-pin {
+  width: 12px; height: 12px; border-radius: 50%;
+  background: var(--accent); border: 2px solid var(--canvas);
+  box-shadow: 0 0 0 1px var(--accent);
+}
+.hm-pin-out {
+  background: var(--amber); box-shadow: 0 0 0 1px var(--amber);
+}
+
+.hm-err {
+  position: absolute; bottom: var(--s4); left: 50%; transform: translateX(-50%);
+  z-index: 20; padding: var(--s2) var(--s3); border-radius: var(--r-control);
+  background: var(--surface-2); color: var(--amber); font-size: var(--t-caption);
+}
+
+
+
+.hm-lede strong { color: var(--text); font-weight: 500; }
+.hm-lede + .hm-lede { margin-top: calc(-1 * var(--s2)); }
+.hm-lede-do { color: var(--text-faint); }
+
+/* The map controls sit top-right too, so on this screen they drop below the
+   bar. Scoped to home: on /report the map is a card and the controls are
+   correctly at its own top edge. */
+.hm .mc { top: 64px; }
+
+/* ---- top bar: identity + search + coverage status ---- */
+.hm { --panel-w: 336px; }
+.hm-topbar {
+  position: absolute; z-index: 14;
+  top: var(--s3); left: var(--s3); right: var(--s3);
+  display: flex; align-items: center; gap: var(--s4);
+}
+.hm-brand { display: inline-flex; flex: none; opacity: .95; }
+.hm-brand:hover { opacity: 1; }
+.hm-live-chip {
+  display: inline-flex; align-items: center; gap: 6px; flex: none;
+  padding: 5px var(--s3); border-radius: var(--r-pill);
+  background: rgba(25, 29, 33, 0.72);
+  -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
+  border: 1px solid var(--border);
+  font-size: var(--t-caption); color: var(--text-muted); cursor: help;
+  white-space: nowrap;
+}
+/* The search takes the middle and stays centred in the bar. */
+.hm-search { position: relative; flex: 1; max-width: 520px; margin: 0 auto; }
+@media (max-width: 900px) {
+  .hm-live-chip { display: none; }
+  .hm-brand img { height: 22px; }
+}
+
+.hm-search-pill {
+  display: flex; align-items: center; gap: var(--s2);
+  padding: 0 var(--s3) 0 var(--s4); height: 40px;
+  /* Translucent + blurred so the map still reads underneath: chrome over a
+     map should not be an opaque plate stamped on top of it. */
+  background: rgba(25, 29, 33, 0.72);
+  -webkit-backdrop-filter: blur(14px) saturate(1.2);
+  backdrop-filter: blur(14px) saturate(1.2);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--r-pill);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  transition: border-color var(--m-state), box-shadow var(--m-state);
+}
+/* The accent appears on focus only — an active input is a state, and this is
+   the one control on the screen the user is deliberately driving. */
+.hm-search-pill:focus-within {
+  border-color: var(--accent);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4), 0 0 0 3px rgba(69, 201, 165, 0.16);
+}
+.hm-search-pill:focus-within .hm-search-icon { stroke: var(--accent); }
+.hm-search-icon {
+  width: 16px; height: 16px; flex: none;
+  fill: none; stroke: var(--text-faint); stroke-width: 1.5; stroke-linecap: round;
+}
+.hm-search-input {
+  flex: 1; min-width: 0; background: none; border: none; outline: none;
+  font-family: inherit; font-size: var(--t-body); color: var(--text);
+}
+.hm-search-input::placeholder { color: var(--text-disabled); }
+.hm-search-busy { color: var(--text-faint); }
+.hm-search-clear {
+  background: none; border: none; color: var(--text-faint);
+  font-size: var(--t-head); line-height: 1; cursor: pointer; padding: 0 2px;
+}
+.hm-search-clear:hover { color: var(--text); }
+.hm-search-kbd {
+  font-family: inherit; font-size: var(--t-eyebrow); color: var(--text-disabled);
+  border: 1px solid var(--border); border-radius: 4px; padding: 1px 6px;
+}
+
+.hm-search-card {
+  position: absolute; top: calc(100% + var(--s2)); left: 0; right: 0;
+  overflow: hidden auto; max-height: 60vh;
+  background: rgba(25, 29, 33, 0.94);
+  -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--r-card);
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.55);
+  animation: hm-drop var(--m-enter);
+}
+@keyframes hm-drop {
+  from { opacity: 0; transform: translateY(-4px) }
+  to { opacity: 1; transform: none }
+}
+.hm-search-group { border-bottom: 1px solid var(--border); }
+.hm-search-group:last-of-type { border-bottom: none; }
+.hm-search-group > ul { list-style: none; margin: 0; padding: 0; }
+.hm-search-group-h {
+  font-size: var(--t-eyebrow); letter-spacing: .04em; text-transform: uppercase;
+  color: var(--text-faint); padding: var(--s2) var(--s3) 2px;
+}
+.hm-search-card button {
+  display: flex; flex-direction: column; gap: 1px; width: 100%; text-align: left;
+  font-family: inherit; padding: 7px var(--s3);
+  background: transparent; border: none; cursor: pointer; color: var(--text);
+}
+.hm-search-card button.on { background: var(--surface-2); box-shadow: inset 2px 0 0 var(--accent); }
+.hm-search-name { font-size: var(--t-body); }
+.hm-search-detail { font-size: var(--t-caption); color: var(--text-faint); }
+.hm-search-src { color: var(--text-disabled); }
+/* Coverage status inline, so the answer arrives before the click. */
+/* Coverage as a chip, so it reads as a status rather than another line of
+   description competing with the place name. */
+.hm-cov {
+  align-self: flex-start; margin-top: 3px;
+  padding: 1px 7px; border-radius: var(--r-pill);
+  font-size: var(--t-eyebrow); line-height: 16px;
+}
+.hm-cov-in { background: rgba(69, 201, 165, 0.14); color: var(--accent); }
+.hm-cov-out { background: var(--surface-3); color: var(--text-faint); }
+.hm-search-none {
+  margin: 0; padding: var(--s3); color: var(--text-faint); font-size: var(--t-caption);
+}
+.hm-search-foot {
+  display: flex; justify-content: space-between; gap: var(--s3);
+  padding: var(--s2) var(--s3); border-top: 1px solid var(--border);
+  font-size: var(--t-eyebrow); color: var(--text-disabled);
+}
+
+/* live dot, shared by the top-bar chip */
+.hm-live {
+  width: 6px; height: 6px; border-radius: 50%; background: var(--accent);
+  flex: none;
+}
+
+
+/* ---- coverage detail: a dashboard, folded away until asked for ---- */
+.hm-detail-toggle {
+  display: flex; align-items: center; gap: 6px; width: 100%;
+  padding: var(--s2) 0 0; margin-top: var(--s1);
+  border: none; border-top: 1px solid var(--border); background: none;
+  font-family: inherit; font-size: var(--t-body); color: var(--text-muted);
+  cursor: pointer; text-align: left;
+  transition: color var(--m-state);
+}
+.hm-detail-toggle:hover { color: var(--text); }
+.hm-detail-caret { color: var(--text-faint); font-size: var(--t-eyebrow); }
+.hm-detail-body { padding-top: var(--s2); }
+.hm-detail-body .hm-hint { border-top: none; padding-top: 0; margin-bottom: var(--s3); }
+.hm-detail-body .hm-gov { border-top: 1px solid var(--border); }
+
+/* ---- regions chip ---- */
+.hm-regions { position: relative; flex: none; }
+.hm-live-chip {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 5px var(--s3); border-radius: var(--r-pill);
+  background: rgba(25, 29, 33, 0.72);
+  -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
+  border: 1px solid var(--border);
+  font-family: inherit; font-size: var(--t-caption); color: var(--text-muted);
+  cursor: pointer; white-space: nowrap;
+  transition: color var(--m-state), border-color var(--m-state);
+}
+.hm-live-chip:hover, .hm-live-chip.on { color: var(--text); border-color: var(--border-strong); }
+.hm-chip-caret { color: var(--text-faint); font-size: var(--t-eyebrow); }
+.hm-regions-card {
+  position: absolute; top: calc(100% + var(--s2)); right: 0; min-width: 220px;
+  background: rgba(25, 29, 33, 0.94);
+  -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
+  border: 1px solid var(--border-strong); border-radius: var(--r-card);
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.55);
+  padding: var(--s3); animation: hm-drop var(--m-enter);
+}
+.hm-regions-h {
+  font-size: var(--t-eyebrow); letter-spacing: .04em; text-transform: uppercase;
+  color: var(--text-faint); margin-bottom: var(--s2);
+}
+.hm-regions-card ul { list-style: none; margin: 0; padding: 0; }
+.hm-regions-card li {
+  display: flex; justify-content: space-between; gap: var(--s3);
+  font-size: var(--t-body); color: var(--text); padding: 2px 0;
+}
+.hm-regions-note {
+  margin: var(--s2) 0 0; padding-top: var(--s2);
+  border-top: 1px solid var(--border);
+  font-size: var(--t-caption); color: var(--text-faint);
+}
+
+.hm-sources {
+  margin: var(--s3) 0 0; padding-top: var(--s2);
+  border-top: 1px solid var(--border);
+  font-size: var(--t-caption); line-height: 18px; color: var(--text-disabled);
+}
+.hm-sources a { color: var(--text-faint); text-decoration: none; }
+.hm-sources a:hover { color: var(--text); }
+
+/* Two actions on a picked pin: report, or start a comparison from it. */
+.hm-actions { display: flex; gap: var(--s2); }
+.hm-actions .hm-btn { flex: 1; }
+.hm-btn-alt {
+  background: var(--surface-3); color: var(--text);
+  border: 1px solid var(--border-strong);
+}
+.hm-btn-alt:hover { background: var(--surface-2); filter: none; }
+
+/* Discoverable before any pin exists. Secondary, so it never competes with
+   the click-anywhere instruction above it. */
+.hm-secondary {
+  display: inline-block; margin: 0 0 var(--s4);
+  color: var(--text-muted); font-size: var(--t-body); text-decoration: none;
+  border-bottom: 1px solid var(--border-strong); padding-bottom: 1px;
+}
+.hm-secondary:hover { color: var(--text); }
+
+.hm-loading {
+  position: absolute; bottom: var(--s4); left: 50%; transform: translateX(-50%);
+  z-index: 11; padding: var(--s2) var(--s3); border-radius: var(--r-pill);
+  background: rgba(25, 29, 33, 0.85);
+  -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+  border: 1px solid var(--border); color: var(--text-muted);
+  font-size: var(--t-caption);
+}
+.hm-err .as-retry { margin-left: var(--s2); }
+
+
+/* ==========================================================================
+   MOBILE
+   The map is the product, and on a phone a fixed 336px panel left 38px of it
+   visible. The panel becomes a BOTTOM SHEET instead of a floating card: the
+   map keeps the screen, the panel keeps its content, and the thumb reaches the
+   controls. This is a layout decision rather than a width tweak — a side panel
+   has nowhere to go at 390px.
+   ========================================================================== */
+@media (max-width: 720px) {
+  .hm-panel {
+    top: auto; bottom: 0; left: 0; right: 0;
+    width: auto; max-height: 52vh;
+    border-radius: var(--r-card) var(--r-card) 0 0;
+    border-left: none; border-right: none; border-bottom: none;
+    padding: var(--s3) var(--s4) var(--s6);
+    /* A grab edge, so the sheet reads as something that scrolls. */
+    box-shadow: 0 -8px 28px rgba(0, 0, 0, 0.5);
+  }
+  .hm-panel::before {
+    content: ''; display: block; width: 36px; height: 3px; margin: 0 auto var(--s3);
+    background: var(--border-strong); border-radius: 999px;
+  }
+
+  /* The search moves to the top edge, full width, with the brand above it. */
+  .hm-topbar {
+    top: var(--s2); left: var(--s2); right: var(--s2);
+    flex-wrap: wrap; gap: var(--s2);
+  }
+  .hm-search {
+    order: 3; flex: 1 0 100%; max-width: none; margin: 0;
+    left: auto; right: auto; transform: none; position: relative;
+  }
+  .hm-search-card { max-height: 46vh; }
+  .hm-brand img { height: 24px; }
+  .hm-live-chip { display: inline-flex; }
+
+  /* Map controls clear the taller two-row bar and sit above the sheet. */
+  .hm .mc { top: 104px; }
+
+  /* The governorate table is a three-column grid squeezed into ~330px. */
+  .hm-gov-row .num { width: 46px; }
+}
+
+/* 360px: the narrowest common phone. */
+@media (max-width: 380px) {
+  .hm-panel { max-height: 56vh; padding: var(--s3); }
+  .hm-live-chip { display: none; }
+  .hm-search-input { font-size: var(--t-body); }
+  .hm-actions { flex-direction: column; }
+}
+
+/* ---- touch targets ----
+   30px controls and 22px chips are below the 44px guideline; on a map, a
+   mis-tap pans instead of pressing, which is worse than a mis-click. */
+@media (pointer: coarse) {
+  .hm-btn { padding: 11px var(--s3); }
+  .hm-toggle, .hm-detail-toggle { min-height: 44px; }
+  .hm-search-pill { height: 48px; }
+  .hm-live-chip { min-height: 36px; }
+  .hm-search-card button { padding: 10px var(--s3); }
+}

@@ -1,0 +1,4 @@
+district,overture,fsq,fsq_ratio,top_source,top_source_pct,meta_pct,osm_pct,conf_median,conf_below_05_pct,fsq_2011_13_pct
+Smouha (high),612,500,0.82,meta,94.6,94.6,0.0,0.643,24.0,51.2
+Sidi Gaber (middle),1449,640,0.44,meta,97.4,97.4,0.0,0.595,31.6,43.4
+Karmouz (low),90,23,0.26,meta,98.9,98.9,0.0,0.597,33.3,56.5
