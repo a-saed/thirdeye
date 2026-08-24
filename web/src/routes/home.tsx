@@ -32,6 +32,25 @@ const DARK_MATTER = 'https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style
 const VEIL_ALPHA = 0.45
 const COVERAGE_RES = 8
 
+/** A circle of `radiusM` around a point, as GeoJSON. 64 segments is smooth at
+ *  any zoom this map reaches. */
+function accuracyCircle(lat: number, lon: number, radiusM: number) {
+  const pts: [number, number][] = []
+  const dLat = radiusM / 111320
+  const dLon = radiusM / (111320 * Math.cos((lat * Math.PI) / 180))
+  for (let i = 0; i <= 64; i++) {
+    const t = (i / 64) * 2 * Math.PI
+    pts.push([lon + dLon * Math.cos(t), lat + dLat * Math.sin(t)])
+  }
+  return {
+    type: 'FeatureCollection' as const,
+    features: [{
+      type: 'Feature' as const, properties: {},
+      geometry: { type: 'Polygon' as const, coordinates: [pts] },
+    }],
+  }
+}
+
 type Conf = 'corroborated' | 'single_source' | 'unavailable'
 
 const CONF_LABEL: Record<Conf, string> = {
@@ -297,7 +316,24 @@ export default function Home() {
   const onLocate = useCallback((l: Located) => {
     const map = mapRef.current
     if (!map) return
-    map.flyTo({ center: [l.lon, l.lat], zoom: Math.max(map.getZoom(), 12.5) })
+
+    // SHOW THE UNCERTAINTY, DO NOT HIDE IT.
+    // The browser reports a coordinate AND the radius it is confident within.
+    // Dropping a confident-looking pin and discarding the radius is the same
+    // error this product refuses everywhere else — a number without its error
+    // bar. Drawing the circle makes a 5 km fix look like a 5 km fix.
+    const circle = accuracyCircle(l.lat, l.lon, l.accuracyM)
+    const src = map.getSource('accuracy') as maplibregl.GeoJSONSource | undefined
+    if (src) src.setData(circle)
+
+    // Zoom to fit the uncertainty rather than to a fixed level: zooming to
+    // street level on a fix good to 5 km invents precision the fix never had.
+    const b = new maplibregl.LngLatBounds()
+    for (const c of circle.features[0].geometry.coordinates[0]) {
+      b.extend(c as [number, number])
+    }
+    map.fitBounds(b, { padding: 60, maxZoom: 15, duration: 600 })
+
     selectPoint(l.lat, l.lon, l.accuracyM)
   }, [selectPoint])
 
@@ -362,6 +398,23 @@ export default function Home() {
           id: 'cells-line', type: 'line', source: 'cells',
           paint: coverageLinePaint() as any,
         })
+        // Accuracy circle, above the hexes so it reads as an overlay.
+        map.addSource('accuracy', {
+          type: 'geojson',
+          data: { type: 'FeatureCollection', features: [] },
+        })
+        map.addLayer({
+          id: 'accuracy-fill', type: 'fill', source: 'accuracy',
+          paint: { 'fill-color': t('--amber'), 'fill-opacity': 0.10 },
+        })
+        map.addLayer({
+          id: 'accuracy-line', type: 'line', source: 'accuracy',
+          paint: {
+            'line-color': t('--amber'), 'line-width': 1,
+            'line-dasharray': [3, 2], 'line-opacity': 0.7,
+          },
+        })
+
         map.getCanvas().style.cursor = 'crosshair'
         setReady(true)
         setLayerState('ok')
@@ -600,26 +653,31 @@ export default function Home() {
             </div>
             {picked.accuracyM != null && (
               <div className={'hm-acc' + (tooVague ? ' hm-warn' : '')}>
-                {/* The browser's number is about YOUR DEVICE. It is not this
-                    product's precision, and printing "±1 m" next to a report
-                    built from records that disagree by 10.2 m median and 58.5 m
-                    at p90 implied a resolution nothing here has. Both figures,
-                    each attributed. */}
-                Your browser places you to {fmtAccuracy(picked.accuracyM)}.
-                {tooVague ? (
-                  <> That is wider than the {ACCURACY_LIMIT_M} m catchment — drop a pin
-                     manually for a real report.</>
-                ) : (
-                  <span className="hm-dim">
-                    {' '}Our records are block-level regardless: sources disagree by 10.2 m
-                    median, 58.5 m at p90.
-                  </span>
+                {/* The browser's own number, named as the browser's. It is
+                    about YOUR DEVICE, not about our records — which are
+                    block-level regardless: sources disagree by 10.2 m median
+                    and 58.5 m at p90. */}
+                Your browser places you within{' '}
+                <strong>{fmtAccuracy(picked.accuracyM)}</strong> of this point.
+                {tooVague && (
+                  <div className="hm-acc-why">
+                    That circle is wider than the {ACCURACY_LIMIT_M} m catchment, so
+                    this is a region, not a position.{' '}
+                    <span className="hm-dim">
+                      Desktop browsers have no GPS. They locate you from nearby wi-fi
+                      networks, and fall back to your IP address when those are
+                      unknown — which lands on your provider's gateway, often a
+                      different district or city. A phone hotspot makes it worse:
+                      its network moves with the phone, so any location on record
+                      for it is wherever it was last seen.
+                    </span>
+                  </div>
                 )}
               </div>
             )}
             <div className="hm-actions">
               <button className="hm-btn" onClick={openReport} disabled={tooVague}>
-                {tooVague ? 'Too imprecise for a report' : 'Open report'}
+                {tooVague ? 'Drop a pin instead →' : 'Open report'}
               </button>
               {/* Compare is a front-door action, not something buried inside a
                   report: people arrive already choosing between locations. */}
@@ -637,8 +695,8 @@ export default function Home() {
             </div>
             {tooVague && (
               <p className="hm-out-sub">
-                Your browser could not place you closely enough to centre a{' '}
-                {ACCURACY_LIMIT_M} m catchment. Click the exact spot on the map instead.
+                Click your actual location on the map — the dashed circle shows the
+                area your browser narrowed it to.
               </p>
             )}
           </div>

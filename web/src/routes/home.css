@@ -419,3 +419,6 @@ body.route-home { background: var(--canvas); color: var(--text); overflow: hidde
   .hm-live-chip { min-height: 36px; }
   .hm-search-card button { padding: 10px var(--s3); }
 }
+
+.hm-acc strong { color: var(--text); font-weight: 500; }
+.hm-acc-why { margin-top: var(--s2); line-height: 18px; }
