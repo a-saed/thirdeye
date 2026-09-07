@@ -7,6 +7,8 @@ Businesses, population and construction trend for any point on the map. Every
 figure names its sources and its date, and where the record runs out the map
 stays grey rather than guessing.
 
+**Live demo: https://thirdeye-466032735471.us-central1.run.app**
+
 > **Read [`research/output/VERDICT.md`](research/output/VERDICT.md) first.** Before any of
 > this was built, a two-week feasibility study tested whether free geodata is
 > good enough for the job. The verdict was a *qualified yes*, and several
@@ -38,7 +40,7 @@ the street can check whether we are wrong.
 
 ## Quickstart
 
-Requires Python 3.10+, Go 1.23+, Node 20+.
+Requires Python 3.10+, Go 1.24+, Node 20+.
 
 ```bash
 git clone git@github.com:a-saed/thirdeye.git && cd thirdeye
@@ -54,7 +56,12 @@ cp .env.example .env          # add a Foursquare token; free, no card
 
 cd web && npm install && cd ..
 ./scripts/dev.sh              # API on :8080, web on :5173
+./scripts/dev-lan.sh          # reachable from a phone, over https
 ```
+
+`dev-lan.sh` exists because browser geolocation requires a secure context:
+over `http://<lan-ip>` the locate button cannot run at all, so testing it on
+a real device needs TLS. The certificate is generated on first use.
 
 **No data is committed** — see [docs/LICENSING.md](docs/LICENSING.md) for why.
 The pipeline reproduces everything from public sources, which is a stronger
@@ -96,7 +103,7 @@ pipeline run, not a code change.
 | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | Data flow, confidence model, H3 aggregation, request path |
 | [docs/LICENSING.md](docs/LICENSING.md) | Why code is MIT and data is not distributed |
 | [docs/DESIGN.md](docs/DESIGN.md) | The design system, and why confidence is encoded as brightness |
-| [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) | Fly.io and nginx, the 404-status fix, the monthly archiver |
+| [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) | Cloud Run: the live config, four gotchas that cost hours, the monthly archiver |
 | [docs/BRAND-ASSETS.md](docs/BRAND-ASSETS.md) | Logo files and usage |
 
 ## Licence

@@ -50,6 +50,22 @@ an instance is the image. A monthly pipeline run therefore needs a rebuild and
 redeploy rather than a file copy — and a bad data build rolls back by routing
 traffic to the previous revision.
 
+## Options that were evaluated and rejected
+
+Recorded so the decision is not re-litigated from scratch. `fly.toml`,
+`api/Dockerfile` and `deploy/nginx.conf` were deleted on 2026-09-07 — all
+three described deployments we are not doing, and two of them were broken in
+ways that would have wasted someone's afternoon.
+
+| Option | Why not |
+| --- | --- |
+| **Fly.io** | $5.70/month for the 1 GB machine this needs. Not free. The `$1.24` figure on third-party sites is wrong. `fly.toml` also pointed at `api/Dockerfile`, sized the machine from a stale "~142 MB resident" figure (measured: 346 MB idle, 458 MB peak), and set `min_machines_running = 1`, which bills continuously. |
+| **nginx on a VPS** | Superseded. `deploy/nginx.conf` split static files from the API and carried the 404 rule in the server config; the single Cloud Run container now serves both, and the 404 rule lives in `api/spa.go` where it is covered by tests. |
+| **Render / Railway free** | 512 MB against a 458 MB measured peak — 54 MB of headroom — plus a 15-minute spin-down and ~1 minute cold start. |
+| **Hugging Face Spaces** | Free CPU Basic has 16 GB, but Docker Spaces have required a paid PRO plan since July 2026. |
+| **Oracle Cloud Always Free** | 12 GB ARM, genuinely free, but Ampere A1 capacity is rarely available, the tier was halved in June 2026 with no announcement, and it still requires a card. |
+| **Fully static + client-side** | Genuinely free with no card: the whole res-9 dataset is 6.55 MB gzipped, and `h3-js` is already a frontend dependency. Blocked on `BuildReport` — porting it to TypeScript would put the threshold, land-fraction and confidence rules in two places, and compiling the Go to wasm is impossible because `h3-go` is a cgo binding. Still the best permanent answer if the free tier ever stops being enough. |
+
 ## Still open
 
 - **A budget kill-switch.** GCP budget alerts *notify*; they do not stop
