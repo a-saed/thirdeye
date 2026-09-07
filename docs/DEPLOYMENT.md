@@ -46,10 +46,28 @@ Cloud Run instance is the image and nothing else. So CI cannot build from a
 git checkout alone. The tables live in **`gs://thirdeye-demo-260906-data/h3_tables`**
 and the workflow pulls them before the build.
 
+There are **two** sets of gitignored derived inputs, and both must be in
+place before the build:
+
+| What | Where in GCS | Consumed by |
+| --- | --- | --- |
+| `h3_tables/*.parquet` | `.../h3_tables` | the Go API, loaded into RAM at startup |
+| `coverage-res8.geojson`, `coverage-summary.json`, `regions.json` | `.../web-public` | the SPA, fetched at runtime |
+
+Missing the second set is quiet: every route still returns 200, the app still
+renders, and the map is simply empty with "coverage layer: HTTP 404" in the
+corner. It shipped exactly that way once, because the deployment checks
+verified routes and not the assets the map cannot work without. They now
+check the assets too.
+
 **A monthly pipeline run is therefore two steps:**
 
 ```
 gcloud storage cp -r data/derived/h3_tables gs://thirdeye-demo-260906-data/
+gcloud storage cp web/public/coverage-res8.geojson \
+                  web/public/coverage-summary.json \
+                  web/public/regions.json \
+                  gs://thirdeye-demo-260906-data/web-public/
 gh workflow run "Deploy to Cloud Run"      # or push anything to main
 ```
 

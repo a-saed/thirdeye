@@ -55,12 +55,6 @@ jobs:
         working-directory: web
         run: npm ci && npx tsc --noEmit
 
-      # Runs the MapLibre style validator, so an invalid paint expression
-      # fails here rather than rendering a blank map in production.
-      - name: Build the SPA
-        working-directory: web
-        run: npm run build
-
       - uses: google-github-actions/auth@v2
         with:
           workload_identity_provider: projects/466032735471/locations/global/workloadIdentityPools/github/providers/github-provider
@@ -68,11 +62,33 @@ jobs:
 
       - uses: google-github-actions/setup-gcloud@v2
 
+      # EVERY DERIVED INPUT IS GITIGNORED, AND THERE ARE TWO SETS OF THEM.
+      # The parquet tables the API loads, and three files the SPA fetches at
+      # runtime — the coverage GeoJSON and two small JSON files. Both sets are
+      # correctly excluded from git (derived, licence-bearing) and both must be
+      # present at build time. Missing the second set shipped a live map with
+      # "coverage layer: HTTP 404" while every deployment check still passed.
       - name: Fetch the derived tables
         run: |
           mkdir -p data/derived
           gcloud storage cp -r "$DATA_BUCKET/h3_tables" data/derived/
           ls -la data/derived/h3_tables
+
+      - name: Fetch the derived web assets
+        run: |
+          gcloud storage cp "$DATA_BUCKET/web-public/*" web/public/
+          # Fail loudly here rather than serving a map with no data on it.
+          for f in coverage-res8.geojson coverage-summary.json regions.json; do
+            test -s "web/public/$f" || { echo "missing web/public/$f"; exit 1; }
+          done
+          ls -la web/public/coverage-res8.geojson
+
+      # After the fetch, because the coverage GeoJSON is one of its inputs.
+      # Also runs the MapLibre style validator, so an invalid paint expression
+      # fails here rather than rendering a blank map in production.
+      - name: Build the SPA
+        working-directory: web
+        run: npm run build
 
       # BUILT ON THE RUNNER, NOT ON CLOUD BUILD.
       # `gcloud builds submit` needs read AND write on a staging bucket it
@@ -117,8 +133,15 @@ jobs:
               echo "ok   $1 -> $got"
             fi
           }
-          check /                     200
-          check /api/healthz          200
-          check /nope                 404   # the SPA fallback must not report success
-          check /assets/missing.js    404
+          check /                        200
+          check /api/healthz             200
+          check /nope                    404   # the SPA fallback must not report success
+          check /assets/missing.js       404
+          # The map is the product. These three are gitignored derived files
+          # fetched from GCS at build time; when they are absent the app still
+          # renders, still returns 200 everywhere, and shows an empty map with
+          # "coverage layer: HTTP 404". Checking only routes let that ship.
+          check /coverage-res8.geojson   200
+          check /coverage-summary.json   200
+          check /regions.json            200
           exit $fail
