@@ -145,3 +145,41 @@ export interface PlaceLabel {
   lon: number
   attribution: string
 }
+
+/* ---- area search ------------------------------------------------------- */
+
+export interface SearchRow {
+  h3: string
+  lat: number
+  lon: number
+  place_name?: string
+  governorate: string
+  saturation_class: string
+  land_area_km2: number
+  land_fraction: number
+  density_distorted: boolean
+  population_stale: boolean
+  confidence: Conf
+  confidence_rank: number
+  metrics: Metric[]
+}
+
+export interface SearchResp {
+  query: Record<string, unknown>
+  sort: { key: string; metric: string; order: string; direction_of_good: string }
+  counts: {
+    cells_in_coverage: number
+    cells_searchable: number
+    excluded_for_missing_data: Record<string, number>
+    excluded_by_scope: Record<string, number>
+    matched: number
+    returned: number
+    capped: boolean
+  }
+  notes: string[]
+  empty_reason?: string
+  results: SearchRow[]
+  /** Every match, not just the returned page — the map paints all of them. */
+  matched_h3: string[]
+  as_of: string
+}

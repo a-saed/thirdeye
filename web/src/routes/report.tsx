@@ -242,6 +242,12 @@ export default function ReportCard() {
           </a>
         )}
         <a className="rc-back" href="/">← back to the coverage map</a>
+        {/* PRE-FILLED, NOT A SIMILARITY MATCH. The ranges open around this
+            cell's own figures purely as a starting point the user then edits;
+            nothing here claims the results resemble this place. */}
+        <a className="rc-back" href={`/search?${likeThisQuery(data, category)}`}>
+          Find areas like this →
+        </a>
         {!cameFrom && (
           <a className="rc-back" href={`/compare?a=${loc.lat},${loc.lon}&k=${k}&category=${category}`}>
             Compare with another location →
@@ -1460,4 +1466,31 @@ function TableSkeleton() {
       ))}
     </div>
   )
+}
+
+
+/** Opens area search with ranges bracketing this report's own values.
+ *
+ * A BAND, not a match. Population within +/-40% and competitors from zero up
+ * to what is here: wide enough to return somewhere else, narrow enough to be a
+ * starting point. Every field stays editable on the search screen, and the
+ * search never claims these results are similar to this cell — it only ran the
+ * filters it was given.
+ */
+function likeThisQuery(data: Report | null, category: string): string {
+  const p = new URLSearchParams({ category, sort: 'population' })
+  if (!data) return p.toString()
+  const pop = data.metrics.find(m => m.metric === 'population')?.value
+  const comp = data.metrics.find(m => m.metric === `business_count.${category}`)?.value
+  if (pop != null && pop > 0) {
+    p.set('population_min', String(Math.round(pop * 0.6)))
+    p.set('population_max', String(Math.round(pop * 1.4)))
+  }
+  if (comp != null) p.set('competitors_max', String(Math.ceil(comp)))
+  const bu = data.context?.builtup_pct
+  if (bu != null) {
+    p.set('builtup_pct_min', String(Math.max(0, Math.round(bu - 15))))
+    p.set('builtup_pct_max', String(Math.round(bu + 15)))
+  }
+  return p.toString()
 }

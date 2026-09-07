@@ -6,6 +6,7 @@
 import { validateStyleMin } from '@maplibre/maplibre-gl-style-spec'
 import {
   coverageFillColor, coverageFillOpacity, coverageLinePaint, catchmentFillOpacity,
+  searchDimPaint, searchHitPaint, searchFocusPaint,
 } from '../src/map/paint.mjs'
 
 // Stand-in token values; only the SHAPE of the expression is under test.
@@ -24,6 +25,9 @@ const style = {
     { id: 'cells-line', type: 'line', source: 'cells', paint: coverageLinePaint() },
     { id: 'catchment-fill', type: 'fill', source: 'cells',
       paint: { 'fill-color': t.accent, 'fill-opacity': catchmentFillOpacity() } },
+    { id: 'search-dim', type: 'fill', source: 'cells', paint: searchDimPaint(t) },
+    { id: 'search-hit', type: 'fill', source: 'cells', paint: searchHitPaint(t) },
+    { id: 'search-focus', type: 'line', source: 'cells', paint: searchFocusPaint(t) },
   ],
 }
 

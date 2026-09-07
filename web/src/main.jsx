@@ -4,10 +4,11 @@ import Home from './routes/home.tsx'
 import ReportCard from './routes/report.tsx'
 import TokensPage from './routes/tokens.tsx'
 import Compare from './routes/compare.tsx'
+import Search from './routes/search.tsx'
 import NotFound from './routes/notfound.tsx'
 import './style.css'
 
-// Deliberately not a router. Four screens, no nested routes, no transitions
+// Deliberately not a router. Five screens, no nested routes, no transitions
 // worth a dependency. Both /report and #/report work, so the pages survive
 // being opened from a static build with no history fallback.
 const path = window.location.pathname.replace(/\/+$/, '')
@@ -19,6 +20,7 @@ const PAGES = {
   report: { Component: ReportCard, cls: 'route-report' },
   tokens: { Component: TokensPage, cls: 'route-tokens' },
   compare: { Component: Compare, cls: 'route-compare' },
+  search: { Component: Search, cls: 'route-search' },
 }
 
 // An unknown path gets a REAL 404, not the home map. The SPA fallback serves

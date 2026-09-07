@@ -93,6 +93,10 @@ func LoadThresholds(path string) (*Thresholds, error) {
 		{"saturation.growth_material_pct", t.Saturation.GrowthMaterialPct > 0},
 		{"percentages.min_base", t.Percentages.MinBase > 0},
 		{"series.min_corrected_points", t.Series.MinCorrectedPoints > 0},
+		// Area search gates on "inhabited", and BOTH halves are required:
+		// population alone admits Delta farmland, built-up alone admits airports.
+		{"inhabited.population_min", t.Inhabited.PopulationMin > 0},
+		{"inhabited.builtup_pct_min", t.Inhabited.BuiltupPctMin > 0},
 	}
 	for _, r := range req {
 		if !r.ok {

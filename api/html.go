@@ -6,6 +6,7 @@ import (
 	"log"
 	"math"
 	"net/http"
+	"net/url"
 	"os"
 	"path/filepath"
 	"strconv"
@@ -210,6 +211,8 @@ func (a *App) handleHTML(w http.ResponseWriter, r *http.Request) {
 		m = a.metaForReport(r.URL.Query())
 	case "/compare":
 		m = a.metaForCompare(r.URL.Query())
+	case "/search":
+		m = a.metaForSearch(r.URL.Query())
 	default:
 		http.NotFound(w, r)
 		return
@@ -234,5 +237,33 @@ func mountHTML(mux *http.ServeMux, app *App, dir string) {
 	app.html = h
 	mux.HandleFunc("/report", app.handleHTML)
 	mux.HandleFunc("/compare", app.handleHTML)
-	log.Printf("serving /report and /compare HTML from %s with rendered meta", dir)
+	mux.HandleFunc("/search", app.handleHTML)
+	log.Printf("serving /report, /compare and /search HTML from %s with rendered meta", dir)
+}
+
+// metaForSearch describes a shared search by the filters it carries. It states
+// the CRITERIA, never a result count: the share card is rendered from the URL
+// without running the search, and a number here would be a guess printed as a
+// fact.
+func (a *App) metaForSearch(q url.Values) meta {
+	var parts []string
+	if c := q.Get("category"); c != "" {
+		parts = append(parts, c+" outlets")
+	}
+	if g := q.Get("governorate"); g != "" {
+		parts = append(parts, "in "+g)
+	}
+	if s := q.Get("saturation"); s != "" {
+		parts = append(parts, strings.ToLower(s)+" areas")
+	}
+	title := "Area search — Third Eye"
+	if len(parts) > 0 {
+		title = "Area search: " + strings.Join(parts, ", ") + " — Third Eye"
+	}
+	return meta{
+		title: title,
+		desc: "Find areas matching population, competition and construction criteria " +
+			"across the coverage grid. Ranked by one metric you choose — there is no " +
+			"blended opportunity score, and every figure carries its confidence.",
+	}
 }

@@ -122,3 +122,22 @@ func countMetrics(m map[uint64][]*MetricRecord) int {
 
 func (s *Store) ResidentBytes() uint64   { return s.residentBytes }
 func (s *Store) PipelineVersion() string { return s.pipelineVersion }
+
+// CellsAt returns a snapshot of every cell at one resolution.
+//
+// It copies the pointer slice under the lock and releases it before returning,
+// rather than handing a callback the map while still holding the read lock.
+// A caller walking the result will call MetricsFor per cell, which takes the
+// same RLock again — re-entrant reads deadlock the moment a writer queues, and
+// a full-coverage scan is exactly the long walk during which that could happen.
+// 9,938 pointers at res-8 is a trivial allocation next to that risk.
+func (s *Store) CellsAt(res int) []*CellRecord {
+	s.mu.RLock()
+	defer s.mu.RUnlock()
+	m := s.cells[res]
+	out := make([]*CellRecord, 0, len(m))
+	for _, c := range m {
+		out = append(out, c)
+	}
+	return out
+}

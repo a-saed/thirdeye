@@ -1,0 +1,198 @@
+/* Area search. Filter panel left, map and results right.
+ *
+ * The map is the primary view and holds its height on desktop; on a narrow
+ * screen the panel stacks above it, because a filter you cannot reach makes
+ * the map unusable anyway.
+ */
+
+/* Every other route sets this; search did not, so the page rendered on the
+   light #f7f7f5 body from style.css with near-black text — dark map and
+   filter bar against a white header and result list. Not a mobile bug: it was
+   wrong at every width. */
+body.route-search { background: var(--canvas); color: var(--text); }
+body.route-search #root { overflow-y: auto; }
+
+.sr {
+  min-height: 100vh; display: flex; flex-direction: column;
+  background: var(--canvas); color: var(--text);
+  font-family: var(--font); font-size: var(--t-body);
+}
+
+.sr-head {
+  padding: var(--s4) var(--s6) var(--s3);
+  border-bottom: 1px solid var(--border);
+}
+.sr-back {
+  display: inline-block; margin-bottom: var(--s2);
+  font-size: var(--t-caption); color: var(--text-muted); text-decoration: none;
+}
+.sr-back:hover { color: var(--text); }
+.sr-head h1 { font-size: var(--t-head); margin: 0 0 var(--s1); }
+.sr-sub { margin: 0; max-width: 62ch; color: var(--text-muted); font-size: var(--t-body); }
+
+.sr-body {
+  flex: 1; display: grid; grid-template-columns: 300px 1fr; gap: 0; align-items: stretch;
+}
+
+/* ---- filters */
+.sr-filters {
+  padding: var(--s4); border-right: 1px solid var(--border);
+  display: flex; flex-direction: column; gap: var(--s3);
+  background: var(--surface);
+}
+/* display:contents so the fields stay direct participants in .sr-filters'
+   flex column on desktop — the wrapper exists only for the mobile toggle to
+   have something to hide. */
+.sr-filters-body { display: contents; }
+.sr-filters-toggle { display: none; }
+
+.sr-field { display: flex; flex-direction: column; gap: 6px; }
+.sr-label {
+  font-size: var(--t-eyebrow); text-transform: uppercase; letter-spacing: .06em;
+  color: var(--text-faint);
+}
+.sr-filters select,
+.sr-filters input[type="number"] {
+  background: var(--surface-2); color: var(--text);
+  border: 1px solid var(--border); border-radius: var(--r-control);
+  padding: 7px 9px; font: inherit; font-size: var(--t-body); width: 100%;
+}
+.sr-filters select:focus-visible,
+.sr-filters input:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+.sr-range { display: grid; grid-template-columns: 1fr auto 1fr; gap: 6px; align-items: center; }
+.sr-range span { color: var(--text-faint); }
+.sr-off { opacity: .5; }
+.sr-hint { font-size: var(--t-caption); color: var(--text-faint); }
+.sr-check {
+  display: flex; align-items: center; gap: 8px;
+  font-size: var(--t-caption); color: var(--text-muted);
+}
+.sr-rule { border: 0; border-top: 1px solid var(--border); width: 100%; margin: var(--s2) 0; }
+.sr-dir { margin: 0; font-size: var(--t-caption); color: var(--text-muted); }
+.sr-reset {
+  margin-top: var(--s2); background: transparent; color: var(--text-muted);
+  border: 1px solid var(--border); border-radius: var(--r-control);
+  padding: 7px 10px; font: inherit; font-size: var(--t-caption); cursor: pointer;
+}
+.sr-reset:hover { color: var(--text); border-color: var(--border-strong); }
+
+/* ---- map + results */
+.sr-main { display: grid; grid-template-rows: minmax(320px, 46vh) 1fr; min-width: 0; }
+.sr-map { width: 100%; height: 100%; background: var(--canvas); }
+
+.sr-results { padding: var(--s4); min-width: 0; }
+.sr-counts { font-size: var(--t-body); margin-bottom: var(--s2); }
+.sr-counts strong { font-size: var(--t-head); }
+.sr-of { color: var(--text-faint); }
+.sr-muted { color: var(--text-muted); }
+.sr-err { color: var(--amber); }
+
+/* Notes carry what the search could NOT see. They are not decoration and are
+   not collapsed by default — a result list that looks complete while resting
+   on a fifth of the map is the failure mode this screen has to avoid. */
+.sr-notes {
+  margin: 0 0 var(--s3); padding: var(--s2) var(--s3) var(--s2) calc(var(--s3) + 12px);
+  background: var(--surface-2); border-left: 2px solid var(--amber);
+  border-radius: var(--r-control);
+  font-size: var(--t-caption); color: var(--text-muted);
+}
+.sr-notes li { margin: 4px 0; }
+
+.sr-empty {
+  padding: var(--s3); background: var(--surface-2);
+  border: 1px dashed var(--border-strong); border-radius: var(--r-card);
+  color: var(--text-muted);
+}
+
+.sr-list { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--s2); }
+.sr-row {
+  padding: var(--s3); background: var(--surface);
+  border: 1px solid var(--border); border-radius: var(--r-card);
+}
+.sr-row:hover { border-color: var(--border-strong); }
+.sr-row-head { display: flex; justify-content: space-between; gap: var(--s2); align-items: flex-start; }
+.sr-name { color: var(--text); text-decoration: none; font-size: var(--t-body); font-weight: 600; }
+.sr-name:hover { text-decoration: underline; }
+.sr-meta { font-size: var(--t-caption); color: var(--text-faint); margin-top: 2px; }
+.sr-flag { color: var(--amber); }
+
+.sr-primary { display: flex; align-items: baseline; gap: 8px; margin: var(--s2) 0 var(--s1); }
+.sr-primary-v { font-size: var(--t-head); font-variant-numeric: tabular-nums; }
+.sr-primary-l { font-size: var(--t-caption); color: var(--text-muted); }
+
+.sr-other {
+  display: flex; flex-wrap: wrap; gap: var(--s1) var(--s3); margin: 0;
+  font-size: var(--t-caption);
+}
+.sr-cellv { display: flex; gap: 6px; align-items: baseline; }
+.sr-cellv dt { color: var(--text-faint); }
+.sr-cellv dd { margin: 0; color: var(--text); font-variant-numeric: tabular-nums; }
+.sr-zero { color: var(--text-faint); }
+
+@media (max-width: 900px) {
+  .sr-body { grid-template-columns: 1fr; }
+  .sr-filters {
+    border-right: 0; border-bottom: 1px solid var(--border);
+    padding: 0; gap: 0;
+  }
+  .sr-main { grid-template-rows: minmax(260px, 38vh) 1fr; }
+
+  /* The form becomes a disclosure. Closed, the header sits directly above the
+     map and the results; open, it is the same form as on desktop. The count
+     is on the button because a collapsed filter set that is silently applied
+     is worse than no filters at all — you cannot tell why a result is missing. */
+  .sr-filters-toggle {
+    display: flex; align-items: center; justify-content: space-between;
+    width: 100%; min-height: 48px; padding: 0 var(--s4);
+    background: none; border: none; cursor: pointer;
+    font: inherit; font-size: var(--t-body); color: var(--text);
+  }
+  .sr-filters-count {
+    display: inline-block; margin-left: var(--s2);
+    min-width: 20px; padding: 1px 6px; border-radius: var(--r-pill);
+    background: rgba(69, 201, 165, 0.16); color: var(--accent);
+    font-size: var(--t-eyebrow); font-variant-numeric: tabular-nums;
+  }
+  .sr-filters-caret { color: var(--text-faint); }
+  .sr-filters-body {
+    display: flex; flex-direction: column; gap: var(--s3);
+    padding: 0 var(--s4) var(--s4);
+  }
+  .sr-filters:not(.is-open) .sr-filters-body { display: none; }
+
+  /* STICKY, BECAUSE THE LIST IS 24 SCREENS LONG.
+     100 ranked results is the right shape for this page and shortening it
+     would be the wrong fix — but at row 80 the only way back to the controls
+     that produced the ranking was to scroll to the top. The filter bar and
+     the count follow the reader instead. Two bars, stacked: the count sits
+     directly under the filter bar rather than overlapping it. */
+  .sr-filters {
+    position: sticky; top: 0; z-index: 6;
+    background: var(--surface);
+  }
+  .sr-counts {
+    position: sticky; top: 48px; z-index: 5;
+    margin: 0 calc(var(--s4) * -1) var(--s2);
+    padding: var(--s2) var(--s4);
+    background: var(--canvas);
+    border-bottom: 1px solid var(--border);
+  }
+}
+
+/* This screen had no touch sizing at all — it is the newest route and the
+   coarse-pointer pass that covered home, report and compare predates it.
+   Every control here is a filter the user will change repeatedly, so the
+   cost of a mis-tap is a wrong result set, not just an annoyance. */
+@media (pointer: coarse) {
+  .sr-filters select,
+  .sr-filters input[type="number"] { min-height: 44px; padding: 10px 9px; }
+  .sr-reset { min-height: 44px; padding: 10px var(--s3); }
+  .sr-check { min-height: 44px; }
+
+  /* Underlined/plain text links: grow the target, leave the type in place. */
+  .sr-back, .sr-name { position: relative; }
+  .sr-back::after, .sr-name::after {
+    content: ''; position: absolute; left: 0; right: 0;
+    top: 50%; height: 44px; transform: translateY(-50%);
+  }
+}

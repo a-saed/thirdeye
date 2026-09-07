@@ -56,3 +56,47 @@ export function coverageLinePaint() {
 export function catchmentFillOpacity() {
   return ['case', ['==', ['get', 'origin'], 1], 0.30, 0.14]
 }
+
+/* ---- area search ------------------------------------------------------- */
+
+/** Non-matching cells on the search map. They stay VISIBLE rather than hidden:
+ *  the answer to "where looks like this" is only readable against the places
+ *  that do not, and an empty map cannot show that a filter excluded a whole
+ *  district. */
+export function searchDimPaint(t) {
+  return {
+    'fill-color': t.noData,
+    'fill-opacity': ['interpolate', ['linear'], ['zoom'], 7, 0.16, 12, 0.07],
+  }
+}
+
+/** One zoom stop: full alpha for a matching cell, nothing for the rest. */
+function hitAlpha(a) {
+  return ['case', ['boolean', ['feature-state', 'hit'], false], a, 0]
+}
+
+/** Matching cells, driven by feature-state so a new result set repaints without
+ *  rebuilding a filter expression holding thousands of ids. */
+export function searchHitPaint(t) {
+  return {
+    'fill-color': ['case',
+      ['==', ['feature-state', 'conf'], 'corroborated'], t.accent,
+      t.amber],
+    // interpolate OUTERMOST, the rule this file exists to enforce. Written the
+    // other way round first and the validator rejected it, which is the point:
+    // nested, MapLibre drops the whole layer and the map looks like missing
+    // data rather than broken paint.
+    'fill-opacity': ['interpolate', ['linear'], ['zoom'],
+      7, hitAlpha(0.75),
+      12, hitAlpha(0.45)],
+  }
+}
+
+/** Outline for the row the cursor is on in the results list. */
+export function searchFocusPaint(t) {
+  return {
+    'line-color': t.accent,
+    'line-width': 2,
+    'line-opacity': ['case', ['boolean', ['feature-state', 'focus'], false], 1, 0],
+  }
+}
