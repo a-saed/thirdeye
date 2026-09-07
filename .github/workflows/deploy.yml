@@ -74,11 +74,23 @@ jobs:
           gcloud storage cp -r "$DATA_BUCKET/h3_tables" data/derived/
           ls -la data/derived/h3_tables
 
-      # Cloud Build rather than docker-in-Actions: the image needs cgo for
-      # h3-go, and building where the registry is avoids pushing 28 MB back
-      # out of a GitHub runner.
-      - name: Build the image
-        run: gcloud builds submit --tag "$IMAGE:${GITHUB_SHA::12}" .
+      # BUILT ON THE RUNNER, NOT ON CLOUD BUILD.
+      # `gcloud builds submit` needs read AND write on a staging bucket it
+      # creates in the project, plus serviceusage.services.use. Three attempts
+      # with progressively broader grants (serviceUsageConsumer,
+      # storage.objectAdmin, then bucket-scoped storage.admin) all failed the
+      # same way, and the error names a permission the account demonstrably
+      # had. Building here removes the staging bucket, the extra roles and the
+      # whole failure mode; the cost is ~2 minutes of runner time and a 28 MB
+      # push. Fewer moving parts beats a faster build we cannot debug.
+      - name: Authenticate Docker to Artifact Registry
+        run: gcloud auth configure-docker us-central1-docker.pkg.dev --quiet
+
+      - name: Build and push the image
+        run: |
+          docker build -t "$IMAGE:${GITHUB_SHA::12}" -t "$IMAGE:latest" .
+          docker push "$IMAGE:${GITHUB_SHA::12}"
+          docker push "$IMAGE:latest"
 
       - name: Deploy
         run: |
