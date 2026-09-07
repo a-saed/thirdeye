@@ -13,6 +13,8 @@ web/dist/
 api/thirdeye-api
 api/api
 .dev-logs/
+# Local TLS for LAN testing. Private keys, and regenerable in one command.
+.dev-certs/
 
 # ---------------------------------------------------------------------------
 # DERIVED DATA IS NOT COMMITTED.
@@ -42,3 +44,4 @@ research/output/*.parquet
 research/output/campus_records_candidates.csv
 research/output/campus_interior_records.csv
 research/output/*_pairs_*.csv
+competitors.md

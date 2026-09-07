@@ -6,6 +6,10 @@ body.route-home { background: var(--canvas); color: var(--text); overflow: hidde
 .hm { position: absolute; inset: 0; font-family: var(--font); font-size: var(--t-body); }
 .hm-map { position: absolute; inset: 0; }
 
+/* Desktop has a column for the panel and nothing to reclaim, so the sheet
+   controls are inert here. */
+.hm-sheet-grip { display: none; }
+
 .hm-panel {
   position: absolute; top: 68px; left: var(--s4); z-index: 10;
   width: var(--panel-w); max-height: calc(100% - 84px); overflow-y: auto;
@@ -169,7 +173,11 @@ body.route-home { background: var(--canvas); color: var(--text); overflow: hidde
 /* The search takes the middle and stays centred in the bar. */
 .hm-search { position: relative; flex: 1; max-width: 520px; margin: 0 auto; }
 @media (max-width: 900px) {
-  .hm-live-chip { display: none; }
+  /* The regions chip used to be dropped here and re-added below 720px, so it
+     vanished on tablets and on the narrowest phones — the two places where
+     "which cities do you actually cover?" is hardest to answer any other way.
+     It is a control, not decoration: it opens the live-regions list. It stays,
+     and shrinks instead. */
   .hm-brand img { height: 22px; }
 }
 
@@ -200,6 +208,11 @@ body.route-home { background: var(--canvas); color: var(--text); overflow: hidde
 .hm-search-input {
   flex: 1; min-width: 0; background: none; border: none; outline: none;
   font-family: inherit; font-size: var(--t-body); color: var(--text);
+  /* Fill the pill rather than sitting as an 18px band inside it. The pill is
+     40px (48px on touch) and carries no click handler of its own, so without
+     this the outer ~15px of the search bar looks like the field and does
+     nothing when tapped — measured with elementFromPoint at both edges. */
+  align-self: stretch;
 }
 .hm-search-input::placeholder { color: var(--text-disabled); }
 .hm-search-busy { color: var(--text-faint); }
@@ -369,17 +382,38 @@ body.route-home { background: var(--canvas); color: var(--text); overflow: hidde
 @media (max-width: 720px) {
   .hm-panel {
     top: auto; bottom: 0; left: 0; right: 0;
-    width: auto; max-height: 52vh;
+    width: auto;
+    /* Closed, the sheet is exactly as tall as the two things it peeks. No vh
+       figure to pick, and nothing to re-tune when the copy changes. */
+    max-height: none;
     border-radius: var(--r-card) var(--r-card) 0 0;
     border-left: none; border-right: none; border-bottom: none;
     padding: var(--s3) var(--s4) var(--s6);
-    /* A grab edge, so the sheet reads as something that scrolls. */
     box-shadow: 0 -8px 28px rgba(0, 0, 0, 0.5);
   }
-  .hm-panel::before {
-    content: ''; display: block; width: 36px; height: 3px; margin: 0 auto var(--s3);
+  /* Open, it takes what it needs and scrolls — but never the whole screen:
+     the map stays visible behind it so the sheet reads as covering the map
+     rather than replacing it. */
+  .hm-panel.hm-open { max-height: 76vh; }
+
+  /* WHAT PEEKS. Everything is hidden by default and three things are named
+     back in, so a child added later fails closed instead of silently growing
+     the sheet back to full height. */
+  .hm-panel:not(.hm-open) > * { display: none; }
+  .hm-panel:not(.hm-open) > .hm-sheet-grip { display: flex; }
+  .hm-panel:not(.hm-open) > .hm-h1 { display: block; margin-bottom: var(--s1); }
+  .hm-panel:not(.hm-open) > .hm-cta { display: block; margin-bottom: 0; }
+
+  .hm-sheet-grip {
+    display: flex; align-items: center; justify-content: center;
+    width: 100%; min-height: 44px; margin: calc(var(--s3) * -1) 0 0;
+    padding: 0; background: none; border: none; cursor: pointer;
+  }
+  .hm-grip-bar {
+    display: block; width: 36px; height: 3px;
     background: var(--border-strong); border-radius: 999px;
   }
+  .hm-sheet-grip:hover .hm-grip-bar { background: var(--text-faint); }
 
   /* The search moves to the top edge, full width, with the brand above it. */
   .hm-topbar {
@@ -403,8 +437,15 @@ body.route-home { background: var(--canvas); color: var(--text); overflow: hidde
 
 /* 360px: the narrowest common phone. */
 @media (max-width: 380px) {
-  .hm-panel { max-height: 56vh; padding: var(--s3); }
-  .hm-live-chip { display: none; }
+  /* This block used to raise the sheet to 56vh — the smallest screen got the
+     largest panel and the least map. It only sets padding now; the height
+     comes from the open/closed state above. */
+  .hm-panel { padding: var(--s3); }
+  .hm-panel.hm-open { max-height: 72vh; }
+  /* Compact rather than absent: the word "regions" is the part that does not
+     survive 375px, not the number or the disclosure. */
+  .hm-live-chip { padding-left: var(--s2); padding-right: var(--s2); }
+  .hm-live-chip .hm-chip-word { display: none; }
   .hm-search-input { font-size: var(--t-body); }
   .hm-actions { flex-direction: column; }
 }
@@ -416,9 +457,42 @@ body.route-home { background: var(--canvas); color: var(--text); overflow: hidde
   .hm-btn { padding: 11px var(--s3); }
   .hm-toggle, .hm-detail-toggle { min-height: 44px; }
   .hm-search-pill { height: 48px; }
-  .hm-live-chip { min-height: 36px; }
+  .hm-live-chip { min-height: 44px; }
   .hm-search-card button { padding: 10px var(--s3); }
+  /* Only rendered while the field has a query, so it never showed up in a
+     cold-load audit — sized here on the same rule as everything else. */
+  .hm-search-clear { min-width: 44px; min-height: 44px; }
+
+  /* Measured on a phone: brand 80x24, the areas link 114x31. Both are in the
+     top bar, where the neighbouring target is the map itself. */
+  .hm-brand { min-height: 44px; align-items: center; }
+  /* An underlined text link cannot take vertical padding without dragging its
+     underline away from the words. The overlay grows the target to 44px and
+     leaves the type exactly where the design put it. */
+  .hm-secondary { position: relative; }
+  .hm-secondary::after {
+    content: ''; position: absolute; left: 0; right: 0;
+    top: 50%; height: 44px; transform: translateY(-50%);
+  }
 }
 
 .hm-acc strong { color: var(--text); font-weight: 500; }
 .hm-acc-why { margin-top: var(--s2); line-height: 18px; }
+
+/* Entry point to area search — the reverse question to this map's. Styled as
+   chrome beside the region chip, not as a primary call to action: most people
+   arrive knowing a place, and the ones who do not are looking for this. */
+.hm-search-link {
+  font-size: var(--t-caption); color: var(--text-muted); text-decoration: none;
+  border: 1px solid var(--border); border-radius: var(--r-pill);
+  padding: 6px 10px; white-space: nowrap;
+}
+.hm-search-link:hover { color: var(--text); border-color: var(--border-strong); }
+
+/* A SECOND coarse block, deliberately. .hm-search-link is declared further
+   down this file than the block above, and a media query adds no specificity
+   — so a rule placed up there loses to the base rule on source order alone.
+   Touch sizing for anything declared below that point belongs here. */
+@media (pointer: coarse) {
+  .hm-search-link { padding: 12px var(--s3); }
+}

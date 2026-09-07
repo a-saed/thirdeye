@@ -12,3 +12,9 @@
   stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round;
 }
 .cl-done { color: var(--accent); border-color: var(--accent); }
+
+@media (pointer: coarse) {
+  /* Measured at 28px tall on a phone. It sits beside the report title where
+     a mis-tap navigates away instead of copying. */
+  .cl { min-height: 44px; padding: 8px var(--s4); }
+}

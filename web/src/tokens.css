@@ -119,3 +119,15 @@ input[type="number"] {
   font-variant-numeric: tabular-nums;
   font-feature-settings: "tnum" 1;
 }
+
+/* The browser default checkbox is 13x13 — a third of the 44px a fingertip
+   needs, and it appears on the home, report and tokens screens. Scaling the
+   control rather than padding the label keeps the box itself hittable, which
+   is where people actually aim. Mouse sizes are untouched. */
+@media (pointer: coarse) {
+  input[type="checkbox"],
+  input[type="radio"] {
+    width: 20px; height: 20px;
+    margin: 0; flex: none;
+  }
+}

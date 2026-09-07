@@ -284,6 +284,15 @@ export default function Home() {
   const [detailOpen, setDetailOpen] = useState(false)
   const [note, setNote] = useState('')
   const [picked, setPicked] = useState<Picked | null>(null)
+  /* THE SHEET STARTS CLOSED ON A PHONE.
+     Measured on an iPhone SE (375x667): the open sheet took 374px and the top
+     bar 100px, leaving the map — the entire product — 185px, or 28% of the
+     screen, before the user had touched anything. A panel of orientation copy
+     is worth less than the thing it orients you to. Closed it peeks with the
+     headline and the instruction; everything else is one tap away.
+     Irrelevant above 720px, where the panel is a floating card with its own
+     column and nothing to compete with. */
+  const [sheetOpen, setSheetOpen] = useState(false)
   const [inhabitedOnly, setInhabitedOnly] = useState(false)
   const [ready, setReady] = useState(false)
   const [err, setErr] = useState<string | null>(null)
@@ -448,6 +457,10 @@ export default function Home() {
     window.location.href = `/report?lat=${picked.lat.toFixed(5)}&lon=${picked.lon.toFixed(5)}`
   }
 
+  /* Picking a point is a request to see the answer. Leaving the sheet peeked
+     after a tap would hide the very thing the tap was for. */
+  useEffect(() => { if (picked) setSheetOpen(true) }, [picked])
+
   const showLayerSkel = useDelayed(layerState === 'loading')
 
   const govRows = useMemo(
@@ -486,6 +499,8 @@ export default function Home() {
             selectPoint(lat, lon)
           }}
         />
+        {/* The reverse of this map: start from criteria instead of a place. */}
+        <a className="hm-search-link" href="/search">Search areas →</a>
         {regions.length > 0 && (
           <div className="hm-regions">
             {/* No status dot: a green light reads as "system operational", not
@@ -495,7 +510,10 @@ export default function Home() {
               onClick={() => setRegionsOpen(o => !o)}
               aria-expanded={regionsOpen}
             >
-              {regions.length} region{regions.length === 1 ? '' : 's'} live
+              {regions.length}
+              <span className="hm-chip-word">
+                {' '}region{regions.length === 1 ? '' : 's'} live
+              </span>
               <span className="hm-chip-caret">{regionsOpen ? '▴' : '▾'}</span>
             </button>
             {regionsOpen && (
@@ -531,7 +549,19 @@ export default function Home() {
         <div className="hm-loading">Loading coverage…</div>
       )}
 
-      <div className="hm-panel">
+      <div className={'hm-panel' + (sheetOpen ? ' hm-open' : '')}>
+        {/* The grab bar was a ::before with no behaviour — it looked draggable
+            and did nothing. It is a real button now, so the sheet can be
+            opened by tapping the thing that already invites a tap, and a
+            screen reader is told what it does. Hidden above 720px. */}
+        <button
+          className="hm-sheet-grip"
+          onClick={() => setSheetOpen(o => !o)}
+          aria-expanded={sheetOpen}
+          aria-label={sheetOpen ? 'Collapse panel' : 'Expand panel'}
+        >
+          <span className="hm-grip-bar" aria-hidden="true" />
+        </button>
         {/* THE PANEL ORIENTS, IT DOES NOT SELL — see docs/DESIGN.md §10.
             Category first, one concrete claim, and the differentiator tied to
             something visible: the grey cells in the legend directly below are

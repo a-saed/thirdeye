@@ -46,5 +46,18 @@
   .ft-sources li { flex-wrap: wrap; }
 }
 @media (pointer: coarse) {
-  .ft a { display: inline-block; min-height: 32px; }
+  /* Was 32px. Raised to match the floor every other control on the app now
+     meets — these are the licence and attribution links, which are exactly
+     the ones a reader taps deliberately rather than by habit. */
+  .ft a { display: inline-block; min-height: 44px; }
+}
+
+@media (max-width: 720px) {
+  /* The Disclosure summary carries these words below this width. */
+  .ft-h { display: none; }
+  /* The footer was 629px on every route. The brand row and the note stay
+     visible — the note is a product claim, not chrome — and the source list
+     folds behind a summary that still names the licences. */
+  .ft { padding-top: var(--s4); padding-bottom: var(--s4); }
+  .ft-row { flex-direction: column; align-items: flex-start; gap: var(--s3); }
 }

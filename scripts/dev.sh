@@ -8,6 +8,11 @@ need npm
 check_data
 mkdir -p "$LOG_DIR"
 
+# The address the LAN sees us on, for the certificate SANs and the
+# printed URL. A cert without the IP in its SANs is rejected by name,
+# not by trust, so this cannot be left to a wildcard.
+LAN_IP="$(ip route get 1.1.1.1 2>/dev/null | grep -oP 'src \K[0-9.]+' || echo 127.0.0.1)"
+
 API_LOG="$LOG_DIR/api.log"
 
 cleanup() {
@@ -48,9 +53,35 @@ say "API ready."
 cd "$ROOT/web"
 [ -d node_modules ] || { say "Installing dependencies…"; npm install; }
 
-say "Web on http://127.0.0.1:${WEB_PORT}"
+# TLS is opt-in. Generating it unconditionally would put a private key in the
+# tree for everyone who only ever opens localhost, where http is already a
+# secure context and nothing is gained.
+SCHEME=http
+if [ -n "$WEB_HTTPS" ]; then
+  need mkcert
+  if [ ! -f "$CERT_DIR/cert.key" ] || [ ! -f "$CERT_DIR/cert.crt" ]; then
+    say "Generating a dev CA and certificate in $CERT_DIR…"
+    mkdir -p "$CERT_DIR"
+    ( cd "$CERT_DIR" \
+      && mkcert create-ca --organization "Third Eye Dev" --validity 825 \
+           --key ca.key --cert ca.crt >/dev/null \
+      && mkcert create-cert --ca-key ca.key --ca-cert ca.crt --validity 825 \
+           --key cert.key --cert cert.crt \
+           --domains localhost 127.0.0.1 $LAN_IP >/dev/null )
+    warn "Install $CERT_DIR/ca.crt on any device you test from, or the"
+    warn "browser will reject the certificate."
+  fi
+  export WEB_TLS_KEY="$CERT_DIR/cert.key"
+  export WEB_TLS_CERT="$CERT_DIR/cert.crt"
+  SCHEME=https
+fi
+
+say "Web on ${SCHEME}://${WEB_HOST}:${WEB_PORT}"
 printf '%s%s%s\n' "$DIM" "  /          coverage map — click to pick a location" "$OFF"
 printf '%s%s%s\n' "$DIM" "  /report    report card for a point" "$OFF"
 printf '%s%s%s\n' "$DIM" "  /tokens    design system preview" "$OFF"
 printf '%s%s%s\n' "$DIM" "  api log:   tail -f $API_LOG" "$OFF"
-npm run dev -- --port "$WEB_PORT" --host 127.0.0.1
+if [ "$WEB_HOST" = "0.0.0.0" ]; then
+  say "On the LAN: ${SCHEME}://${LAN_IP}:${WEB_PORT}"
+fi
+npm run dev -- --port "$WEB_PORT" --host "$WEB_HOST"

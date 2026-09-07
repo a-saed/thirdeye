@@ -497,8 +497,43 @@ body.route-report #root { overflow-y: auto; }
   .rc-ring { padding: 8px var(--s3); }
   .rc-disclose, .rc-place-filter, .rc-layer-toggles label { min-height: 44px; }
   .rc-place-table td { padding-top: 10px; padding-bottom: 10px; }
+
+  .rc-home { min-height: 44px; align-items: center; }
+  /* 172x22 measured. Same overlay trick as .hm-secondary — this is the only
+     way back to the map, so it is the last link that should be hard to hit. */
+  .rc-back { position: relative; }
+  .rc-back::after {
+    content: ''; position: absolute; left: 0; right: 0;
+    top: 50%; height: 44px; transform: translateY(-50%);
+  }
 }
 
 /* Returning to a comparison is the primary way back when you arrived from one. */
 .rc-back-primary { color: var(--text); }
 .rc-back-primary:hover { color: var(--accent); }
+
+/* ==========================================================================
+   MOBILE ORDER
+   .rc is already a flex column, so the reading order is a property of this
+   block alone — no markup moves, and desktop is untouched.
+
+   THE VERDICT COMES SECOND. Measured at 375x667 it sat at 2887px, second to
+   last: "What we can say" is the synthesis of the whole screen and a phone
+   user reached it after five screens of inputs. Everything above it is
+   evidence for it. It is prose with no controls in it, so promoting it
+   visually does not put focus order out of step with reading order — which
+   is the reason this is the only band that moves.
+   ========================================================================== */
+@media (max-width: 720px) {
+  .rc > * { order: 2; }
+  .rc-head { order: 0; }
+  .rc-verdict { order: 1; }
+  .ft { order: 9; }
+
+  /* Promoted, it is the first thing under the title and should not read as a
+     footnote: it gets the separation a lede has. */
+  .rc-verdict {
+    margin-top: var(--s4); padding-top: var(--s4);
+    border-top: 1px solid var(--border);
+  }
+}

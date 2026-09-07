@@ -1,0 +1,37 @@
+/* Collapsible section. Tokens only.
+
+   Desktop is the default state and it is the OLD state: no toggle, body
+   always shown, so the section is indistinguishable from the plain markup it
+   replaced. Only the phone breakpoint introduces the fold. */
+
+.dc-summary { display: none; }
+.dc-body { display: block; }
+
+@media (max-width: 720px) {
+  .dc {
+    display: block;
+    border-top: 1px solid var(--border);
+    margin-top: var(--s4);
+  }
+  .dc-summary {
+    display: flex; align-items: center; justify-content: space-between;
+    width: 100%; min-height: 48px; padding: 0;
+    background: none; border: none; cursor: pointer;
+    font: inherit; font-size: var(--t-body); color: var(--text);
+    text-align: left;
+  }
+  .dc-label { display: flex; align-items: center; gap: var(--s2); }
+  /* The count is the honesty mechanism — see the component comment. It is
+     --text-muted rather than --accent because teal is reserved for
+     corroboration and the one primary action. */
+  .dc-count {
+    display: inline-block; padding: 1px 7px; border-radius: var(--r-pill);
+    background: var(--surface-2); color: var(--text-muted);
+    font-size: var(--t-eyebrow); font-variant-numeric: tabular-nums;
+  }
+  .dc-caret { color: var(--text-faint); }
+  .dc-summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  .dc-body[data-open='false'] { display: none; }
+  .dc-body[data-open='true'] { padding-bottom: var(--s4); }
+}

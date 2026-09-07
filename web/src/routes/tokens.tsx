@@ -170,6 +170,7 @@ export default function TokensPage() {
             title="Text"
             note="Contrast measured against --canvas and --surface-2. 4.5 is the floor for anything a user must read. --text-disabled sits under it deliberately and is for non-informational use only."
           >
+            <div className="tk-scroll">
             <table className="tk-table">
               <thead>
                 <tr>
@@ -198,6 +199,7 @@ export default function TokensPage() {
                 })}
               </tbody>
             </table>
+            </div>
           </Section>
 
           <Section
@@ -488,6 +490,7 @@ function TabularDemo() {
     [1284, 612, 0], [1111, 999, 41], [8888, 111, 7], [1090, 470, 22],
   ][i % 4]
   return (
+    <div className="tk-scroll">
     <table className="tk-table tk-table-narrow">
       <thead>
         <tr><th>metric</th><th className="num">tabular</th><th className="num">proportional</th></tr>
@@ -502,6 +505,7 @@ function TabularDemo() {
         ))}
       </tbody>
     </table>
+    </div>
   )
 }
 

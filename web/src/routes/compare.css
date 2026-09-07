@@ -171,11 +171,13 @@ body.route-compare #root { overflow-y: auto; }
 
 /* Touch targets */
 @media (pointer: coarse) {
-  .cmp-chip { padding: 10px var(--s3); }
+  .cmp-chip { padding: 10px var(--s3); min-height: 44px; }
   .cmp-ring { padding: 8px var(--s3); }
-  .cmp-change { min-height: 40px; padding: 6px var(--s3); }
+  .cmp-change { min-height: 44px; padding: 6px var(--s3); }
   .cmp-hits button { padding: 10px var(--s2); }
   .cmp-search { padding: 11px var(--s3); }
+
+  .cmp-brand { min-height: 44px; align-items: center; }
 }
 
 .cmp-label { font-size: var(--t-body); display: flex; flex-direction: column; }
@@ -205,7 +207,10 @@ body.route-compare #root { overflow-y: auto; }
 .cmp-verdict strong { color: var(--text); font-weight: 500; }
 .cmp-weak { color: var(--amber); cursor: help; }
 .cmp-dim { color: var(--text-disabled); }
-.cmp-conf { font-size: 9px; }
+/* The dot stays 9px — it is a mark, not text. The LABEL beside it is what
+   makes the mark mean something without a pointer; see ConfDot. */
+.cmp-conf { font-size: 9px; display: inline-flex; align-items: center; gap: 5px; }
+.cmp-conf-t { display: none; font-size: var(--t-eyebrow); }
 .cmp-conf-corroborated { color: var(--accent); }
 .cmp-conf-single_source { color: var(--amber); }
 .cmp-conf-unavailable { color: var(--text-disabled); }
@@ -295,4 +300,17 @@ body.route-compare #root { overflow-y: auto; }
 @media (max-width: 640px) {
   .cmp-slot-actions { justify-content: space-between; }
   .cmp-open, .cmp-change { flex: 1; text-align: center; }
+}
+
+/* Declared after the coarse block above, so its touch sizing has to live
+   below it — a media query adds no specificity, only source order decides.
+   .cmp-open sits directly above .cmp-change; one opens the report, the other
+   discards the slot. */
+@media (pointer: coarse) {
+  .cmp-open { padding: 11px var(--s3); }
+}
+
+@media (max-width: 720px) {
+  /* No hover here, so the confidence label is spelled out. */
+  .cmp-conf-t { display: inline; }
 }

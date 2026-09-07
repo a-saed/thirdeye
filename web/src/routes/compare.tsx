@@ -25,6 +25,7 @@ import 'maplibre-gl/dist/maplibre-gl.css'
 import { setMeta } from '../components/meta'
 import Footer from '../components/Footer'
 import CopyLink from '../components/CopyLink'
+import Note from '../components/Note'
 import { useFetch, useDelayed, Skel, ErrorBox } from '../components/async'
 import '../tokens.css'
 import './compare.css'
@@ -215,10 +216,6 @@ export default function Compare() {
         </section>
       )}
 
-      <div className="cmp-share">
-        <CopyLink label="Copy comparison link" />
-      </div>
-
       <div className="cmp-slots">
         {/* Each side carries the CURRENT query into its report, so a
             comparison made at Pharmacy / 2.3 km² opens a report showing
@@ -258,6 +255,14 @@ export default function Compare() {
           </p>
         </section>
       )}
+
+      {/* MOVED BELOW THE COMPARISON. At 375x667 this sat at 266px — above the
+          slots, the minis and every metric row — offering to copy a link to a
+          comparison the reader had not seen yet. Copying is what you do after
+          reading, so it follows the rows. */}
+      <div className="cmp-share">
+        <CopyLink label="Copy comparison link" />
+      </div>
 
       {(ra || rb) && <Caveats ra={ra} rb={rb} />}
       <Footer />
@@ -384,9 +389,10 @@ function Slot({ label, loc, report, onPick, req, category, k, other }: {
             Open full report →
           </a>
         ) : (
-          <span className="cmp-open cmp-open-off"
-                title="Choose a location for this side first — there is nothing to report on yet.">
-            Open full report →
+          /* A greyed link whose reason for being grey was hover-only. On touch
+             it read as a dead control. The reason is now the label. */
+          <span className="cmp-open cmp-open-off">
+            Choose a location first
           </span>
         )}
         <button className="cmp-change" onClick={() => setOpen(o => !o)}>
@@ -597,16 +603,27 @@ function Row({ r }: { r: RowData }) {
             {weaker} is the weaker evidence
           </span>
         )}
-        {r.note && <span className="cmp-dim" title={r.note}>ⓘ</span>}
+        {/* Was a bare "ⓘ" carrying the note in `title` — unreachable without a
+            pointer. */}
+        {r.note && <Note label="Why this row is qualified">{r.note}</Note>}
       </div>
     </div>
   )
 }
 
 function ConfDot({ c }: { c: Conf }) {
+  /* THE GLYPH ALONE IS NOT AN ENCODING ON TOUCH.
+     This rendered as a 9px "○" whose meaning lived entirely in `title`, and
+     touch has no hover — so on a phone the confidence on this screen could
+     not be read at all. DESIGN.md §9 asks whether every number carries a
+     confidence indicator and whether it survives greyscale; a tooltip fails
+     both on a device with no pointer. The label is in the DOM always and
+     shown below 720px, so density on desktop — where hover works — is
+     unchanged. */
   return (
     <span className={`cmp-conf cmp-conf-${c}`} title={CONF_LABEL[c]}>
       {CONF_GLYPH[c]}
+      <span className="cmp-conf-t">{CONF_LABEL[c]}</span>
     </span>
   )
 }

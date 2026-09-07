@@ -10,6 +10,30 @@ ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 API_PORT="${API_PORT:-8080}"
 WEB_PORT="${WEB_PORT:-5173}"
 API_HOST="${API_HOST:-127.0.0.1}"
+# Loopback by default: a dev server on 0.0.0.0 is reachable by anything on the
+# network. Set WEB_HOST=0.0.0.0 deliberately to test from a phone.
+WEB_HOST="${WEB_HOST:-127.0.0.1}"
+# Browser geolocation is gated on a SECURE CONTEXT — https, or localhost.
+# Over http://<lan-ip> it refuses to run, so the locate button cannot be
+# tested from a phone without TLS. Set WEB_HTTPS=1 to serve https; the certs
+# are generated on first use.
+# Unset means "decide from WEB_HOST" — resolved below, once both are known.
+WEB_HTTPS="${WEB_HTTPS:-}"
+CERT_DIR="${CERT_DIR:-$ROOT/.dev-certs}"
+
+# BINDING TO THE NETWORK IMPLIES WANTING TLS.
+# Serving on anything but loopback means testing from another device, and
+# another device means the browser needs a secure context or it will refuse
+# geolocation outright. Leaving these as two independent switches meant the
+# common case — LAN, no https — was a silent half-configuration that looked
+# like it worked until the locate button failed. Loopback stays http, because
+# localhost is already a secure context and nothing is gained.
+# WEB_HTTPS=0 forces it off; WEB_HTTPS=1 forces it on.
+if [ -z "$WEB_HTTPS" ] && [ "$WEB_HOST" != "127.0.0.1" ] && [ "$WEB_HOST" != "localhost" ]; then
+  WEB_HTTPS=1
+fi
+[ "$WEB_HTTPS" = "0" ] && WEB_HTTPS=""
+
 DATA_DIR="${DATA_DIR:-$ROOT/data/derived/h3_tables}"
 LOG_DIR="${LOG_DIR:-$ROOT/.dev-logs}"
 

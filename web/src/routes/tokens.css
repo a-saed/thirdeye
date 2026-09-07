@@ -85,6 +85,12 @@ body.route-tokens #root { overflow-y: auto; }
 /* The control case for the tabular demo — this one is allowed to shift. */
 .tk-proportional { font-variant-numeric: proportional-nums; font-feature-settings: "tnum" 0; }
 
+/* The contrast table has five columns of content that cannot compress — at
+   360px it pushed the whole PAGE 15px sideways, the only horizontal overflow
+   measured anywhere in the app. Scroll the table, never the document: a page
+   that slides under the thumb reads as broken layout. */
+.tk-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+
 /* ---- type ---- */
 .tk-type { display: flex; flex-direction: column; gap: var(--s3); margin-bottom: var(--s4); }
 .tk-type-row { display: flex; align-items: baseline; gap: var(--s4); }
@@ -201,3 +207,7 @@ body.route-tokens #root { overflow-y: auto; }
 /* A favicon lands on tab bars we do not control. It has to hold on light too. */
 .tk-icon-light { background: var(--text); padding: var(--s2); border-radius: var(--r-control); }
 .tk-icon-light .tk-faint { color: var(--surface); }
+
+@media (pointer: coarse) {
+  .tk-btn { min-height: 44px; }
+}

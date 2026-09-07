@@ -1,4 +1,5 @@
 import React from 'react'
+import Disclosure from './Disclosure'
 import './Footer.css'
 
 /** Sources, licences and contact.
@@ -46,7 +47,19 @@ export default function Footer() {
         </div>
       </div>
 
+      {/* ATTRIBUTION IS A LICENCE CONDITION — see the note at the top of this
+          file — so the fold is designed around that, not around tidiness.
+          The collapsed summary NAMES THE LICENCES, which means the licence
+          statement is present without interaction on every page; only the
+          per-source links are behind the tap. This is what MapLibre's own
+          attribution control does. On desktop there is no fold at all.
+          Measured reason for folding: this footer cost 629px — 0.9 of a
+          phone screen — on every route, and on /search it sat at 15,847px,
+          which means nobody had ever reached it. */}
+      <Disclosure summary="Data sources · ODbL, CDLA, CC BY" count={SOURCES.length}>
       <div className="ft-sources">
+        {/* The desktop heading. Below 720px the Disclosure summary is the
+            heading, and this is hidden so the words do not appear twice. */}
         <div className="ft-h">Data sources</div>
         <ul>
           {SOURCES.map(s => (
@@ -58,6 +71,7 @@ export default function Footer() {
           ))}
         </ul>
       </div>
+      </Disclosure>
 
       <p className="ft-note">
         Nothing here is a paid feed. Figures carry their own vintage and are only

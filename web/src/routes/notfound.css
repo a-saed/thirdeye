@@ -25,3 +25,14 @@ body.route-notfound #root { overflow-y: auto; }
 .nf-btn:hover { filter: brightness(1.08); }
 .nf-alt { color: var(--text-muted); text-decoration: none; }
 .nf-alt:hover { color: var(--text); }
+
+/* The 404 had no touch sizing at all. It is reached by mistyping a URL, which
+   happens more on a phone than anywhere else. */
+@media (pointer: coarse) {
+  .nf-btn { padding: 12px var(--s4); }
+  .nf-alt { position: relative; }
+  .nf-alt::after {
+    content: ''; position: absolute; left: 0; right: 0;
+    top: 50%; height: 44px; transform: translateY(-50%);
+  }
+}
