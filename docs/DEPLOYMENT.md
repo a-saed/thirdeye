@@ -17,6 +17,44 @@ gcloud run deploy thirdeye --image us-central1-docker.pkg.dev/thirdeye-demo-2609
 account and its project are never the active target. `gcloud config
 configurations activate thirdeye` before deploying.
 
+## CI/CD
+
+`.github/workflows/deploy.yml` — **push to `main` deploys.** It runs the Go
+tests and `go vet`, typechecks the web app, builds the SPA (which runs the
+MapLibre style validator), builds the image on Cloud Build, deploys, and then
+re-runs the acceptance checks below against the revision that just went live.
+A red test never reaches the demo.
+
+**No service-account key exists.** Auth is Workload Identity Federation: the
+GitHub OIDC token is exchanged for a short-lived credential, and the provider
+carries `assertion.repository=='a-saed/thirdeye'`, so no other repository can
+use it. Nothing to leak and nothing to rotate.
+
+```
+pool      projects/466032735471/locations/global/workloadIdentityPools/github
+provider  .../providers/github-provider
+identity  github-deployer@thirdeye-demo-260906.iam.gserviceaccount.com
+roles     run.admin, artifactregistry.writer, cloudbuild.builds.editor,
+          storage.objectViewer, iam.serviceAccountUser
+```
+
+### Where the data comes from in CI
+
+`data/` is gitignored — derived, and carrying source licences that should not
+be redistributed from this repo — but the image bakes the tables in, because a
+Cloud Run instance is the image and nothing else. So CI cannot build from a
+git checkout alone. The tables live in **`gs://thirdeye-demo-260906-data/h3_tables`**
+and the workflow pulls them before the build.
+
+**A monthly pipeline run is therefore two steps:**
+
+```
+gcloud storage cp -r data/derived/h3_tables gs://thirdeye-demo-260906-data/
+gh workflow run "Deploy to Cloud Run"      # or push anything to main
+```
+
+The workflow has `workflow_dispatch`, so refreshing data needs no commit.
+
 ## Four things that cost real time to discover
 
 **1. `gcloud builds submit` falls back to `.gitignore`.** With no

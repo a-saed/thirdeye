@@ -1,0 +1,112 @@
+# Push to main -> tested, built, deployed.
+#
+# NO SERVICE-ACCOUNT KEY. Authentication is Workload Identity Federation: the
+# GitHub OIDC token is exchanged for a short-lived Google credential, and the
+# provider is bound to this repository only. A leaked long-lived JSON key is
+# the usual way a demo project becomes someone else's crypto miner.
+#
+# THE DATA IS NOT IN THIS REPO. data/ is gitignored — the tables are derived
+# and carry source licences that should not be redistributed here — but the
+# image bakes them in, because a Cloud Run instance is the image and nothing
+# else. So the build pulls them from GCS. A monthly pipeline run therefore
+# means: upload the new tables, then re-run this workflow.
+
+name: Deploy to Cloud Run
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:        # a redeploy after a data refresh needs no commit
+
+env:
+  PROJECT_ID: thirdeye-demo-260906
+  REGION: us-central1
+  SERVICE: thirdeye
+  IMAGE: us-central1-docker.pkg.dev/thirdeye-demo-260906/thirdeye/api
+  DATA_BUCKET: gs://thirdeye-demo-260906-data
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write        # required to mint the OIDC token
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # Tests gate the deploy. A red build must never reach the demo — and
+      # api/spa_test.go is what keeps unknown paths returning 404 rather than
+      # quietly going back to 200.
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.24'
+          cache-dependency-path: api/go.sum
+      - name: Go tests
+        working-directory: api
+        run: go test ./... && go vet ./...
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - name: Typecheck
+        working-directory: web
+        run: npm ci && npx tsc --noEmit
+
+      # Runs the MapLibre style validator, so an invalid paint expression
+      # fails here rather than rendering a blank map in production.
+      - name: Build the SPA
+        working-directory: web
+        run: npm run build
+
+      - uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: projects/466032735471/locations/global/workloadIdentityPools/github/providers/github-provider
+          service_account: github-deployer@thirdeye-demo-260906.iam.gserviceaccount.com
+
+      - uses: google-github-actions/setup-gcloud@v2
+
+      - name: Fetch the derived tables
+        run: |
+          mkdir -p data/derived
+          gcloud storage cp -r "$DATA_BUCKET/h3_tables" data/derived/
+          ls -la data/derived/h3_tables
+
+      # Cloud Build rather than docker-in-Actions: the image needs cgo for
+      # h3-go, and building where the registry is avoids pushing 28 MB back
+      # out of a GitHub runner.
+      - name: Build the image
+        run: gcloud builds submit --tag "$IMAGE:${GITHUB_SHA::12}" .
+
+      - name: Deploy
+        run: |
+          gcloud run deploy "$SERVICE" \
+            --image "$IMAGE:${GITHUB_SHA::12}" \
+            --region "$REGION" \
+            --memory 1Gi --cpu 1 \
+            --min-instances 0 --max-instances 3 \
+            --allow-unauthenticated \
+            --timeout 30s
+
+      # Deploying is not the same as working. These are the checks from
+      # docs/DEPLOYMENT.md, run against the revision that just went live.
+      - name: Verify the deployment
+        run: |
+          URL=$(gcloud run services describe "$SERVICE" --region "$REGION" --format='value(status.url)')
+          echo "Deployed: $URL"
+          fail=0
+          check() {
+            got=$(curl -s -o /dev/null -w '%{http_code}' "$URL$1")
+            if [ "$got" != "$2" ]; then
+              echo "FAIL $1 -> $got (want $2)"; fail=1
+            else
+              echo "ok   $1 -> $got"
+            fi
+          }
+          check /                     200
+          check /api/healthz          200
+          check /nope                 404   # the SPA fallback must not report success
+          check /assets/missing.js    404
+          exit $fail
