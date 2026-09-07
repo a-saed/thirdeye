@@ -82,11 +82,22 @@ func main() {
 	mux.HandleFunc("/api/geocode/reverse", app.handleReverse)
 	mux.HandleFunc("/api/geocode/search", app.handleSearch)
 	mux.HandleFunc("/api/coverage", app.handleCoverage)
+	// Area search: the reverse of the report — find cells matching criteria
+	// rather than requiring the caller to already know where to look.
+	mux.HandleFunc("/api/search", app.handleAreaSearch)
 	mountHTML(mux, app, *webDir)
-	mux.HandleFunc("/healthz", func(w http.ResponseWriter, r *http.Request) {
-		w.WriteHeader(http.StatusOK)
-		_, _ = w.Write([]byte("ok"))
-	})
+	// AFTER the API and document routes, so the catch-all only answers what
+	// nothing else claimed. Best-effort like mountHTML: dev.sh passes -web
+	// unconditionally and a missing web/dist should degrade, not refuse to
+	// start — Vite serves the frontend in development.
+	if *webDir != "" {
+		if err := mountSPA(mux, *webDir); err != nil {
+			log.Printf("WARNING: not serving the SPA (%v); the API answers /api only", err)
+		} else {
+			log.Printf("serving the SPA from %s — unknown paths get a 404 status", *webDir)
+		}
+	}
+	mountHealth(mux)
 
 	log.Printf("thirdeye api listening on %s", *addr)
 	log.Fatal(http.ListenAndServe(*addr, mux))

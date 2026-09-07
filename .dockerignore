@@ -1,0 +1,35 @@
+# THE BUILD CONTEXT IS UPLOADED IN FULL, SO THIS FILE IS A COST CONTROL.
+#
+# The repo is 1.7 GB. Without this, every `gcloud run deploy` would ship all
+# of it to Cloud Build before the first instruction runs — most of it raw
+# Overture snapshots that the image does not contain and must never contain.
+# With it, the context is ~35 MB: the Go source, the derived tables, and the
+# built SPA.
+
+# 429 MB of immutable source snapshots. The image carries data/derived only.
+data/raw/
+
+# Rebuilt by `npm ci` in CI and not used by the runtime image at all.
+web/node_modules/
+node_modules/
+.venv/
+__pycache__/
+*.pyc
+
+# The frozen study. Provenance for the rules, not an input to the binary.
+research/
+
+# Local state, none of it reproducible or wanted in an image.
+.git/
+.dev-logs/
+.dev-certs/
+.claude/
+docs/
+
+# Host-built artefacts. The image builds its own binary from source, and a
+# host binary here would be the wrong architecture as often as not.
+api/thirdeye-api
+api/api
+
+# Pipeline sources: the image serves precomputed tables, it does not build them.
+pipeline/

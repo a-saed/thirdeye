@@ -1,0 +1,45 @@
+# THIS FILE EXISTS TO STOP gcloud FALLING BACK TO .gitignore.
+#
+# `gcloud builds submit` uploads the build context, and when there is no
+# .gcloudignore it generates one FROM .gitignore. That is the wrong rule here:
+# .gitignore excludes `data/` and `web/dist/` because they are derived and must
+# not be committed — but those are precisely the two directories the container
+# image bakes in. Without this file the upload silently omits them and the
+# build fails at `COPY data/derived/h3_tables`, several minutes in, with an
+# error that points at the Dockerfile rather than at the upload.
+#
+# Keep this in step with .dockerignore. They answer different questions —
+# what is uploaded, versus what the daemon may read — but the same intent.
+
+.git/
+.gitignore
+
+# 429 MB of immutable source snapshots. The image carries data/derived only.
+data/raw/
+
+# Reinstalled by npm, never read by the runtime image.
+web/node_modules/
+node_modules/
+.venv/
+__pycache__/
+*.pyc
+
+# The frozen study: provenance for the rules, not an input to the binary.
+research/
+
+# Local state.
+.dev-logs/
+.dev-certs/
+.claude/
+docs/
+
+# Host-built binaries — wrong architecture as often as not.
+api/thirdeye-api
+api/api
+
+# The pipeline builds the tables; the image only serves them.
+pipeline/
+
+# NOT excluded, deliberately, despite being in .gitignore:
+#   data/derived/h3_tables   the parquet the API loads at startup
+#   web/dist                 the built SPA the API serves

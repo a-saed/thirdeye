@@ -68,7 +68,11 @@ flexible, rather than precomputed per radius.
 **The exception:** `h3_metric_history` stays on disk and is queried lazily via
 DuckDB, never loaded whole. (Not built yet — see below.)
 
-Restart the API after a monthly pipeline run; there is no hot reload.
+Restart the API after a monthly pipeline run; there is no hot reload. **On
+Cloud Run this means rebuild and redeploy**, not restart: the parquet tables
+are baked into the image because a Cloud Run instance is the image and nothing
+else. The upside is that a bad data build rolls back by routing traffic to the
+previous revision.
 
 ## Findings that constrain the product
 
@@ -106,17 +110,27 @@ archive exists only because releases were captured, not merged.
 
 ## Deployment
 
-Not deployed yet. `docs/DEPLOYMENT.md` records the open tasks, including the
-404-status fix (the SPA fallback currently returns 200 for unknown paths) and
-the missing scheduler for the monthly archive.
+**Live at https://thirdeye-466032735471.us-central1.run.app** (Cloud Run,
+`us-central1`, 1 GiB, scale-to-zero, project `thirdeye-demo-260906`). Deployed
+2026-09-07.
+
+The 404-status bug is **fixed** — `api/spa.go` serves the SPA and gives unknown
+paths a 404 status while still returning the app shell, guarded by
+`api/spa_test.go`. Still open: a scheduler for the monthly archive, and a
+budget kill-switch (GCP budget alerts notify, they do not stop spending).
+
+Deploy: `gcloud builds submit --tag <repo>/api:vN . && gcloud run deploy
+thirdeye --image <repo>/api:vN --region us-central1`. See
+`docs/DEPLOYMENT.md` for the gotchas — several cost real time to find.
 
 ## Known gaps
 
 - `h3_metric_history` is **not built yet**. The 23 archived Overture snapshots
   are on disk in `data/raw/overture/` but have not been aggregated into a
   history table.
-- `api/` is a scaffold: types, store shape and handler exist; parquet loading
-  and `BuildReport` are unimplemented and fail loudly rather than serving
-  zeros.
+- ~~`api/` is a scaffold~~ — **out of date**. Parquet loading and
+  `BuildReport` are implemented and serving in production: the deployed
+  service loads 310,190 places and both resolutions in ~1s and returns real
+  reports. Corrected 2026-09-07.
 - Open Buildings is ingested for **2023 only**. Multi-year needs the
   documented super-pixel optimisation in `pipeline/sources/ob_worker.py`.
