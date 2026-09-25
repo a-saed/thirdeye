@@ -77,6 +77,35 @@ def mirror_releases():
     return sorted(p for p in rels if p != "docs")
 
 
+def detect_category_expr(types: dict) -> str:
+    """Pick the category column for THIS release's schema.
+
+    Overture has moved this field twice. The 2024 alphas had
+    `categories.main`; stable releases renamed it `categories.primary`; and
+    2026-09-23.0 REMOVED `categories` entirely in favour of `taxonomy`,
+    which had shadowed it for months. An unconditional `categories.primary`
+    is what killed the 2026-09 archive.
+
+    `categories` WINS while both exist. taxonomy is not a rename - it is a
+    revised vocabulary that renames 31% of values in our bbox (dentist ->
+    dental_clinic, mosque -> muslim_place_of_worship, car_dealer ->
+    auto_dealer). Preferring it early would have made the 23 archived
+    snapshots incomparable with later ones for no gain.
+
+    Raises rather than guessing: a wrong column writes a snapshot full of
+    nulls that looks like a successful archive.
+    """
+    cat_t = types.get("categories")
+    if cat_t:
+        return "categories.primary" if '"primary"' in cat_t else "categories.main"
+    if types.get("taxonomy"):
+        return "taxonomy.primary"
+    raise RuntimeError(
+        "no category column found - Overture schema changed again. "
+        f"columns seen: {sorted(types)}"
+    )
+
+
 def archive(release: str) -> dict:
     snap_dir = RAW_ROOT / f"snapshot={release}"
     manifest = snap_dir / "_manifest.json"
@@ -88,6 +117,10 @@ def archive(release: str) -> dict:
     con.execute(f"SET temp_directory='{ROOT/'data'/'duckdb_tmp'}';")
     base = (f"read_parquet('s3://overturemaps-us-west-2/release/{release}"
             f"/theme=places/type=place/*', hive_partitioning=1)")
+    types = {c[0]: c[1] for c in
+             con.execute(f"DESCRIBE SELECT * FROM {base} LIMIT 0").fetchall()}
+    cat_expr = detect_category_expr(types)
+    print(f"    category column for this release: {cat_expr}")
     where = (f"bbox.xmin <= {BBOX['xmax']} AND bbox.xmax >= {BBOX['xmin']} "
              f"AND bbox.ymin <= {BBOX['ymax']} AND bbox.ymax >= {BBOX['ymin']}")
 
@@ -95,7 +128,7 @@ def archive(release: str) -> dict:
     out = snap_dir / "places.parquet"
     con.execute(f"""
         COPY (
-            SELECT id, names.primary AS name, categories.primary AS category,
+            SELECT id, names.primary AS name, {cat_expr} AS category,
                    confidence, ST_X(geometry) AS lon, ST_Y(geometry) AS lat,
                    '{release}' AS _snapshot_id, 'overture' AS _source
             FROM {base} WHERE {where}
@@ -106,6 +139,7 @@ def archive(release: str) -> dict:
         "_source": "overture", "_snapshot_id": release, "_origin": "s3",
         "_fetched_at": datetime.now(timezone.utc).isoformat(),
         "_fetch_query": {"bbox": BBOX, "extent": "4-governorate operational"},
+        "_category_source": cat_expr,
         "rows": n,
     }, indent=2))
     return {"status": "written", "release": release, "rows": n}

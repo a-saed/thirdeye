@@ -66,7 +66,8 @@ Radius queries are computed **at read time** via k-ring so radii stay
 flexible, rather than precomputed per radius.
 
 **The exception:** `h3_metric_history` stays on disk and is queried lazily via
-DuckDB, never loaded whole. (Not built yet — see below.)
+parquet-go streaming, never loaded whole (`api/history.go`; the DuckDB
+driver was skipped deliberately — it is cgo, see the note in that file).
 
 Restart the API after a monthly pipeline run; there is no hot reload. **On
 Cloud Run this means rebuild and redeploy**, not restart: the parquet tables
@@ -100,10 +101,32 @@ These are measured. Contradicting them requires new evidence, not intuition.
   (0.52 measured). Every catchment metric divides by land area, never raw area.
 - **Population is a 2023 vintage** served as present-day, flagged stale in
   cells with measured construction since.
+- **Overture's category vocabulary changed on 2026-09-23.** The `categories`
+  column was REMOVED; `taxonomy` succeeds it and is *not* a rename — it
+  revises 31% of values in our bbox (`dentist`→`dental_clinic`,
+  `mosque`→`muslim_place_of_worship`, `car_dealer`→`auto_dealer`). Of the five
+  counted groups only `restaurant` is touched, by two renames worth 80 places;
+  `pipeline/config/categories.py` now carries **both** spellings so old and new
+  snapshots stay comparable. `archive_release.py` detects the column per
+  release and records it as `_category_source` in each manifest.
+- **The same release backfilled previously-NULL categories, and it is not
+  growth.** Cafe counts rose 18% (8,127 → 9,587) between 2026-08-19.0 and
+  2026-09-23.1, but **1,304 of the +1,460 (89%) are places that existed in
+  August with a NULL category**. Only 270 are new IDs. The backfill is
+  concentrated almost entirely in one group: 13.6% of September cafes came
+  from NULL, against 1.0% restaurant, 0.5% grocery, 0.1% pharmacy, 0% gym.
+  **The bulk-import detector does not catch this** — `BULK_JUMP_PCT = 40.0`
+  in `pipeline/qa/qa.py` and this is 18%. Do not lower that threshold; it is
+  tuned for a different signature (jump then flat). Before `h3_metric_history`
+  is rebuilt with this snapshot, add a null-backfill check: the share of a
+  group's count whose category was NULL in the prior snapshot.
 
 ## Monthly operations
 
-`pipeline/sources/archive_release.py` **must run monthly.** Overture's S3
+`pipeline/sources/archive_release.py` **must run monthly.** It failed silently
+on 2026-09-23 (Overture dropped `categories`; the job exited leaving an empty
+snapshot directory) and nobody noticed for two days — the argument for
+scheduling it is that a scheduler *notices*, not that it runs. Overture's S3
 retains only ~2 releases and the community mirror lags by months; a release
 missing from both is gone forever (2026-06-17.0 already is). The 23-snapshot
 archive exists only because releases were captured, not merged.
@@ -125,9 +148,11 @@ thirdeye --image <repo>/api:vN --region us-central1`. See
 
 ## Known gaps
 
-- `h3_metric_history` is **not built yet**. The 23 archived Overture snapshots
-  are on disk in `data/raw/overture/` but have not been aggregated into a
-  history table.
+- ~~`h3_metric_history` is not built yet~~ — **out of date**. It is built
+  (`data/derived/h3_tables/h3_metric_history_res{8,9}.parquet`, 23 snapshots,
+  ~1.2M rows) and served lazily by `api/history.go` via parquet-go streaming
+  rather than DuckDB — see the note at the top of that file. Corrected
+  2026-09-10.
 - ~~`api/` is a scaffold~~ — **out of date**. Parquet loading and
   `BuildReport` are implemented and serving in production: the deployed
   service loads 310,190 places and both resolutions in ~1s and returns real

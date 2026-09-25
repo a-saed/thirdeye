@@ -37,6 +37,7 @@ RESTAURANT = {
     "comfort_food_restaurant",
     "diner",
     "doner_kebab",
+    "doner_kebab_restaurant",   # taxonomy vocabulary, 2026-09-23.0 onward
     "egyptian_restaurant",
     "european_restaurant",
     "falafel_restaurant",
@@ -55,6 +56,7 @@ RESTAURANT = {
     "seafood_restaurant",
     "soup_restaurant",
     "southern_restaurant",
+    "southern_american_restaurant",   # taxonomy vocabulary, 2026-09-23.0 onward
     "steakhouse",
     "sushi_restaurant",
     "syrian_restaurant",
@@ -63,6 +65,14 @@ RESTAURANT = {
     "turkish_restaurant",
     "vegetarian_restaurant",
 }
+# TWO VOCABULARIES, BOTH LISTED. Overture removed `categories` in
+# 2026-09-23.0 and its successor `taxonomy` renames some values. Measured
+# across our bbox on 2026-08-19.0 (the last release carrying both columns),
+# only restaurant is affected, by exactly two renames: doner_kebab ->
+# doner_kebab_restaurant (76 places) and southern_restaurant ->
+# southern_american_restaurant (4). cafe, pharmacy, gym and grocery are
+# identical under both. Old spellings are KEPT, not replaced, so the 23
+# archived snapshots and every later one aggregate to comparable counts.
 # Excluded: bar, cocktail_bar, pub, lounge, dance_club (alcohol/nightlife
 # venues, not primarily food service even though some serve food);
 # food_stand (informal street food, a materially different business type
