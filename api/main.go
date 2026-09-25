@@ -77,14 +77,21 @@ func main() {
 	// moment /report also had to serve HTML for share previews — one path
 	// cannot be both a document and an endpoint. The frontend already called
 	// it /api/... through a proxy rewrite, so this only removes the rewrite.
-	mux.HandleFunc("/api/report", app.handleReport)
-	mux.HandleFunc("/api/places", app.handlePlaces)
-	mux.HandleFunc("/api/geocode/reverse", app.handleReverse)
-	mux.HandleFunc("/api/geocode/search", app.handleSearch)
-	mux.HandleFunc("/api/coverage", app.handleCoverage)
+	// Every /api route is rate limited per client. Health checks are not —
+	// a limited health check reads as an outage. See ratelimit.go for why
+	// geocoding gets its own, much tighter budget.
+	genLimit, geoLimit := newAPILimiters()
+	api := func(path string, h http.HandlerFunc) {
+		mux.HandleFunc(path, rateLimited(limiterFor(path, genLimit, geoLimit), h))
+	}
+	api("/api/report", app.handleReport)
+	api("/api/places", app.handlePlaces)
+	api("/api/geocode/reverse", app.handleReverse)
+	api("/api/geocode/search", app.handleSearch)
+	api("/api/coverage", app.handleCoverage)
 	// Area search: the reverse of the report — find cells matching criteria
 	// rather than requiring the caller to already know where to look.
-	mux.HandleFunc("/api/search", app.handleAreaSearch)
+	api("/api/search", app.handleAreaSearch)
 	mountHTML(mux, app, *webDir)
 	// AFTER the API and document routes, so the catch-all only answers what
 	// nothing else claimed. Best-effort like mountHTML: dev.sh passes -web

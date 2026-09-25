@@ -122,6 +122,31 @@ ways that would have wasted someone's afternoon.
 | **Oracle Cloud Always Free** | 12 GB ARM, genuinely free, but Ampere A1 capacity is rarely available, the tier was halved in June 2026 with no announcement, and it still requires a card. |
 | **Fully static + client-side** | Genuinely free with no card: the whole res-9 dataset is 6.55 MB gzipped, and `h3-js` is already a frontend dependency. Blocked on `BuildReport` — porting it to TypeScript would put the threshold, land-fraction and confidence rules in two places, and compiling the Go to wasm is impossible because `h3-go` is a cgo binding. Still the best permanent answer if the free tier ever stops being enough. |
 
+## Rate limiting
+
+Every `/api` route is rate limited per client, in memory, in `api/ratelimit.go`.
+Health checks are exempt — a limited health check reads as an outage.
+
+| Scope | Budget | Why that number |
+|---|---|---|
+| `/api/geocode/*` | 6/min, burst 3 | Nominatim's policy is **1 req/s in total**, enforced by banning the caller. No single client may approach that alone. |
+| every other `/api/*` | 60/min, burst 20 | A person reading the map never reaches it; a script reaches it at once. `/api/places` answers up to 215 KB, and egress is 1 GB/month free. |
+
+**The client address is the SECOND-TO-LAST `X-Forwarded-For` entry.** Cloud Run
+appends two — the client it observed, then the load balancer — and does not
+validate whatever the caller already put there. Reading `XFF[0]`, the usual
+shortcut, means a forged header buys an unlimited quota; reading the last entry
+buckets every visitor on earth together. Verified against a running instance:
+30 plain requests mixed with 30 carrying a forged prefix, all naming one victim
+IP, yielded 20x200 and 40x429 — one shared bucket.
+
+**WHAT THIS DOES NOT DO: stop a DDoS.** A distributed attack never reaches Go
+code, and Cloud Run bills for requests it rejects. What bounds the damage is
+`--max-instances 3` (already set), and what would bound it absolutely is a
+billing kill-switch, which is still open below. Putting Cloudflare in front
+would absorb volumetric traffic and serve the static payloads for free; that is
+the real answer if this ever gets popular.
+
 ## Still open
 
 - **A budget kill-switch.** GCP budget alerts *notify*; they do not stop
