@@ -131,6 +131,12 @@ retains only ~2 releases and the community mirror lags by months; a release
 missing from both is gone forever (2026-06-17.0 already is). The 23-snapshot
 archive exists only because releases were captured, not merged.
 
+**Scheduled since 2026-10-01:** `.github/workflows/archive.yml` runs weekly,
+archives any new release to `gs://thirdeye-demo-260906-data/raw/overture/`
+(the archive of record, not the laptop), and fails red, which emails, on any
+error or a snapshot under 100k rows. The repo is public, so GitHub disables
+the schedule after 60 days without a push.
+
 ## Deployment
 
 **Live at https://thirdeye-466032735471.us-central1.run.app** (Cloud Run,
@@ -139,8 +145,9 @@ archive exists only because releases were captured, not merged.
 
 The 404-status bug is **fixed** — `api/spa.go` serves the SPA and gives unknown
 paths a 404 status while still returning the app shell, guarded by
-`api/spa_test.go`. Still open: a scheduler for the monthly archive, and a
-budget kill-switch (GCP budget alerts notify, they do not stop spending).
+`api/spa_test.go`. Still open: a budget kill-switch (GCP budget alerts
+notify, they do not stop spending), and narrowing the deployer's storage role
+(see `docs/DEPLOYMENT.md`, "Still open").
 
 Deploy: `gcloud builds submit --tag <repo>/api:vN . && gcloud run deploy
 thirdeye --image <repo>/api:vN --region us-central1`. See

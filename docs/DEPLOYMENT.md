@@ -212,6 +212,22 @@ Redeploy after a config change is `firebase deploy --only hosting`; it is
 independent of the Cloud Run deploy, and the hosting config changes only when
 someone edits it, so CI does not run it.
 
+## The Overture archive — weekly, 2026-10-01
+
+`.github/workflows/archive.yml` runs every Monday (and on demand from the
+Actions tab). It finds the latest Overture release, skips it if
+`raw/overture/snapshot=<release>/_manifest.json` is already in the data bucket,
+otherwise runs `pipeline/sources/archive_release.py` and uploads the snapshot
+with `--no-clobber`, manifest last. It refuses to upload a snapshot under
+100,000 rows (real ones are 219k–251k). A failure is a red run, and GitHub
+emails it. Each run also warns if the mirror holds releases the bucket lacks.
+
+The bucket is the archive of record. The 24 snapshots that existed only on one
+laptop (343 MB) were uploaded on 2026-10-01.
+
+**The repo is public, so GitHub disables the schedule after 60 days without a
+push.** Re-enable it under Actions → *Archive Overture release* if it lapses.
+
 ## Still open
 
 - **A budget kill-switch.** GCP budget alerts *notify*; they do not stop
@@ -224,7 +240,23 @@ someone edits it, so CI does not run it.
 - **Egress is not in the free tier**: 1 GB/month free, then ~$0.12/GB. At
   ~1.05 MB per first visit that is ~950 visitors/month. Moving the SPA and
   `coverage-res8.geojson` to Cloudflare Pages removes the ceiling entirely.
-- A scheduler for `pipeline/sources/archive_release.py`.
+- **Narrow the deployer's storage role.** `github-deployer` still holds
+  project-wide `roles/storage.objectAdmin` from the abandoned Cloud Build
+  attempts, so it can overwrite or delete any object, including the tables
+  every deploy bakes in. The deploy only reads; the archive only adds. The
+  swap (run by a human; Claude Code's auto mode refuses IAM grants):
+
+  ```
+  SA=serviceAccount:github-deployer@thirdeye-demo-260906.iam.gserviceaccount.com
+  gcloud storage buckets add-iam-policy-binding gs://thirdeye-demo-260906-data \
+    --member=$SA --role=roles/storage.objectCreator
+  gcloud projects remove-iam-policy-binding thirdeye-demo-260906 \
+    --member=$SA --role=roles/storage.objectAdmin
+  ```
+
+  Reads keep working through the project-level `roles/storage.objectViewer`.
+  Also unused since the runner build: `roles/cloudbuild.builds.editor` on the
+  project and `roles/storage.admin` on `gs://thirdeye-demo-260906_cloudbuild`.
 - TLS and a domain: Cloud Run supplies both on `*.run.app`; a custom domain is
   still unregistered, and the contact link points at the GitHub repo.
 
@@ -315,9 +347,7 @@ the value; an image needs a rendering library in Go.
 - Hosting for the static bundle and the Go API; the API loads ~142 MB of
   parquet into RAM at startup and must be restarted after each monthly
   pipeline run.
-- A scheduler for `pipeline/sources/archive_release.py`. It **must** run
-  monthly: Overture's S3 keeps roughly two releases, the community mirror
-  lags, and a release missing from both is gone permanently. 2026-06-17.0
-  already is.
+- ~~A scheduler for `pipeline/sources/archive_release.py`~~ — built
+  2026-10-01; see *The Overture archive* above.
 - TLS, and a domain. The contact link currently points at the GitHub repo's
   issues rather than an address.

@@ -1,0 +1,138 @@
+# Weekly: archive the latest Overture release to the data bucket.
+#
+# WHY A SCHEDULER. The 2026-09-23 release failed to archive (Overture dropped
+# the `categories` column) and nobody noticed for two days. Overture's S3
+# keeps only ~2 releases and the mirror lags; a release missing from both is
+# gone forever (2026-06-17.0 already is). The value of this workflow is that a
+# red run EMAILS someone — running on time is secondary.
+#
+# WEEKLY, NOT MONTHLY. Releases land roughly monthly on no fixed day. A
+# weekly run notices a new release within days, and when nothing is new it
+# costs one S3 listing and one bucket lookup.
+#
+# ARCHIVE ONLY. No pipeline run, no redeploy. Idempotent: a release already
+# in the bucket is skipped. The bucket is the archive of record, not the
+# runner's disk, which is empty on every run.
+#
+# NEVER OVERWRITES. Uploads use --no-clobber, so an existing snapshot is
+# never replaced. NOT YET ENFORCED BY PERMISSION: as of 2026-10-01 the
+# deployer account still holds project-wide roles/storage.objectAdmin, left
+# over from the abandoned Cloud Build attempts (see deploy.yml). The intended
+# grant is bucket-level roles/storage.objectCreator, which can add objects
+# but never overwrite or delete them; the swap is in docs/DEPLOYMENT.md.
+#
+# PUBLIC REPO GOTCHA. GitHub disables scheduled workflows in a public repo
+# after 60 days with no repository activity. Any push resets the clock; if it
+# ever lapses, re-enable it under Actions -> Archive Overture release.
+
+name: Archive Overture release
+
+on:
+  schedule:
+    - cron: '17 6 * * 1'    # Mondays 06:17 UTC; off the hour, when the queue is quiet
+  workflow_dispatch:
+
+env:
+  ARCHIVE: gs://thirdeye-demo-260906-data/raw/overture
+
+jobs:
+  archive:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      # The archiver needs only duckdb (plus its spatial and httpfs
+      # extensions, which it installs itself). Pinned to the version the local
+      # archive was built with.
+      - run: pip install duckdb==1.5.5
+
+      - uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: projects/466032735471/locations/global/workloadIdentityPools/github/providers/github-provider
+          service_account: github-deployer@thirdeye-demo-260906.iam.gserviceaccount.com
+      - uses: google-github-actions/setup-gcloud@v2
+
+      - name: Find the latest release and whether it is already archived
+        id: latest
+        run: |
+          release=$(python -c "
+          import sys; sys.path.insert(0, '.')
+          from pipeline.sources.archive_release import discover_latest_release
+          print(discover_latest_release())")
+          echo "release=$release" >> "$GITHUB_OUTPUT"
+          echo "Latest Overture release: $release"
+          if gcloud storage ls "$ARCHIVE/snapshot=$release/_manifest.json" >/dev/null 2>&1; then
+            echo "present=true" >> "$GITHUB_OUTPUT"
+            echo "Already in the bucket; nothing to archive."
+          else
+            echo "present=false" >> "$GITHUB_OUTPUT"
+          fi
+          # The archiver's gap report compares the mirror with what it can see
+          # locally. Show it the bucket's snapshots, as empty directories.
+          mkdir -p data/raw/overture
+          gcloud storage ls "$ARCHIVE/" | sed -n 's#.*/\(snapshot=[^/]*\)/$#\1#p' \
+            | while read -r d; do mkdir -p "data/raw/overture/$d"; done
+          echo "Snapshots in the bucket: $(ls data/raw/overture | wc -l)"
+
+      - name: Archive it
+        if: steps.latest.outputs.present == 'false'
+        env:
+          RELEASE: ${{ steps.latest.outputs.release }}
+        run: |
+          python pipeline/sources/archive_release.py
+          snap="data/raw/overture/snapshot=$RELEASE"
+          # A snapshot with no rows, or no manifest, is a failed archive that
+          # looks like a successful one. Refuse to upload it.
+          test -s "$snap/places.parquet" || { echo "::error::no places.parquet written for $RELEASE"; exit 1; }
+          rows=$(python -c "import json; print(json.load(open('$snap/_manifest.json'))['rows'])")
+          echo "Rows: $rows"
+          if [ "$rows" -lt 100000 ]; then
+            # The four governorates hold ~240k places; a few thousand means a
+            # broken filter or schema, not a quiet month.
+            echo "::error::only $rows rows for $RELEASE - expected ~240k. Not uploading."
+            exit 1
+          fi
+
+      - name: Upload to the bucket
+        if: steps.latest.outputs.present == 'false'
+        env:
+          RELEASE: ${{ steps.latest.outputs.release }}
+        run: |
+          gcloud storage cp --no-clobber \
+            "data/raw/overture/snapshot=$RELEASE/places.parquet" \
+            "$ARCHIVE/snapshot=$RELEASE/places.parquet"
+          # Manifest last: its presence is what marks the snapshot complete.
+          gcloud storage cp --no-clobber \
+            "data/raw/overture/snapshot=$RELEASE/_manifest.json" \
+            "$ARCHIVE/snapshot=$RELEASE/_manifest.json"
+          gcloud storage ls -l "$ARCHIVE/snapshot=$RELEASE/"
+
+      # Every week, archived or not: a release the mirror still holds can be
+      # recovered (pipeline/sources/reclip_archive.py); once it leaves the
+      # mirror too, it cannot. A warning, not a failure - the mirror lags and
+      # some gaps may never be fillable.
+      - name: Flag releases the mirror has and the bucket does not
+        run: |
+          python - <<'EOF'
+          import sys
+          from pathlib import Path
+          sys.path.insert(0, '.')
+          from pipeline.sources.archive_release import mirror_releases
+          have = {p.name.split('=', 1)[1] for p in Path('data/raw/overture').glob('snapshot=*')}
+          mir = mirror_releases()
+          if mir is None:
+              print('::warning::mirror unreachable - gap check skipped this week')
+          else:
+              missing = sorted(set(mir) - have)
+              print(f'bucket: {len(have)} snapshots, mirror: {len(mir)}')
+              if missing:
+                  print(f'::warning::mirror holds releases missing from the bucket: {missing} - run pipeline/sources/reclip_archive.py')
+          EOF
