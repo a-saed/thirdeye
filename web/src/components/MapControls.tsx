@@ -10,104 +10,21 @@
  * code than fighting it, and the buttons then use the same tokens as every
  * other control in the product.
  *
- * ACCURACY IS TREATED AS DATA, NOT AS A DETAIL.
- * Browser geolocation returns a coordinate AND an accuracy radius, and that
- * radius is frequently hundreds of metres — on a desktop with no GPS it is
- * often kilometres, because it is derived from IP or wifi. This product
- * refuses to report a 500 m catchment around a point known only to ±3 km:
- * that is the same error as treating a block-level position as an address.
- * The accuracy is surfaced, and the caller decides what to do with it.
+ * The geolocation itself lives in useLocate, shared with the home panel's
+ * "Use my location" button.
  */
-import React, { useState } from 'react'
+import React from 'react'
 import type maplibregl from 'maplibre-gl'
+import { useLocate, type Located } from './useLocate'
 
-export interface Located {
-  lat: number
-  lon: number
-  /** Radius in metres the browser claims the position is good to. */
-  accuracyM: number
-  /** Everything the browser reported, untransformed, for diagnosis. */
-  raw: {
-    latitude: number; longitude: number; accuracy: number
-    altitude: number | null; heading: number | null; speed: number | null
-    timestampISO: string; ageSeconds: number
-  }
-}
-
-type Status = 'idle' | 'locating' | 'denied' | 'unavailable' | 'timeout' | 'insecure'
-
-const MESSAGE: Record<Exclude<Status, 'idle' | 'locating'>, string> = {
-  denied: 'Location permission denied. Click the map instead.',
-  unavailable: 'Your device could not provide a location.',
-  timeout: 'Locating timed out. Click the map instead.',
-  insecure: 'Location needs a secure connection (https or localhost).',
-}
+export type { Located }
 
 export default function MapControls({ map, onLocate }: {
   map: maplibregl.Map | null
   /** Omit to hide the locate button — e.g. on a map that is not a picker. */
   onLocate?: (l: Located) => void
 }) {
-  const [status, setStatus] = useState<Status>('idle')
-
-  const locate = () => {
-    // Distinguish the two failures instead of reporting one word for both.
-    if (!navigator.geolocation) {
-      console.warn('[locate] navigator.geolocation is undefined')
-      setStatus('unavailable')
-      return
-    }
-    if (!window.isSecureContext) {
-      console.warn('[locate] insecure context — origin is', window.location.origin)
-      setStatus('insecure')
-      return
-    }
-    setStatus('locating')
-    navigator.geolocation.getCurrentPosition(
-      pos => {
-        setStatus('idle')
-        const c = pos.coords
-        const ageSeconds = Math.round((Date.now() - pos.timestamp) / 1000)
-        // RAW, BEFORE ANY TRANSFORM. Logged so a wrong pin can be diagnosed
-        // as a bad fix rather than a bad conversion — the two look identical
-        // on screen and have completely different fixes.
-        console.log('[locate] raw GeolocationCoordinates', {
-          latitude: c.latitude, longitude: c.longitude,
-          accuracy_m: c.accuracy, altitude: c.altitude,
-          heading: c.heading, speed: c.speed,
-          timestamp: new Date(pos.timestamp).toISOString(),
-          age_seconds: ageSeconds,
-          note: c.accuracy > 1000
-            ? 'accuracy > 1km: almost certainly IP or coarse wifi, not the device'
-            : 'plausible device-level fix',
-        })
-        onLocate?.({
-          lat: c.latitude,
-          lon: c.longitude,
-          accuracyM: c.accuracy,
-          raw: {
-            latitude: c.latitude, longitude: c.longitude, accuracy: c.accuracy,
-            altitude: c.altitude, heading: c.heading, speed: c.speed,
-            timestampISO: new Date(pos.timestamp).toISOString(),
-            ageSeconds,
-          },
-        })
-      },
-      e => {
-        console.warn('[locate] error', { code: e.code, message: e.message })
-        setStatus(
-          e.code === e.PERMISSION_DENIED ? 'denied'
-            : e.code === e.TIMEOUT ? 'timeout'
-              : 'unavailable',
-        )
-      },
-      // maximumAge 0: never accept a cached fix. A minute-old position is a
-      // minute-old position, and the user pressed the button now.
-      // timeout 15s because a real GPS/wifi fix is slower than an IP guess,
-      // and returning the fast wrong answer is the failure mode here.
-      { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 },
-    )
-  }
+  const { status, locate, message } = useLocate(onLocate)
 
   return (
     <div className="mc">
@@ -147,9 +64,7 @@ export default function MapControls({ map, onLocate }: {
         </div>
       )}
 
-      {status !== 'idle' && status !== 'locating' && (
-        <div className="mc-msg">{MESSAGE[status]}</div>
-      )}
+      {message && <div className="mc-msg">{message}</div>}
     </div>
   )
 }

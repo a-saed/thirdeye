@@ -34,8 +34,21 @@ body.route-home { background: var(--canvas); color: var(--text); overflow: hidde
   margin: 0 0 var(--s3); color: var(--text-muted);
   font-size: var(--t-body); line-height: 22px;
 }
+/* The primary action: one tap from a shared link to your own street. */
+.hm-locate {
+  display: flex; align-items: center; justify-content: center; gap: var(--s2);
+  margin: 0 0 var(--s2);
+}
+.hm-locate svg {
+  width: 16px; height: 16px; flex: none;
+  fill: none; stroke: currentColor; stroke-width: 1.5;
+}
+.hm-locate-msg {
+  margin: 0 0 var(--s2); color: var(--amber);
+  font-size: var(--t-caption); line-height: 18px;
+}
 .hm-cta {
-  margin: 0 0 var(--s4); color: var(--accent);
+  margin: 0 0 var(--s4); color: var(--text-muted);
   font-size: var(--t-body); line-height: 22px;
 }
 
@@ -396,12 +409,14 @@ body.route-home { background: var(--canvas); color: var(--text); overflow: hidde
      rather than replacing it. */
   .hm-panel.hm-open { max-height: 76vh; }
 
-  /* WHAT PEEKS. Everything is hidden by default and three things are named
+  /* WHAT PEEKS. Everything is hidden by default and a few things are named
      back in, so a child added later fails closed instead of silently growing
      the sheet back to full height. */
   .hm-panel:not(.hm-open) > * { display: none; }
   .hm-panel:not(.hm-open) > .hm-sheet-grip { display: flex; }
   .hm-panel:not(.hm-open) > .hm-h1 { display: block; margin-bottom: var(--s1); }
+  .hm-panel:not(.hm-open) > .hm-locate { display: flex; margin-top: var(--s2); }
+  .hm-panel:not(.hm-open) > .hm-locate-msg { display: block; }
   .hm-panel:not(.hm-open) > .hm-cta { display: block; margin-bottom: 0; }
 
   .hm-sheet-grip {

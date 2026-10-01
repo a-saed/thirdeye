@@ -20,6 +20,7 @@ import maplibregl from 'maplibre-gl'
 import { latLngToCell } from 'h3-js'
 import 'maplibre-gl/dist/maplibre-gl.css'
 import MapControls, { type Located } from '../components/MapControls'
+import { useLocate } from '../components/useLocate'
 import { useDelayed } from '../components/async'
 import {
   coverageFillColor, coverageFillOpacity, coverageLinePaint,
@@ -276,6 +277,7 @@ export default function Home() {
   const ref = useRef<HTMLDivElement>(null)
   const mapRef = useRef<maplibregl.Map | null>(null)
   const markerRef = useRef<maplibregl.Marker | null>(null)
+  const pickRef = useRef<HTMLDivElement | null>(null)
   const cellsRef = useRef<Map<string, any>>(new Map())
 
   const [summary, setSummary] = useState<Summary | null>(null)
@@ -345,6 +347,12 @@ export default function Home() {
 
     selectPoint(l.lat, l.lon, l.accuracyM)
   }, [selectPoint])
+
+  /* THE FRONT DOOR. A visitor arriving from a link decides in seconds whether
+     this knows their street; asking them to find it on a map first loses
+     them. Same hook and same onLocate as the map's crosshair, so the accuracy
+     circle and the too-vague guard apply identically. */
+  const panelLocate = useLocate(onLocate)
 
   useEffect(() => {
     fetch('/coverage-summary.json').then(r => r.json()).then(setSummary).catch(() => {})
@@ -460,6 +468,14 @@ export default function Home() {
   /* Picking a point is a request to see the answer. Leaving the sheet peeked
      after a tap would hide the very thing the tap was for. */
   useEffect(() => { if (picked) setSheetOpen(true) }, [picked])
+  // The answer sits at the foot of the panel, under the legend. On a phone the
+  // opened sheet put it below the fold, so "Use my location" appeared to do
+  // nothing. Bring it into view once the sheet has laid out.
+  useEffect(() => {
+    if (!picked) return
+    const t = setTimeout(() => pickRef.current?.scrollIntoView({ block: 'nearest', behavior: 'smooth' }), 50)
+    return () => clearTimeout(t)
+  }, [picked])
 
   const showLayerSkel = useDelayed(layerState === 'loading')
 
@@ -573,7 +589,20 @@ export default function Home() {
           map. Every figure names its sources and its date — where the record
           runs out, the map stays grey.
         </p>
-        <p className="hm-cta">Click anywhere, or search above.</p>
+        <button
+          className="hm-btn hm-locate"
+          onClick={panelLocate.locate}
+          disabled={panelLocate.status === 'locating'}
+        >
+          {/* Crosshair, matching the map control: where you are, not a pin. */}
+          <svg viewBox="0 0 16 16" aria-hidden="true">
+            <circle cx="8" cy="8" r="3.2" />
+            <path d="M8 1v2.2M8 12.8V15M1 8h2.2M12.8 8H15" />
+          </svg>
+          {panelLocate.status === 'locating' ? 'Locating…' : 'Use my location'}
+        </button>
+        {panelLocate.message && <p className="hm-locate-msg">{panelLocate.message}</p>}
+        <p className="hm-cta">or click anywhere on the map, or search above.</p>
         <a className="hm-secondary" href="/compare">
           Compare two locations →
         </a>
@@ -662,7 +691,7 @@ export default function Home() {
         )}
 
         {picked && picked.covered && (
-          <div className="hm-pick">
+          <div ref={pickRef} className="hm-pick">
             <div className="hm-pick-head">
               <span className="num">{picked.lat.toFixed(5)}, {picked.lon.toFixed(5)}</span>
               <span className={`hm-badge hm-badge-${picked.conf}`}>
@@ -733,7 +762,7 @@ export default function Home() {
         )}
 
         {picked && !picked.covered && (
-          <div className="hm-pick hm-pick-out">
+          <div ref={pickRef} className="hm-pick hm-pick-out">
             <div className="hm-pick-head">
               <span className="num">{picked.lat.toFixed(5)}, {picked.lon.toFixed(5)}</span>
             </div>
