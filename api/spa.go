@@ -41,6 +41,7 @@ type spaHandler struct {
 	dir   string
 	files http.Handler
 	index []byte
+	gz    gzCache
 }
 
 // newSPAHandler fails when index.html is absent rather than starting and
@@ -51,11 +52,13 @@ func newSPAHandler(dir string) (http.Handler, error) {
 	if err != nil {
 		return nil, fmt.Errorf("index.html in %s: %w", dir, err)
 	}
-	return &spaHandler{
+	h := &spaHandler{
 		dir:   dir,
 		files: http.FileServer(http.Dir(dir)),
 		index: index,
-	}, nil
+	}
+	go h.gz.warm(dir)
+	return h, nil
 }
 
 func (s *spaHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
@@ -65,6 +68,11 @@ func (s *spaHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	if clean != "/" {
 		if st, err := os.Stat(filepath.Join(s.dir, filepath.FromSlash(clean))); err == nil && !st.IsDir() {
+			w.Header().Set("Cache-Control", staticCacheControl(clean))
+			file := filepath.Join(s.dir, filepath.FromSlash(clean))
+			if s.gz.serveGzipped(w, r, file, clean) {
+				return
+			}
 			r2 := *r
 			u := *r.URL
 			u.Path = clean

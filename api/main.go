@@ -82,7 +82,7 @@ func main() {
 	// geocoding gets its own, much tighter budget.
 	genLimit, geoLimit := newAPILimiters()
 	api := func(path string, h http.HandlerFunc) {
-		mux.HandleFunc(path, rateLimited(limiterFor(path, genLimit, geoLimit), h))
+		mux.HandleFunc(path, rateLimited(limiterFor(path, genLimit, geoLimit), gzipResponses(h)))
 	}
 	api("/api/report", app.handleReport)
 	api("/api/places", app.handlePlaces)
