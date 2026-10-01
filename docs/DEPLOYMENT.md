@@ -140,12 +140,77 @@ buckets every visitor on earth together. Verified against a running instance:
 30 plain requests mixed with 30 carrying a forged prefix, all naming one victim
 IP, yielded 20x200 and 40x429 — one shared bucket.
 
+**THIS BREAKS BEHIND THE FIREBASE HOSTING FRONT DOOR — 2026-09-25.** A request
+that arrives via `thirdeye-app.web.app` reaches Cloud Run from a Hosting
+frontend, not from the visitor. Two marked probes, one through each entrance,
+seconds apart:
+
+| entrance | `httpRequest.remoteIp` in the Cloud Run request log |
+|---|---|
+| `thirdeye-app.web.app` | `66.249.93.230` — a Google frontend |
+| `thirdeye-hiecbobtpa-uc.a.run.app` | `196.157.42.147` — the real caller |
+
+Cloud Run appends *the client it observed*, and what it observed is the Hosting
+frontend. So the second-to-last entry is a Google frontend address for every
+visitor arriving through the front door — and that holds whether or not Hosting
+also passes the original client in `XFF[0]`, because either chain shape puts the
+frontend in that position. The effect is exactly what this rule exists to
+prevent: one shared bucket. At 6/min burst 3, the fourth stranger to type a
+search gets a 429.
+
+**Not fixed yet.** The header Hosting actually sends has not been read — the API
+echoes no headers and adding an endpoint that does is a production deploy — and
+that reading is what decides the fix: whether `XFF[0]` is trustworthy when it
+arrives through Hosting, or whether the client is only recoverable by stripping
+known Google frontend ranges from the right. Until then the run.app URL remains
+the entrance with correct per-client limiting, and both entrances stay open.
+
 **WHAT THIS DOES NOT DO: stop a DDoS.** A distributed attack never reaches Go
 code, and Cloud Run bills for requests it rejects. What bounds the damage is
 `--max-instances 3` (already set), and what would bound it absolutely is a
 billing kill-switch, which is still open below. Putting Cloudflare in front
 would absorb volumetric traffic and serve the static payloads for free; that is
 the real answer if this ever gets popular.
+
+## The Firebase Hosting front door — thirdeye-app.web.app, 2026-09-25
+
+`*.run.app` URLs are unreadable, so Firebase Hosting sits in front purely as a
+name. `firebase.json` holds one rewrite — `"**"` to the Cloud Run service — and
+`firebase-public/` is deliberately empty: nothing is served by Hosting, every
+path falls through to the container. That shape was chosen over serving the SPA
+from Hosting for one reason: `api/spa.go` gives unknown paths a 404 *status*
+with the app shell as the body, and Hosting's SPA rewrite returns 200 for
+everything. Moving static files to Hosting would mean reimplementing the
+`spaRoutes` table in `firebase.json`, where `api/spa_test.go` cannot guard it.
+Verified after deploy: `/nope` still answers 404, and `/missing.js` still fails
+as an asset rather than as HTML.
+
+The cost of this shape is that it buys the name and nothing else — every byte
+still leaves Cloud Run, so the egress ceiling in "Still open" is untouched. Only
+`api/html.go` sets a `Cache-Control`, so Hosting's CDN caches almost nothing.
+
+Four things cost time here and will cost it again:
+
+- **`thirdeye` and `third-eye` are taken.** Site IDs are one global namespace
+  across all of Firebase. The API says so plainly — `is reserved by another
+  project` — so check with `?validateOnly=true` before planning around a name.
+- **`addFirebase` returns a bare 403 when the Firebase ToS has never been
+  accepted.** Not a permissions problem: `testIamPermissions` confirmed
+  `firebase.projects.update` was granted the whole time, the account was Owner,
+  and the project has no org parent. It started working immediately after a
+  visit to the Firebase console. The error names none of this.
+- **A raw API call adds a second, unrelated 403.** Without
+  `x-goog-user-project`, the request is quota-attributed to gcloud's shared
+  client project `32555940559`, where the API is disabled. That masks the real
+  error with `SERVICE_DISABLED` against a project number that is not yours.
+- **Do not type the project name in the Firebase console — pick it from the
+  dropdown.** Typing created a whole new GCP project, `thirdeye-demo-26090`,
+  one character short of the real one. It has no billing attached and is inert,
+  but it is still there.
+
+Redeploy after a config change is `firebase deploy --only hosting`; it is
+independent of the Cloud Run deploy, and the hosting config changes only when
+someone edits it, so CI does not run it.
 
 ## Still open
 

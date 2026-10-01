@@ -45,3 +45,6 @@ research/output/campus_records_candidates.csv
 research/output/campus_interior_records.csv
 research/output/*_pairs_*.csv
 competitors.md
+
+# Firebase CLI deploy cache (see docs/DEPLOYMENT.md)
+.firebase/
