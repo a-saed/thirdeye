@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"io"
 	"math"
 	"os"
 	"path/filepath"
@@ -17,8 +18,10 @@ import (
 // HISTORY IS NEVER LOADED WHOLE.
 //
 // h3_metric_history is 1.2M rows across 23 snapshots today and grows by one
-// snapshot every month. It stays on disk and is scanned per request, keeping
-// only rows whose cell is in the requested catchment.
+// snapshot every month. It stays on disk. At startup only its h3_index column
+// is read, into an index of where each cell's rows sit; a request then seeks
+// to its catchment's rows. (It used to decode every row per request: ~1.4 s
+// of every report at res 9, measured 2026-10-01.)
 //
 // DEVIATION FROM THE BRIEF, FLAGGED DELIBERATELY: the brief said "queried
 // lazily via DuckDB". This uses parquet-go streaming instead. Reason: the
@@ -59,6 +62,7 @@ type historyManifest struct {
 
 type History struct {
 	path     string
+	index    map[uint64][]rowRun
 	manifest historyManifest
 	// minCorrected comes from config/thresholds.json, not a local constant.
 	minCorrected int
@@ -84,6 +88,11 @@ func NewHistory(dir string, res int, minCorrected int) (*History, error) {
 		// match what the pipeline used.
 		return nil, fmt.Errorf("history manifest is missing artifact_detector parameters")
 	}
+	idx, err := buildHistoryIndex(p)
+	if err != nil {
+		return nil, err
+	}
+	h.index = idx
 	return h, nil
 }
 
@@ -105,29 +114,126 @@ func (h *History) gapNote() string {
 	return out
 }
 
-// SeriesFor streams the history table and returns one TimeSeries per metric,
-// summed over the catchment cells, with ALL points in one pass — the UI
-// scrubber must never need a request per year.
-func (h *History) SeriesFor(ring []h3.Cell, category string) ([]TimeSeries, error) {
-	want := make(map[uint64]bool, len(ring))
-	for _, c := range ring {
-		want[uint64(c)] = true
-	}
+// rowRun is a contiguous block of history rows belonging to one cell.
+type rowRun struct {
+	start int64
+	count int64
+}
 
-	f, err := os.Open(h.path)
+// parseCell reads the table's hex h3_index the way the API keys every map.
+func parseCell(s string) (uint64, error) { return strconv.ParseUint(s, 16, 64) }
+
+// buildHistoryIndex reads ONLY the h3_index column, once, and records where
+// each cell's rows sit. This keeps history on disk — the index is ~36k cells
+// of offsets, not the table — while letting a report seek to its catchment
+// instead of decoding every row. Measured 2026-10-01: the full scan cost
+// ~1.4 s per report at res 9. It does not assume the pipeline sorts its
+// output; an unsorted table just produces more, shorter runs.
+func buildHistoryIndex(path string) (map[uint64][]rowRun, error) {
+	f, err := os.Open(path)
 	if err != nil {
 		return nil, err
 	}
 	defer f.Close()
-	st, err := f.Stat()
+	type cellOnly struct {
+		H3Index string `parquet:"h3_index"`
+	}
+	r := parquet.NewGenericReader[cellOnly](f)
+	defer r.Close()
+
+	idx := map[uint64][]rowRun{}
+	var row int64
+	var cur uint64
+	var run rowRun
+	flush := func() {
+		if run.count > 0 {
+			idx[cur] = append(idx[cur], run)
+		}
+	}
+	buf := make([]cellOnly, 8192)
+	for {
+		n, rerr := r.Read(buf)
+		for _, c := range buf[:n] {
+			cell, perr := parseCell(c.H3Index)
+			if perr != nil {
+				return nil, fmt.Errorf("history index: row %d: bad h3_index %q", row, c.H3Index)
+			}
+			if run.count > 0 && cell == cur {
+				run.count++
+			} else {
+				flush()
+				cur, run = cell, rowRun{start: row, count: 1}
+			}
+			row++
+		}
+		if rerr == io.EOF {
+			break
+		}
+		if rerr != nil {
+			return nil, fmt.Errorf("history index: %w", rerr)
+		}
+	}
+	flush()
+	return idx, nil
+}
+
+// readIndexedRows returns every row of the catchment's cells, seeking to each
+// run rather than scanning the table.
+func readIndexedRows(path string, idx map[uint64][]rowRun, ring []h3.Cell) ([]historyRow, error) {
+	var runs []rowRun
+	for _, c := range ring {
+		runs = append(runs, idx[uint64(c)]...)
+	}
+	if len(runs) == 0 {
+		return nil, nil
+	}
+	sort.Slice(runs, func(i, j int) bool { return runs[i].start < runs[j].start })
+
+	f, err := os.Open(path)
 	if err != nil {
 		return nil, err
 	}
-
+	defer f.Close()
 	r := parquet.NewGenericReader[historyRow](f, parquet.SchemaOf(historyRow{}))
 	defer r.Close()
-	_ = st
 
+	var out []historyRow
+	for _, run := range runs {
+		if err := r.SeekToRow(run.start); err != nil {
+			return out, err
+		}
+		buf := make([]historyRow, run.count)
+		got := 0
+		for got < len(buf) {
+			n, err := r.Read(buf[got:])
+			got += n
+			if err != nil {
+				if err == io.EOF && got == len(buf) {
+					break
+				}
+				return append(out, buf[:got]...), err
+			}
+		}
+		out = append(out, buf...)
+	}
+	return out, nil
+}
+
+// SeriesFor returns one TimeSeries per metric, summed over the catchment
+// cells, with ALL points in one call — the UI scrubber must never need a
+// request per year.
+func (h *History) SeriesFor(ring []h3.Cell, category string) ([]TimeSeries, error) {
+	rows, err := readIndexedRows(h.path, h.index, ring)
+	if err != nil && len(rows) == 0 {
+		return nil, err
+	}
+	// As before: a read error part-way still returns what was read.
+	return h.aggregate(rows, category), nil
+}
+
+// aggregate turns the catchment's rows into series. Rows outside the
+// requested category are skipped here, so the caller selects by cell only.
+func (h *History) aggregate(rows []historyRow, category string) []TimeSeries {
 	// metric -> snapshot -> accumulated point
 	type pt struct {
 		value float64
@@ -140,46 +246,38 @@ func (h *History) SeriesFor(ring []h3.Cell, category string) ([]TimeSeries, erro
 	cellsFlagged := map[string]map[uint64]bool{}
 	cellsSeen := map[string]map[uint64]bool{}
 
-	buf := make([]historyRow, 4096)
-	for {
-		n, err := r.Read(buf)
-		for i := 0; i < n; i++ {
-			row := buf[i]
-			if category != "" && row.Metric != "business_count."+category {
-				continue
-			}
-			idx, perr := strconv.ParseUint(row.H3Index, 16, 64)
-			if perr != nil || !want[idx] {
-				continue
-			}
-			m, ok := agg[row.Metric]
-			if !ok {
-				m = map[string]*pt{}
-				agg[row.Metric] = m
-			}
-			e, ok := m[row.SnapshotID]
-			if !ok {
-				e = &pt{asOf: row.AsOf, conf: row.Confidence}
-				m[row.SnapshotID] = e
-			}
-			e.value += row.Value
-			// A catchment spans many cells. If ANY member cell's series shows
-			// the import signature at this snapshot, the catchment total moved
-			// for that reason too - so the flag propagates upward rather than
-			// requiring unanimity.
-			if cellsSeen[row.Metric] == nil {
-				cellsSeen[row.Metric] = map[uint64]bool{}
-				cellsFlagged[row.Metric] = map[uint64]bool{}
-			}
-			cellsSeen[row.Metric][idx] = true
-			if row.PointStatus == string(PointArtifactSuspected) {
-				cellsFlagged[row.Metric][idx] = true
-			}
-			trackOf[row.Metric] = row.Track
+	for _, row := range rows {
+		if category != "" && row.Metric != "business_count."+category {
+			continue
 		}
-		if err != nil {
-			break // io.EOF or a real error; partial data is still returned
+		idx, perr := parseCell(row.H3Index)
+		if perr != nil {
+			continue
 		}
+		m, ok := agg[row.Metric]
+		if !ok {
+			m = map[string]*pt{}
+			agg[row.Metric] = m
+		}
+		e, ok := m[row.SnapshotID]
+		if !ok {
+			e = &pt{asOf: row.AsOf, conf: row.Confidence}
+			m[row.SnapshotID] = e
+		}
+		e.value += row.Value
+		// A catchment spans many cells. If ANY member cell's series shows
+		// the import signature at this snapshot, the catchment total moved
+		// for that reason too - so the flag propagates upward rather than
+		// requiring unanimity.
+		if cellsSeen[row.Metric] == nil {
+			cellsSeen[row.Metric] = map[uint64]bool{}
+			cellsFlagged[row.Metric] = map[uint64]bool{}
+		}
+		cellsSeen[row.Metric][idx] = true
+		if row.PointStatus == string(PointArtifactSuspected) {
+			cellsFlagged[row.Metric][idx] = true
+		}
+		trackOf[row.Metric] = row.Track
 	}
 
 	snapOrder := map[string]int{}
@@ -283,7 +381,7 @@ func (h *History) SeriesFor(ring []h3.Cell, category string) ([]TimeSeries, erro
 		})
 	}
 	sort.Slice(out, func(i, j int) bool { return out[i].Metric < out[j].Metric })
-	return out, nil
+	return out
 }
 
 func asOfFor(h *History, snap, fallback string) string {
