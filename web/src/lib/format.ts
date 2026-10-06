@@ -13,6 +13,11 @@ export const fmt = (v: number | null | undefined, digits = 0) =>
  *  data and in query strings. */
 export const cap = (t: string) => (t ? t[0].toUpperCase() + t.slice(1) : t)
 
+/** English plural of a category word: "pharmacy" -> "pharmacies", "cafe" ->
+ *  "cafes". Appending "s" printed "Pharmacys" on the compare screen. */
+export const plural = (word: string, n = 2) =>
+  n === 1 ? word : /[^aeiou]y$/i.test(word) ? word.slice(0, -1) + 'ies' : word + 's'
+
 /** Source categories are not written for readers: Foursquare ships a full path
  *  ("Dining and Drinking > Cafe, Coffee, and Tea House > Coffee Shop"),
  *  Overture ships snake_case. Show the leaf; keep the original in a tooltip,

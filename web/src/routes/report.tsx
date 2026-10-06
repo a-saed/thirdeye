@@ -31,7 +31,7 @@ import Footer from '../components/Footer'
 import CopyLink from '../components/CopyLink'
 import { useFetch, useDelayed, Skel, ErrorBox, EmptyBox } from '../components/async'
 import ConfBadge from '../components/ConfBadge'
-import { fmt, cap, shortCategory } from '../lib/format'
+import { fmt, cap, plural, shortCategory } from '../lib/format'
 import { CONF_LABEL, CONF_MEANING } from '../lib/confidence'
 import { REPORT_RES, DEFAULT_K, MIN_PCT_BASE } from '../lib/thresholds'
 import type {
@@ -1072,7 +1072,7 @@ function Scrubber({ series, category, loading, total, overtureCount }
   if (!series) {
     return (
       <section className="rc-series">
-        <h2>{cap(category)}s over time</h2>
+        <h2>{cap(plural(category))} over time</h2>
         <p className="rc-note">
           {loading
             ? 'loading…'
@@ -1088,7 +1088,7 @@ function Scrubber({ series, category, loading, total, overtureCount }
   return (
     <section className="rc-series">
       <div className="rc-series-head">
-        <h2>{cap(category)}s listed by Overture, over time</h2>
+        <h2>{cap(plural(category))} listed by Overture, over time</h2>
         {/* Date and value live in the header — the readout under the old
             slider was a third thing to look at for one number. */}
         {cur && (

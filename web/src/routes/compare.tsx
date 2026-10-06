@@ -19,6 +19,7 @@
  * place for the aggregation rules to live and drift.
  */
 import React, { useEffect, useMemo, useRef, useState } from 'react'
+import { plural } from '../lib/format'
 import maplibregl from 'maplibre-gl'
 import { cellToBoundary } from 'h3-js'
 import 'maplibre-gl/dist/maplibre-gl.css'
@@ -478,7 +479,7 @@ function buildRows(ra: Report | null, rb: Report | null, category: string): RowD
     { key: 'biz', label: `${cap(category)} competitors`,
       a: pick(ra, biz), b: pick(rb, biz),
       direction: pick(ra, biz)?.dir ?? pick(rb, biz)?.dir ?? 'lower' },
-    { key: 'density', label: `${cap(category)}s per land km²`,
+    { key: 'density', label: `${cap(plural(category))} per land km²`,
       a: perArea(ra, biz), b: perArea(rb, biz), direction: 'lower', digits: 1 },
     { key: 'pop', label: 'Population',
       a: pick(ra, 'population'), b: pick(rb, 'population'),
@@ -516,18 +517,30 @@ function Row({ r }: { r: RowData }) {
   // DIRECTION COMES FROM THE API AND IS NEVER INVERTED HERE. More population
   // is good, more competitors is bad; getting this backwards would silently
   // reverse the meaning of every bar on the screen.
+  //
+  // JUDGE THE VALUES AS SHOWN. The row prints each value rounded to its
+  // precision, so the verdict is decided at that precision too. Deciding on
+  // the raw values printed "3% vs 3% — A leads, 3 to 3" for a 3.3 vs 2.6 split:
+  // a leader the reader cannot see in the numbers beside it.
+  const shown = (v: number) => {
+    const f = 10 ** (r.digits ?? 0)
+    return Math.round(v * f) / f
+  }
+  const as = both ? shown(av!) : null
+  const bs = both ? shown(bv!) : null
   let leader: 'a' | 'b' | null = null
-  if (both && r.direction !== 'context' && av !== bv) {
-    const aBetter = r.direction === 'higher' ? av! > bv! : av! < bv!
+  if (both && r.direction !== 'context' && as !== bs) {
+    const aBetter = r.direction === 'higher' ? as! > bs! : as! < bs!
     leader = aBetter ? 'a' : 'b'
   }
+  const level = both && r.direction !== 'context' && as === bs
 
   // A percentage needs a base big enough to carry one. 3 vs 1 is "200%", which
   // dresses a difference of two records as a finding. Below the floor the row
   // states the counts and lets the reader judge.
-  const smallBase = both && Math.min(av!, bv!) < MIN_PCT_BASE
-  const diff = both && Math.min(av!, bv!) > 0 && !smallBase
-    ? Math.abs(av! - bv!) / Math.min(av!, bv!) * 100
+  const smallBase = both && Math.min(as!, bs!) < MIN_PCT_BASE
+  const diff = both && Math.min(as!, bs!) > 0 && !smallBase
+    ? Math.abs(as! - bs!) / Math.min(as!, bs!) * 100
     : null
 
   // A comparison is only as strong as its weaker side.
@@ -597,6 +610,7 @@ function Row({ r }: { r: RowData }) {
             <span className="num">{fmt(bv, r.digits ?? 0)}</span>
           </span>
         )}
+        {level && <span className="cmp-dim">level at this precision</span>}
         {r.direction === 'context' && <span className="cmp-dim">context, not better or worse</span>}
         {weaker && (
           <span className="cmp-weak" title="A catchment takes the weakest confidence among its cells. Where the two sides differ, the comparison rests on the weaker one.">
@@ -809,8 +823,7 @@ function MiniMap({ loc, report, side, category }: {
         <span className={'cmp-mini-tag cmp-mini-' + side}>{side.toUpperCase()}</span>
         {loc.name ?? 'Location'}
         <span className="cmp-dot">·</span>
-        <span className="num">{fmt(pts.length)}</span> {category}
-        {pts.length === 1 ? '' : 's'} plotted
+        <span className="num">{fmt(pts.length)}</span> {plural(category, pts.length)} plotted
       </div>
     </div>
   )
