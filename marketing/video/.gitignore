@@ -1,0 +1,14 @@
+node_modules
+dist
+.DS_Store
+.env
+
+# Ignore the output video from Git but not videos you import into src/.
+out
+
+# Derived from the live app and licence-bearing (Foursquare/Overture business
+# names, CARTO/OpenStreetMap tiles) - like data/, kept out of this public repo.
+# Regenerate with `npm run capture`.
+public/captures/
+public/live.json
+public/data/
