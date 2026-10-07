@@ -143,6 +143,11 @@ the schedule after 60 days without a push.
 `us-central1`, 1 GiB, scale-to-zero, project `thirdeye-demo-260906`). Deployed
 2026-09-07.
 
+**The public link is https://thirdeye-app.web.app** (Firebase Hosting, a pure
+rewrite to the same service; see `docs/DEPLOYMENT.md`). Rate limiting
+identifies the visitor correctly through both entrances, verified in
+production 2026-10-07. Share this one, not the run.app URL.
+
 The 404-status bug is **fixed** — `api/spa.go` serves the SPA and gives unknown
 paths a 404 status while still returning the app shell, guarded by
 `api/spa_test.go`. Still open: a budget kill-switch (GCP budget alerts
