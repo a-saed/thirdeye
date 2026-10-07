@@ -92,6 +92,7 @@ func main() {
 	// Area search: the reverse of the report — find cells matching criteria
 	// rather than requiring the caller to already know where to look.
 	api("/api/search", app.handleAreaSearch)
+	mux.HandleFunc("/api/debug-ip", handleDebugIP) // TEMPORARY, see debugip.go
 	mountHTML(mux, app, *webDir)
 	// AFTER the API and document routes, so the catch-all only answers what
 	// nothing else claimed. Best-effort like mountHTML: dev.sh passes -web
