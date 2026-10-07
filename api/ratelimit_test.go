@@ -7,29 +7,60 @@ import (
 	"time"
 )
 
-// WHY THE SECOND-TO-LAST X-Forwarded-For ENTRY.
+// WHICH X-Forwarded-For ENTRY TO TRUST. Measured on 2026-10-07 through both
+// entrances with a temporary echo endpoint (see docs/DEPLOYMENT.md):
 //
-// Cloud Run appends TWO addresses: the client it actually observed, then the
-// load balancer. It does NOT validate entries already present, so anything to
-// the left of those two is attacker-supplied. Taking XFF[0] - the usual
-// shortcut - means a forged header buys an unlimited quota, and taking the
-// last entry buckets every visitor under one load-balancer address. Neither
-// is a rate limiter.
+//   run.app directly            XFF = "<client>"
+//   run.app, caller forged XFF  XFF = "<forged>, <client>"     Cloud Run appends ONE entry
+//   Firebase Hosting            XFF = "<client>, <google-fe>"  e.g. 142.250.32.4, 66.249.93.73
+//   Hosting, caller forged XFF  XFF = "<client>, <google-fe>"  Hosting strips the forgery
+//
+// So the last entry is what Google's infrastructure observed. It is the client,
+// unless it is a Google front end (the Hosting path), in which case the entry
+// before it is the client as Hosting saw it. The previous rule - always the
+// second-to-last - let anyone forge their way to a fresh quota on run.app.
 
-func TestClientIPUsesTheAddressCloudRunObserved(t *testing.T) {
+func TestClientIPDirect(t *testing.T) {
 	r := httptest.NewRequest("GET", "/api/report", nil)
-	r.Header.Set("X-Forwarded-For", "203.0.113.7, 130.211.0.1")
-	if got := clientIP(r); got != "203.0.113.7" {
-		t.Fatalf("clientIP = %q, want 203.0.113.7", got)
+	r.Header.Set("X-Forwarded-For", "196.153.137.192")
+	if got := clientIP(r); got != "196.153.137.192" {
+		t.Fatalf("clientIP = %q, want the only entry", got)
 	}
 }
 
-func TestClientIPIgnoresSpoofedLeadingEntries(t *testing.T) {
+func TestClientIPDirectIgnoresForgedEntries(t *testing.T) {
+	for _, xff := range []string{
+		"6.6.6.6, 196.153.137.192",
+		"6.6.6.6,7.7.7.7, 196.153.137.192",
+		// A forger imitating the Hosting shape still cannot change the entry
+		// Cloud Run appends last.
+		"6.6.6.6, 142.250.32.4, 196.153.137.192",
+	} {
+		r := httptest.NewRequest("GET", "/api/report", nil)
+		r.Header.Set("X-Forwarded-For", xff)
+		if got := clientIP(r); got != "196.153.137.192" {
+			t.Fatalf("XFF %q: clientIP = %q, want 196.153.137.192", xff, got)
+		}
+	}
+}
+
+func TestClientIPThroughFirebaseHosting(t *testing.T) {
+	for _, fe := range []string{"142.250.32.4", "66.249.93.73", "66.249.93.230", "130.211.0.1"} {
+		r := httptest.NewRequest("GET", "/api/report", nil)
+		r.Header.Set("X-Forwarded-For", "196.153.137.192,"+fe)
+		if got := clientIP(r); got != "196.153.137.192" {
+			t.Fatalf("via front end %s: clientIP = %q, want the client before it", fe, got)
+		}
+	}
+}
+
+func TestClientIPCloudCustomerAddressIsNotAFrontEnd(t *testing.T) {
+	// 34.x / 35.x are rentable Google Cloud addresses. A caller on a cloud VM
+	// must not be able to pass as Hosting and get its forged entry trusted.
 	r := httptest.NewRequest("GET", "/api/report", nil)
-	// The caller forged the first two entries to dodge their bucket.
-	r.Header.Set("X-Forwarded-For", "1.1.1.1, 2.2.2.2, 203.0.113.7, 130.211.0.1")
-	if got := clientIP(r); got != "203.0.113.7" {
-		t.Fatalf("clientIP = %q, want 203.0.113.7 (spoofed prefix must be ignored)", got)
+	r.Header.Set("X-Forwarded-For", "6.6.6.6, 34.123.45.67")
+	if got := clientIP(r); got != "34.123.45.67" {
+		t.Fatalf("clientIP = %q, want the VM address 34.123.45.67", got)
 	}
 }
 

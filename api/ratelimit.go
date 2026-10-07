@@ -22,24 +22,69 @@ import (
 // standing with Nominatim, whose usage policy is enforced by banning the
 // caller, and the egress bill, since /api/places answers up to 215 KB.
 
-// clientIP returns the address Cloud Run observed, NOT the one the caller
-// claims. Cloud Run appends two entries to X-Forwarded-For — the client it
-// saw, then the load balancer — and does not validate whatever was already
-// there. So the trustworthy value is second from the end: XFF[0] is
-// attacker-controlled, and the last entry is the load balancer, which would
-// bucket every visitor on earth together.
+// clientIP returns the address Google's infrastructure observed, NOT the one
+// the caller claims. Measured 2026-10-07 (ratelimit_test.go has the shapes):
+// Cloud Run appends exactly ONE entry to X-Forwarded-For, the peer it saw, and
+// keeps whatever the caller sent to the left of it. Directly on run.app that
+// peer is the client. Through Firebase Hosting the peer is a Google front end,
+// and the entry before it is the client as Hosting saw it; Hosting discards a
+// caller-supplied X-Forwarded-For, so that entry is trustworthy too.
+//
+// Anything else to the left is caller-controlled. The previous rule (always
+// second-to-last) assumed Cloud Run appended two entries, and let anyone send
+// "X-Forwarded-For: <anything>" to get a fresh quota on run.app.
 func clientIP(r *http.Request) string {
 	if xff := r.Header.Get("X-Forwarded-For"); xff != "" {
 		parts := strings.Split(xff, ",")
-		if len(parts) >= 2 {
-			return strings.TrimSpace(parts[len(parts)-2])
+		for i := range parts {
+			parts[i] = strings.TrimSpace(parts[i])
 		}
-		return strings.TrimSpace(parts[0])
+		last := parts[len(parts)-1]
+		if len(parts) >= 2 && isGoogleFrontEnd(last) {
+			return parts[len(parts)-2]
+		}
+		return last
 	}
 	if host, _, err := net.SplitHostPort(r.RemoteAddr); err == nil {
 		return host
 	}
 	return r.RemoteAddr
+}
+
+// GOOGLE FRONT ENDS: addresses Firebase Hosting reaches Cloud Run from.
+// Every range is in Google's own list (gstatic.com/ipranges/goog.json) and
+// in NONE of the customer-rentable ranges (cloud.json), checked 2026-10-07 -
+// so a caller on a cloud VM cannot pass as Hosting. Observed peers 142.250.32.4
+// and 66.249.93.x fall inside. If Hosting ever arrives from outside these, the
+// symptom is the old one (Hosting visitors share one bucket), not a bypass.
+var googleFrontEnds = func() []*net.IPNet {
+	var out []*net.IPNet
+	for _, c := range []string{
+		"142.250.0.0/15", "66.249.64.0/19", "74.125.0.0/16", "172.217.0.0/16",
+		"172.253.0.0/16", "64.233.160.0/19", "209.85.128.0/17", "108.177.0.0/17",
+		"173.194.0.0/16", "216.58.192.0/19", "216.239.32.0/19",
+		"130.211.0.0/22", "35.191.0.0/16", // Google load balancer front ends
+	} {
+		_, n, err := net.ParseCIDR(c)
+		if err != nil {
+			panic(err)
+		}
+		out = append(out, n)
+	}
+	return out
+}()
+
+func isGoogleFrontEnd(ip string) bool {
+	a := net.ParseIP(ip)
+	if a == nil {
+		return false
+	}
+	for _, n := range googleFrontEnds {
+		if n.Contains(a) {
+			return true
+		}
+	}
+	return false
 }
 
 type bucket struct {
