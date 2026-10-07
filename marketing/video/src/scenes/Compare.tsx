@@ -33,24 +33,24 @@ export const Compare: React.FC = () => (
         <Rise at={0.7}>
           <MapTile side={0} />
           <div style={{ fontSize: 150, fontWeight: 600, color: C.accent, lineHeight: 1, marginTop: 30, letterSpacing: -4 }}>{live.a.competitors}</div>
-          <div style={{ fontSize: 40, color: C.text, marginTop: 8 }}>cafés · {live.a.name}</div>
-          <div style={{ fontSize: 34, color: C.muted, marginTop: 6 }}>{live.a.competitorsPerLandKm2.toFixed(1)} per land km²</div>
+          <div style={{ fontSize: 44, color: C.text, marginTop: 8 }}>cafés · {live.a.name}</div>
+          <div style={{ fontSize: 42, color: "#B4BBC1", marginTop: 6 }}>{live.a.competitorsPerLandKm2.toFixed(1)} per land km²</div>
         </Rise>
         <Rise at={1.0}>
           <MapTile side={1} />
           <div style={{ fontSize: 150, fontWeight: 600, color: "#8B93E6", lineHeight: 1, marginTop: 30, letterSpacing: -4 }}>{live.b.competitors}</div>
-          <div style={{ fontSize: 40, color: C.text, marginTop: 8 }}>cafés · {live.b.name}</div>
-          <div style={{ fontSize: 34, color: C.muted, marginTop: 6 }}>{live.b.competitorsPerLandKm2.toFixed(1)} per land km²</div>
+          <div style={{ fontSize: 44, color: C.text, marginTop: 8 }}>cafés · {live.b.name}</div>
+          <div style={{ fontSize: 42, color: "#B4BBC1", marginTop: 6 }}>{live.b.competitorsPerLandKm2.toFixed(1)} per land km²</div>
         </Rise>
       </div>
       <Rise at={0.7} style={{ fontSize: 18, color: "rgba(255,255,255,0.5)", marginTop: 14 }}>Maps: © CARTO © OpenStreetMap contributors</Rise>
       {/* Say which way is good: for competitors, fewer is better. */}
-      <Rise at={1.8} style={{ marginTop: 44 }}>
-        <div style={{ fontSize: 50, fontWeight: 600, lineHeight: 1.2, textWrap: "balance" } as React.CSSProperties}>
+      <Rise at={1.6} style={{ marginTop: 44 }}>
+        <div style={{ fontSize: 54, fontWeight: 600, lineHeight: 1.15, textWrap: "balance" } as React.CSSProperties}>
           {LOWER.name} has fewer cafés per land km²: {LOWER.competitorsPerLandKm2.toFixed(1)} vs {HIGHER.competitorsPerLandKm2.toFixed(1)}.
         </div>
-        <div style={{ fontSize: 40, color: C.muted, marginTop: 12, lineHeight: 1.3, textWrap: "balance" } as React.CSSProperties}>
-          The app shows who leads on each measure, and by how much. No overall score.
+        <div style={{ fontSize: 46, color: "#B4BBC1", marginTop: 14, lineHeight: 1.25, textWrap: "balance" } as React.CSSProperties}>
+          No overall score. You decide what matters.
         </div>
       </Rise>
     </div>

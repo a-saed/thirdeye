@@ -8,12 +8,12 @@ import { Compare } from "./scenes/Compare";
 import { Search } from "./scenes/Search";
 import { Sources } from "./scenes/Sources";
 import { End } from "./scenes/End";
-import { Progress } from "./ui";
+import { CornerMark, Progress } from "./ui";
 
 // Episode 0, the showcase: 4:5, made to work with the sound off.
 // Audience: chain expansion managers (playbook decision, 2026-10-06).
 // Scene lengths in seconds, kept in one place so SHOWCASE_FRAMES stays right.
-export const SCENES = { intro: 7, how: 11.5, compare: 6.5, search: 5, sources: 5, end: 5 };
+export const SCENES = { intro: 7.5, how: 12.3, compare: 7.5, search: 5.5, sources: 5.5, end: 6.5 };
 const T = 0.3; // crossfade
 
 export const Showcase: React.FC = () => {
@@ -47,6 +47,7 @@ export const Showcase: React.FC = () => {
         </TransitionSeries.Sequence>
       </TransitionSeries>
       <Progress />
+      <CornerMark hideFrom={SHOWCASE_FRAMES - Math.round(SCENES.end * fps)} />
     </AbsoluteFill>
   );
 };

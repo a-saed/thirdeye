@@ -18,7 +18,7 @@ import { Words, useExit } from "../ui";
 const SITE: [number, number] = [live.a.lon, live.a.lat];
 const CAIRO: [number, number] = [31.24, 30.06];
 const Z_START = 9.4;
-const Z_END = 15.5;
+const Z_END = 14.7;
 const FLY_END = 2.6; // seconds: the counter must start by ~3 s
 const RES = 9; // the report's resolution; k matches live.k
 
@@ -54,6 +54,9 @@ const camera = (t: number) => {
   return {
     center: [SITE[0] + (CAIRO[0] - SITE[0]) * off, SITE[1] + (CAIRO[1] - SITE[1]) * off] as [number, number],
     zoom,
+    // The question holds the top and the count the bottom; the street sits
+    // in the band between them (centre at y = 440 + (1350-440-440)/2 = 675).
+    padding: { top: 440, bottom: 440, left: 0, right: 0 },
   };
 };
 
@@ -147,25 +150,24 @@ export const MapIntro: React.FC = () => {
   const s = frame / fps;
   const count = places ? places.filter((_, i) => s >= FLY_END + 0.15 + i * 0.075).length : 0;
   const counterIn = interpolate(s, [FLY_END, FLY_END + 0.35], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
-  const questionOut = interpolate(s, [FLY_END - 0.5, FLY_END - 0.1], [1, 0], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
 
   return (
     <AbsoluteFill style={{ backgroundColor: C.canvas, fontFamily: sans, color: C.text }}>
       <div ref={ref} style={{ position: "absolute", width, height }} />
       {/* Readability band behind the words; the map keeps the middle. */}
-      <div style={{ position: "absolute", inset: 0, background: `linear-gradient(rgba(16,19,21,0.95) 0%, rgba(16,19,21,0.85) 28%, rgba(16,19,21,0) 46%, rgba(16,19,21,0) 70%, rgba(16,19,21,0.9) 100%)` }} />
-      <div style={{ position: "absolute", left: SAFE_X, right: SAFE_X, top: SAFE_Y, opacity: questionOut }}>
+      <div style={{ position: "absolute", inset: 0, background: `linear-gradient(rgba(16,19,21,0.95) 0%, rgba(16,19,21,0.85) 26%, rgba(16,19,21,0) 38%, rgba(16,19,21,0) 58%, rgba(16,19,21,0.88) 68%, rgba(16,19,21,0.95) 100%)` }} />
+      <div style={{ position: "absolute", left: SAFE_X, right: SAFE_X, top: SAFE_Y, opacity: exit }}>
         <Words at={0} stagger={0} text="Opening your next café?" style={{ fontSize: 46, color: C.muted }} />
         <Words at={0} text={`How many competitors are already a\u00A0${live.walkMinutes}-minute walk away?`} style={{ fontSize: 80, fontWeight: 600, lineHeight: 1.08, marginTop: 18, letterSpacing: -1 }} />
       </div>
-      <div style={{ position: "absolute", left: SAFE_X, right: SAFE_X, top: SAFE_Y, opacity: counterIn * exit }}>
+      <div style={{ position: "absolute", left: SAFE_X, right: SAFE_X, bottom: 215, opacity: counterIn * exit }}>
         <div style={{ display: "flex", alignItems: "baseline", gap: 28 }}>
           <div style={{ fontSize: 210, fontWeight: 600, color: C.accent, lineHeight: 0.9, letterSpacing: -6, fontVariantNumeric: "tabular-nums", minWidth: 250 }}>{count}</div>
           <div style={{ fontSize: 52, fontWeight: 600, lineHeight: 1.1 }}>cafés within<br />~{live.walkMinutes} minutes on foot</div>
         </div>
-        <div style={{ fontSize: 38, color: C.muted, marginTop: 22 }}>{live.a.name}, Cairo · as of {live.a.competitorsAsOf}</div>
+        <div style={{ fontSize: 44, color: "#B4BBC1", marginTop: 18 }}>{live.a.name}, Cairo · as of {live.a.competitorsAsOf}</div>
       </div>
-      <div style={{ position: "absolute", right: 88, bottom: 210, fontSize: 20, color: "rgba(255,255,255,0.55)" }}>© CARTO © OpenStreetMap contributors</div>
+      <div style={{ position: "absolute", right: 88, top: 1350 - 500, fontSize: 20, color: "rgba(255,255,255,0.55)" }}>© CARTO © OpenStreetMap contributors</div>
     </AbsoluteFill>
   );
 };

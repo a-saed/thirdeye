@@ -73,7 +73,7 @@ export const Progress: React.FC = () => {
 };
 
 export const Kicker: React.FC<{ children: React.ReactNode }> = ({ children }) => (
-  <div style={{ fontSize: 44, color: C.muted, fontWeight: 400, lineHeight: 1.25, textWrap: "balance" } as React.CSSProperties}>{children}</div>
+  <div style={{ fontSize: 46, color: "#B4BBC1", fontWeight: 400, lineHeight: 1.25, textWrap: "balance" } as React.CSSProperties}>{children}</div>
 );
 
 export const Headline: React.FC<{ children: React.ReactNode; size?: number }> = ({ children, size = 84 }) => (
@@ -86,7 +86,7 @@ export const Callout: React.FC<{ at: number; title: string; body?: string }> = (
     <div style={{ width: 6, alignSelf: "stretch", background: C.accent, borderRadius: 3 }} />
     <div>
       <div style={{ fontSize: 52, fontWeight: 600, lineHeight: 1.15, textWrap: "balance" } as React.CSSProperties}>{title}</div>
-      {body && <div style={{ fontSize: 40, color: C.muted, lineHeight: 1.3, marginTop: 10, textWrap: "balance" } as React.CSSProperties}>{body}</div>}
+      {body && <div style={{ fontSize: 46, color: "#B4BBC1", lineHeight: 1.25, marginTop: 10, textWrap: "balance" } as React.CSSProperties}>{body}</div>}
     </div>
   </Rise>
 );
@@ -119,6 +119,23 @@ export const Words: React.FC<{ at: number; text: string; style?: React.CSSProper
           </span>
         );
       })}
+    </div>
+  );
+};
+
+// A small brand mark in the top-right corner, so a viewer who leaves after
+// five seconds still saw the name. Hidden from `hideFrom` (the end card).
+export const CornerMark: React.FC<{ hideFrom: number }> = ({ hideFrom }) => {
+  const frame = useCurrentFrame();
+  const { fps } = useVideoConfig();
+  const o = interpolate(frame, [hideFrom - 0.4 * fps, hideFrom], [1, 0], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
+  return (
+    <div style={{ position: "absolute", right: 40, top: 34, display: "flex", alignItems: "center", gap: 12, opacity: 0.85 * o, fontFamily: sans }}>
+      <svg viewBox="0 0 100 115.47" width={30} height={35}>
+        <path fill={C.accent} fillRule="evenodd" d="M50 0 L100 28.87 L100 86.6 L50 115.47 L0 86.6 L0 28.87 Z M50 9.24 L92 33.48 L92 81.99 L50 106.23 L8 81.99 L8 33.48 Z" />
+        <circle fill={C.accent} cx={50} cy={57.735} r={15} />
+      </svg>
+      <div style={{ fontSize: 28, letterSpacing: 5, color: C.text }}>THIRD <span style={{ color: C.accent, fontWeight: 600 }}>EYE</span></div>
     </div>
   );
 };

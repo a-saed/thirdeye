@@ -23,18 +23,18 @@ const BEATS = [
     at: 1.5, box: B.confidence,
     title: "How sure we are, at a glance.",
     body: corroborated === 0
-      ? "No cell here is corroborated by both sources. We say so."
-      : `${corroborated} of ${live.a.cellsTotal} cells are corroborated by both sources.`,
+      ? "No area here is confirmed by both sources."
+      : `${corroborated} of ${live.a.cellsTotal} areas confirmed by both sources.`,
   },
   {
-    at: 4.7, box: B.differ,
+    at: 5.1, box: B.differ,
     title: `Sources disagree ${sourcesDiffer(live.a.agreementRatio)}× here.`,
-    body: "Where both list cafés in a cell, their counts differ. We show it.",
+    body: "We show the gap instead of hiding it.",
   },
   {
-    at: 7.9, box: B.duplicates,
-    title: `${live.a.duplicateFlagged} of ${live.a.records} flagged as possible duplicates.`,
-    body: "Flagged, not hidden. Not merged.",
+    at: 8.7, box: B.duplicates,
+    title: `${live.a.duplicateFlagged} of ${live.a.records} may be duplicates.`,
+    body: "Flagged, not hidden.",
   },
 ];
 

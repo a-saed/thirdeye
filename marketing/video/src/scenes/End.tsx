@@ -26,20 +26,23 @@ export const End: React.FC = () => {
   return (
     <Scene style={{ alignItems: "center", justifyContent: "center", textAlign: "center" }}>
       <div style={{ position: "absolute", inset: 0, background: `radial-gradient(circle at 50% 36%, rgba(69,201,165,${interpolate(frame, [0, 1.2 * fps], [0, 0.18], { extrapolateRight: "clamp" })}), rgba(16,19,21,0) 55%)` }} />
-      <div style={{ marginTop: 40, display: "flex", flexDirection: "column", alignItems: "center" }}>
+      <div style={{ marginTop: -40, display: "flex", flexDirection: "column", alignItems: "center" }}>
         <Icon />
         <Rise at={1.0} style={{ marginTop: 40 }}>
           <div style={{ fontSize: 96, letterSpacing: 14, fontWeight: 400 }}>THIRD <span style={{ color: C.accent, fontWeight: 600 }}>EYE</span></div>
-          <div style={{ fontFamily: mono, fontSize: 28, letterSpacing: 8, color: C.muted, marginTop: 8 }}>LOCATION INTELLIGENCE</div>
+          <div style={{ fontFamily: mono, fontSize: 32, letterSpacing: 8, color: "#B4BBC1", marginTop: 10 }}>LOCATION INTELLIGENCE</div>
         </Rise>
-        <Rise at={1.4} style={{ marginTop: 70 }}>
-          <div style={{ fontSize: 36, fontWeight: 600, background: C.accent, color: C.canvas, padding: "22px 34px", whiteSpace: "nowrap", borderRadius: 999 }}>Check the street before you sign the lease.</div>
+        <Rise at={1.3} style={{ marginTop: 56 }}>
+          {/* Two lines at ~20 pt on a phone: this is the line people act on. */}
+          <div style={{ fontSize: 56, fontWeight: 600, lineHeight: 1.15, background: C.accent, color: C.canvas, padding: "26px 48px", borderRadius: 40, maxWidth: 904, textWrap: "balance" } as React.CSSProperties}>Check the street before you sign the lease.</div>
         </Rise>
-        <Rise at={1.8} style={{ marginTop: 44 }}>
-          <div style={{ fontSize: 40, fontWeight: 600, color: C.text }}>Free. No sign-up. Link in the post.</div>
+        {/* The same ask as the post: a comment starts a conversation. */}
+        <Rise at={1.8} style={{ marginTop: 46 }}>
+          <div style={{ fontSize: 48, fontWeight: 600, color: C.text }}>Comment your street.</div>
+          <div style={{ fontSize: 44, color: "#B4BBC1", marginTop: 6 }}>I'll send you its report.</div>
         </Rise>
-        <Rise at={2.1} style={{ marginTop: 16 }}>
-          <div style={{ fontSize: 34, color: "rgba(230,233,236,0.78)" }}>Cairo · Giza · Qalyubiya · Alexandria</div>
+        <Rise at={2.3} style={{ marginTop: 34 }}>
+          <div style={{ fontSize: 40, color: "#B4BBC1" }}>Free · No sign-up · Link in the post</div>
         </Rise>
       </div>
     </Scene>
