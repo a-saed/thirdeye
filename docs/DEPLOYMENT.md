@@ -132,38 +132,37 @@ Health checks are exempt — a limited health check reads as an outage.
 | `/api/geocode/*` | 6/min, burst 3 | Nominatim's policy is **1 req/s in total**, enforced by banning the caller. No single client may approach that alone. |
 | every other `/api/*` | 60/min, burst 20 | A person reading the map never reaches it; a script reaches it at once. `/api/places` answers up to 215 KB, and egress is 1 GB/month free. |
 
-**The client address is the SECOND-TO-LAST `X-Forwarded-For` entry.** Cloud Run
-appends two — the client it observed, then the load balancer — and does not
-validate whatever the caller already put there. Reading `XFF[0]`, the usual
-shortcut, means a forged header buys an unlimited quota; reading the last entry
-buckets every visitor on earth together. Verified against a running instance:
-30 plain requests mixed with 30 carrying a forged prefix, all naming one victim
-IP, yielded 20x200 and 40x429 — one shared bucket.
+**The client address is the `X-Forwarded-For` entry Google's infrastructure
+observed: the last one, unless that is a Google front end, then the one before
+it.** Measured 2026-10-07 through both entrances with a temporary echo endpoint
+(added, read, removed):
 
-**THIS BREAKS BEHIND THE FIREBASE HOSTING FRONT DOOR — 2026-09-25.** A request
-that arrives via `thirdeye-app.web.app` reaches Cloud Run from a Hosting
-frontend, not from the visitor. Two marked probes, one through each entrance,
-seconds apart:
+| entrance | caller sends | `X-Forwarded-For` at the API | client |
+|---|---|---|---|
+| run.app | nothing | `<client>` | last |
+| run.app | `X-Forwarded-For: 6.6.6.6` | `6.6.6.6,<client>` | last |
+| `thirdeye-app.web.app` | nothing | `<client>,66.249.93.7` | second-to-last |
+| `thirdeye-app.web.app` | `X-Forwarded-For: 6.6.6.6` | `<client>,66.249.93.41` | second-to-last; Hosting dropped the forgery |
 
-| entrance | `httpRequest.remoteIp` in the Cloud Run request log |
-|---|---|
-| `thirdeye-app.web.app` | `66.249.93.230` — a Google frontend |
-| `thirdeye-hiecbobtpa-uc.a.run.app` | `196.157.42.147` — the real caller |
+Cloud Run appends **one** entry, the peer it saw, and keeps whatever the caller
+sent to its left. Through Hosting that peer is a Google front end and the entry
+before it is the client as Hosting saw it. The front-end ranges in
+`ratelimit.go` are Google-owned and outside every customer-rentable range
+(checked against gstatic.com/ipranges goog.json and cloud.json), so a caller on
+a cloud VM cannot pass as Hosting. Verified after deploy: through Hosting, five
+rapid geocode requests each forging a different `X-Forwarded-For` gave
+200, 200, 200, 429, 429.
 
-Cloud Run appends *the client it observed*, and what it observed is the Hosting
-frontend. So the second-to-last entry is a Google frontend address for every
-visitor arriving through the front door — and that holds whether or not Hosting
-also passes the original client in `XFF[0]`, because either chain shape puts the
-frontend in that position. The effect is exactly what this rule exists to
-prevent: one shared bucket. At 6/min burst 3, the fourth stranger to type a
-search gets a 429.
-
-**Not fixed yet.** The header Hosting actually sends has not been read — the API
-echoes no headers and adding an endpoint that does is a production deploy — and
-that reading is what decides the fix: whether `XFF[0]` is trustworthy when it
-arrives through Hosting, or whether the client is only recoverable by stripping
-known Google frontend ranges from the right. Until then the run.app URL remains
-the entrance with correct per-client limiting, and both entrances stay open.
+**Corrected 2026-10-07.** Until then the rule was "always the second-to-last
+entry", on the belief that Cloud Run appends two. It appends one, so on run.app
+the second-to-last entry was whatever the caller forged: `X-Forwarded-For:
+<anything>` bought a fresh quota per request, which defeats the Nominatim
+protection this limit exists for. The note written here on 2026-09-25 said the
+opposite problem, that every Hosting visitor shared one bucket; against the
+headers Hosting sends today, Hosting visitors were in fact bucketed correctly.
+The 2026-09-25 evidence (`httpRequest.remoteIp` = a Google front end for Hosting
+requests) was right; the conclusion drawn from it, without reading the header,
+was not. Both entrances now limit per client.
 
 **WHAT THIS DOES NOT DO: stop a DDoS.** A distributed attack never reaches Go
 code, and Cloud Run bills for requests it rejects. What bounds the damage is
