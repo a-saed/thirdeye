@@ -17,6 +17,7 @@
  */
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import maplibregl from 'maplibre-gl'
+import { labelsBelow } from '../map/labels'
 import { latLngToCell } from 'h3-js'
 import 'maplibre-gl/dist/maplibre-gl.css'
 import MapControls, { type Located } from '../components/MapControls'
@@ -380,12 +381,13 @@ export default function Home() {
 
     map.on('load', async () => {
       try {
-        // One --canvas layer above every imported basemap layer: desaturates
-        // the basemap and dims its labels in a single move.
+        const below = labelsBelow(map)
+        // One --canvas layer over the basemap's geometry, below its labels:
+        // desaturates the streets while the place names stay readable.
         map.addLayer({
           id: 'veil', type: 'background',
           paint: { 'background-color': t('--canvas'), 'background-opacity': VEIL_ALPHA },
-        })
+        }, below)
 
         const ctrl = new AbortController()
         const timer = setTimeout(() => ctrl.abort(), 20000)
@@ -410,11 +412,11 @@ export default function Home() {
             'fill-color': coverageFillColor(tk) as any,
             'fill-opacity': coverageFillOpacity(tk) as any,
           },
-        })
+        }, below)
         map.addLayer({
           id: 'cells-line', type: 'line', source: 'cells',
           paint: coverageLinePaint() as any,
-        })
+        }, below)
         // Accuracy circle, above the hexes so it reads as an overlay.
         map.addSource('accuracy', {
           type: 'geojson',
@@ -423,14 +425,14 @@ export default function Home() {
         map.addLayer({
           id: 'accuracy-fill', type: 'fill', source: 'accuracy',
           paint: { 'fill-color': t('--amber'), 'fill-opacity': 0.10 },
-        })
+        }, below)
         map.addLayer({
           id: 'accuracy-line', type: 'line', source: 'accuracy',
           paint: {
             'line-color': t('--amber'), 'line-width': 1,
             'line-dasharray': [3, 2], 'line-opacity': 0.7,
           },
-        })
+        }, below)
 
         map.getCanvas().style.cursor = 'crosshair'
         setReady(true)

@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import maplibregl from 'maplibre-gl'
+import { labelsBelow } from '../map/labels'
 import 'maplibre-gl/dist/maplibre-gl.css'
 import ConfBadge from '../components/ConfBadge'
 import Footer from '../components/Footer'
@@ -183,10 +184,11 @@ export default function Search() {
     map.on('error', e => setErr((e as any)?.error?.message || 'basemap unavailable'))
     map.on('load', async () => {
       try {
+        const below = labelsBelow(map)
         map.addLayer({
           id: 'veil', type: 'background',
           paint: { 'background-color': t('--canvas'), 'background-opacity': VEIL_ALPHA },
-        })
+        }, below)
         const res = await fetch('/coverage-res8.geojson')
         if (!res.ok) throw new Error(`coverage layer: HTTP ${res.status}`)
         const fc = await res.json()
@@ -194,9 +196,9 @@ export default function Search() {
         // painted with setFeatureState instead of a filter holding 4,000 ids.
         map.addSource('cells', { type: 'geojson', data: fc, promoteId: 'h3' })
         const tk = { accent: t('--accent'), amber: t('--amber'), noData: t('--map-no-data') }
-        map.addLayer({ id: 'search-dim', type: 'fill', source: 'cells', paint: searchDimPaint(tk) as any })
-        map.addLayer({ id: 'search-hit', type: 'fill', source: 'cells', paint: searchHitPaint(tk) as any })
-        map.addLayer({ id: 'search-focus', type: 'line', source: 'cells', paint: searchFocusPaint(tk) as any })
+        map.addLayer({ id: 'search-dim', type: 'fill', source: 'cells', paint: searchDimPaint(tk) as any }, below)
+        map.addLayer({ id: 'search-hit', type: 'fill', source: 'cells', paint: searchHitPaint(tk) as any }, below)
+        map.addLayer({ id: 'search-focus', type: 'line', source: 'cells', paint: searchFocusPaint(tk) as any }, below)
         setMapReady(v => v + 1)
       } catch (e: any) {
         setErr(e.message || 'map layer failed')

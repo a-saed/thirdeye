@@ -16,6 +16,7 @@
  */
 import React, { useEffect, useRef, useState } from 'react'
 import maplibregl from 'maplibre-gl'
+import { labelsBelow } from '../map/labels'
 import 'maplibre-gl/dist/maplibre-gl.css'
 import '../tokens.css'
 import './tokens.css'
@@ -652,8 +653,9 @@ function HexPanel({ features, singleHex, singleAlpha, ndHex, ndAlpha }: {
     mapRef.current = map
     map.on('error', e => setErr((e as any)?.error?.message || 'basemap unavailable'))
     map.on('load', () => {
-      // THE VEIL: one --canvas layer above every imported basemap layer.
-      // Desaturates the basemap and dims its labels in a single move, instead
+      const below = labelsBelow(map)
+      // THE VEIL: one --canvas layer over the basemap's geometry, below its
+      // labels so place names stay readable. Desaturates in one move, instead
       // of walking dozens of CARTO layers whose ids change whenever the style
       // is republished.
       map.addLayer({
@@ -662,7 +664,7 @@ function HexPanel({ features, singleHex, singleAlpha, ndHex, ndAlpha }: {
           'background-color': cs.getPropertyValue('--canvas').trim(),
           'background-opacity': VEIL_ALPHA,
         },
-      })
+      }, below)
       setReady(true)
     })
     return () => { map.remove(); mapRef.current = null }
@@ -674,15 +676,16 @@ function HexPanel({ features, singleHex, singleAlpha, ndHex, ndAlpha }: {
     const cs = getComputedStyle(document.documentElement)
     const fc = { type: 'FeatureCollection', features } as any
     if (!map.getSource('cells')) {
+      const below = labelsBelow(map)
       map.addSource('cells', { type: 'geojson', data: fc })
       map.addLayer({
         id: 'cells-fill', type: 'fill', source: 'cells',
         paint: { 'fill-color': '#000', 'fill-opacity': 0 },
-      })
+      }, below)
       map.addLayer({
         id: 'cells-line', type: 'line', source: 'cells',
         paint: { 'line-color': 'rgba(255,255,255,0.10)', 'line-width': 0.5 },
-      })
+      }, below)
     }
     map.setPaintProperty('cells-fill', 'fill-color', ['match', ['get', 'conf'],
       'corroborated', cs.getPropertyValue('--accent').trim(),

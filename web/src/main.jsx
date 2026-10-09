@@ -6,7 +6,18 @@ import TokensPage from './routes/tokens.tsx'
 import Compare from './routes/compare.tsx'
 import Search from './routes/search.tsx'
 import NotFound from './routes/notfound.tsx'
+import maplibregl from 'maplibre-gl'
+import rtlTextPlugin from '@mapbox/mapbox-gl-rtl-text/mapbox-gl-rtl-text.min.js?url'
 import './style.css'
+
+// MapLibre does not shape right-to-left scripts on its own: without this
+// plugin every Arabic label renders with its letters reversed and unjoined,
+// on any basemap. Registered once here, before any page builds a map (a
+// second registration throws). Lazy: fetched only when a tile has RTL text.
+// Self-hosted via ?url so a third-party CDN outage cannot garble the map.
+// Pinned to 0.2.x: 0.3 is built for Mapbox GL v3 and fails to load in
+// MapLibre's workers ("RTL Text Plugin failed to import scripts").
+maplibregl.setRTLTextPlugin(rtlTextPlugin, true).catch(() => {})
 
 // Deliberately not a router. Five screens, no nested routes, no transitions
 // worth a dependency. Both /report and #/report work, so the pages survive

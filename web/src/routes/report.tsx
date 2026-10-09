@@ -22,6 +22,7 @@
  */
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import maplibregl from 'maplibre-gl'
+import { labelsBelow } from '../map/labels'
 import { cellToBoundary } from 'h3-js'
 import 'maplibre-gl/dist/maplibre-gl.css'
 import MapControls from '../components/MapControls'
@@ -822,13 +823,14 @@ function CatchmentMap({ lat, lon, cells, places, layers, hovered, focused, onHov
     map.on('error', e => setErr((e as any)?.error?.message || 'basemap unavailable'))
 
     map.on('load', () => {
+      const below = labelsBelow(map)
       map.addLayer({
         id: 'veil', type: 'background',
         paint: {
           'background-color': cs.getPropertyValue('--canvas').trim(),
           'background-opacity': layers.bright ? VEIL_BRIGHT : VEIL_DIM,
         },
-      })
+      }, below)
       map.addSource('cells', { type: 'geojson', data: emptyFC() })
       map.addSource('pts', { type: 'geojson', data: emptyFC() })
 
@@ -844,13 +846,13 @@ function CatchmentMap({ lat, lon, cells, places, layers, hovered, focused, onHov
           'fill-opacity': ['match', ['get', 'conf'],
             'corroborated', 0.26, 'single_source', 0.16, 0.22],
         },
-      })
+      }, below)
       // THE OUTLINE IS NOT A LAYER. It is the report's subject, so it stays on
       // when the hex shading is switched off.
       map.addLayer({
         id: 'cell-outline', type: 'line', source: 'cells',
         paint: { 'line-color': 'rgba(255,255,255,0.28)', 'line-width': 1 },
-      })
+      }, below)
       map.addLayer({
         id: 'pt-halo', type: 'circle', source: 'pts',
         filter: ['==', ['get', 'key'], ''],

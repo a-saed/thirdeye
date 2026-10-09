@@ -21,6 +21,7 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { plural } from '../lib/format'
 import maplibregl from 'maplibre-gl'
+import { labelsBelow } from '../map/labels'
 import { cellToBoundary } from 'h3-js'
 import 'maplibre-gl/dist/maplibre-gl.css'
 import { setMeta } from '../components/meta'
@@ -662,10 +663,11 @@ function PickerMap({ onPick }: { onPick: (l: Loc) => void }) {
     map.on('error', e => setErr((e as any)?.error?.message || 'Basemap unavailable.'))
     map.on('load', async () => {
       try {
+        const below = labelsBelow(map)
         map.addLayer({
           id: 'veil', type: 'background',
           paint: { 'background-color': t('--canvas'), 'background-opacity': VEIL },
-        })
+        }, below)
         const res = await fetch('/coverage-res8.geojson')
         if (!res.ok) throw new Error(`coverage layer: HTTP ${res.status}`)
         const fc = await res.json()
@@ -678,7 +680,7 @@ function PickerMap({ onPick }: { onPick: (l: Loc) => void }) {
             'fill-opacity': ['match', ['get', 'conf'],
               'corroborated', 0.85, 'single_source', 0.38, 0.58],
           },
-        })
+        }, below)
         map.getCanvas().style.cursor = 'crosshair'
         setLoading(false)
       } catch (e: any) {
@@ -746,13 +748,14 @@ function MiniMap({ loc, report, side, category }: {
     })
     mapRef.current = map
     map.on('load', () => {
+      const below = labelsBelow(map)
       map.addLayer({
         id: 'veil', type: 'background',
         paint: {
           'background-color': cs.getPropertyValue('--canvas').trim(),
           'background-opacity': VEIL,
         },
-      })
+      }, below)
       map.addSource('cells', { type: 'geojson', data: { type: 'FeatureCollection', features: [] } })
       map.addSource('pts', { type: 'geojson', data: { type: 'FeatureCollection', features: [] } })
       map.addLayer({
@@ -761,11 +764,11 @@ function MiniMap({ loc, report, side, category }: {
           'fill-color': side === 'a' ? cs.getPropertyValue('--accent').trim() : '#8B9DF0',
           'fill-opacity': 0.18,
         },
-      })
+      }, below)
       map.addLayer({
         id: 'cells-line', type: 'line', source: 'cells',
         paint: { 'line-color': 'rgba(255,255,255,0.22)', 'line-width': 0.8 },
-      })
+      }, below)
       map.addLayer({
         id: 'pts', type: 'circle', source: 'pts',
         paint: {
